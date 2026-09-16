@@ -20,6 +20,10 @@ describe("server-rendered pages", () => {
       for (const id of ["overview", "features", "architecture", "decisions", "quality", "evidence"]) expect(html).toContain(`id="${id}"`);
       expect(html).toMatch(/github\.com\/myoshi2891\/.+\/blob\/[a-f0-9]{40}\//);
       expect(html).toContain("2026-09-16");
+      expect(html).toContain("この機能を取り上げる理由");
+      expect(html).toContain("リンク先で確認できること");
+      expect(html).toContain("処理の流れ");
+      expect(html).toContain("<table");
       expect(html).not.toContain('id="scope"');
     }
   });
