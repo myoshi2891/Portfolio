@@ -1,3 +1,5 @@
+import { DetailContents } from "../../../components/projects/detail-contents";
+import { ScreenPreview } from "../../../components/projects/screen-preview";
 import { FeatureStory } from "../../../components/projects/feature-story";
 import { notFound } from "next/navigation";
 import { featuredProjects, getFeatured, portfolio } from "../../../lib/portfolio";
@@ -35,20 +37,16 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const audit = evidenceIds.map(id => portfolio.evidence[id]).find(e => e?.sourceType === "REPOSITORY_VERIFIED");
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   return <main id="main" tabIndex={-1} className="container detail-page">
-    <a className="text-link" href={`/#${homeAnchor(project)}`}>← 代表的な制作へ戻る</a>
+    <nav className="breadcrumbs" aria-label="パンくず"><a href="/">Home</a><span aria-hidden="true">/</span><a href={`/#${homeAnchor(project)}`}>代表的な制作</a><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
       <p className="eyebrow">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
       <ActionLink primary href={project.githubUrl}>GitHubでコードを見る</ActionLink>
     </header>
+    <ScreenPreview id={project.id} priority />
     <div className="detail-grid">
-      <nav className="detail-contents" aria-label="このページの内容"><h2>このページの内容</h2><ul>
-        <li><a href="#overview"><span aria-hidden="true">00</span>概要</a></li>
-        {detail.scope && <li><a href="#scope">制作背景・担当範囲</a></li>}
-        {sections.map(([id], i) => <li key={id}><a href={`#${id}`}><span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>{sectionNames[id]}</a></li>)}
-        <li><a href="#evidence"><span aria-hidden="true">05</span>参照コード</a></li>
-      </ul></nav>
+      <DetailContents sections={[{ id: "overview", label: "概要" }, ...(detail.scope ? [{ id: "scope", label: "制作背景・担当範囲" }] : []), ...sections.map(([id]) => ({ id, label: sectionNames[id] })), { id: "evidence", label: "参照コード" }]} />
       <div className="detail-body">
         {detail.scope && <section id="scope"><h2>制作背景・担当範囲</h2>{detail.scope.map(c => <div key={c.text}><p>{c.text}</p><EvidenceLinks ids={c.evidenceIds} /></div>)}</section>}
         {sections.map(([id, section]) => <section key={id} id={id}><h2>{sectionNames[id]}</h2>
@@ -64,6 +62,6 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
         </section>
       </div>
     </div>
-    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><h2>{next.title}</h2><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink><a className="text-link" href="/#contact">GitHubプロフィールへ</a></nav>
+    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink><a className="text-link" href="/#contact">GitHubプロフィールへ</a></nav>
   </main>;
 }

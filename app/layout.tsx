@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Navigation, Footer } from "../components/layout/chrome";
 import "./globals.css";
-import "./design.css";
 import "./fonts.css";
 import { site } from "../data/site";
 import { pageMetadata } from "../lib/metadata";

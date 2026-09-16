@@ -17,6 +17,7 @@ export function NavigationController() {
     history.scrollRestoration = "manual";
     let entryId = crypto.randomUUID() as string;
     let restoring = false;
+    let moving = false;
     let generation = 0;
     let active = true;
     let scrollTimer: ReturnType<typeof setTimeout> | undefined;
@@ -43,7 +44,11 @@ export function NavigationController() {
       try { history.replaceState(withNavigationState(history.state, state), ""); } catch { /* Native navigation still works if history writes are denied. */ }
       try { writeBackup(sessionStorage, state, allowed); } catch { /* Access can throw. */ }
     }
-    function afterLayout(move: () => void) {
+    function afterLayout(action: () => void) {
+      function move() {
+        moving = true;
+        try { action(); } finally { moving = false; }
+      }
       restoring = true;
       const revision = userRevision;
       const current = ++generation;
@@ -129,9 +134,14 @@ export function NavigationController() {
       scrollTimer = setTimeout(() => { scrollTimer = undefined; save(); }, 150);
     }
     function interact() { userRevision++; }
+    function focusin() {
+      // A later focus choice cancels every outstanding layout/font correction.
+      if (!moving) userRevision++;
+      save();
+    }
     document.addEventListener("click", click);
     document.addEventListener("toggle", save, true);
-    document.addEventListener("focusin", save);
+    document.addEventListener("focusin", focusin);
     window.addEventListener("scroll", scroll, { passive: true });
     window.addEventListener("popstate", pop);
     window.addEventListener("pagehide", save);
@@ -149,7 +159,7 @@ export function NavigationController() {
       history.scrollRestoration = oldRestoration;
       document.removeEventListener("click", click);
       document.removeEventListener("toggle", save, true);
-      document.removeEventListener("focusin", save);
+      document.removeEventListener("focusin", focusin);
       window.removeEventListener("scroll", scroll);
       window.removeEventListener("popstate", pop);
       window.removeEventListener("pagehide", save);
