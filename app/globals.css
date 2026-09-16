@@ -20,6 +20,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: auto; }
+html:has(.detail-page) { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-inter), "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.9; overflow-wrap: anywhere; }
 h1, h2, h3, p, ul { margin: 0; }
 h1, h2, h3 { font-weight: 600; line-height: 1.5; text-wrap: pretty; }

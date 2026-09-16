@@ -46,7 +46,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       {demoUrls[project.id] && <ActionLink primary href={demoUrls[project.id]!}>公開サイトを試す</ActionLink>}
       <ActionLink primary={!demoUrls[project.id]} href={project.githubUrl}>GitHubでコードを見る</ActionLink>
     </header>
-    <ScreenPreview id={project.id} priority />
+    <ScreenPreview id={project.id} priority sizes="(min-width: 1336px) 1240px, 100vw" />
     <div className="detail-grid">
       <DetailContents sections={[{ id: "overview", label: "概要" }, ...(detail.scope ? [{ id: "scope", label: "制作背景・担当範囲" }] : []), ...sections.map(([id]) => ({ id, label: sectionNames[id] })), { id: "evidence", label: "参照コード" }]} />
       <div className="detail-body">

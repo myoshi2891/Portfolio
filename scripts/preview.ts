@@ -6,7 +6,7 @@ const root = resolve("out");
 const types: Record<string, string> = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
   ".json": "application/json", ".txt": "text/plain; charset=utf-8", ".xml": "application/xml",
-  ".woff2": "font/woff2", ".png": "image/png", ".svg": "image/svg+xml", ".ico": "image/x-icon",
+  ".woff2": "font/woff2", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon",
 };
 await stat(resolve(root, "index.html"));
 createServer(async (request, response) => {

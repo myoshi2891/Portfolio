@@ -9,13 +9,15 @@
     "bun": "1.3.12"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "bun run fonts:generate && next dev",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "build": "bun scripts/validate-content.ts && next build",
+    "build": "bun scripts/validate-content.ts && bun run fonts:generate && next build",
     "preview": "bun scripts/preview.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "fonts:generate": "bun scripts/prepare-fonts.ts",
+    "images:generate": "bun scripts/prepare-images.ts"
   },
   "dependencies": {
     "next": "16.3.5",
