@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Navigation, Footer } from "../components/layout/chrome";
 import "./globals.css";
+import "./design.css";
 import "./fonts.css";
 import { site } from "../data/site";
 import { pageMetadata } from "../lib/metadata";
@@ -32,5 +33,5 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content="myoshi2891 Engineering Portfolio" />
     </>}
-  </head><body><Navigation />{children}<Footer /></body></html>;
+  </head><body><div className="page-entry-line" aria-hidden="true" /><Navigation />{children}<Footer /></body></html>;
 }

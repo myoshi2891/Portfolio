@@ -1,3 +1,4 @@
+import { FeatureStory } from "../../../components/projects/feature-story";
 import { notFound } from "next/navigation";
 import { featuredProjects, getFeatured, portfolio } from "../../../lib/portfolio";
 import { homeAnchor, projectPath } from "../../../lib/routes";
@@ -43,15 +44,18 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
     </header>
     <div className="detail-grid">
       <nav className="detail-contents" aria-label="このページの内容"><h2>このページの内容</h2><ul>
-        <li><a href="#overview">概要</a></li>
+        <li><a href="#overview"><span aria-hidden="true">00</span>概要</a></li>
         {detail.scope && <li><a href="#scope">制作背景・担当範囲</a></li>}
-        {sections.map(([id]) => <li key={id}><a href={`#${id}`}>{sectionNames[id]}</a></li>)}
-        <li><a href="#evidence">参照コード</a></li>
+        {sections.map(([id], i) => <li key={id}><a href={`#${id}`}><span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>{sectionNames[id]}</a></li>)}
+        <li><a href="#evidence"><span aria-hidden="true">05</span>参照コード</a></li>
       </ul></nav>
       <div className="detail-body">
         {detail.scope && <section id="scope"><h2>制作背景・担当範囲</h2>{detail.scope.map(c => <div key={c.text}><p>{c.text}</p><EvidenceLinks ids={c.evidenceIds} /></div>)}</section>}
         {sections.map(([id, section]) => <section key={id} id={id}><h2>{sectionNames[id]}</h2>
-          {section.claims.map(c => <div className="claim" key={c.text}><p>{c.text}</p><EvidenceLinks ids={c.evidenceIds} /></div>)}
+          {id === "features" && <p className="section-intro feature-intro">操作の入口からデータの処理まで。取り上げる理由と、コードを読むポイントを機能ごとにまとめました。</p>}
+          {section.claims.map((c, index) => id === "features"
+            ? <FeatureStory key={c.text} claim={c} index={index} />
+            : <div className="claim" key={c.text}><p>{c.text}</p><EvidenceLinks ids={c.evidenceIds} /></div>)}
           {section.limitationIds.map(id => <p className="limitation" key={id}>{portfolio.limitations[id]?.text}</p>)}
         </section>)}
         <section id="evidence"><h2>参照コード</h2>

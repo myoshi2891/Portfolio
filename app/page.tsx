@@ -1,3 +1,4 @@
+import { EngineeringScene } from "../components/home/engineering-scene";
 import { site } from "../data/site";
 import { domains } from "../data/domains";
 import { studies } from "../data/studies";
@@ -13,7 +14,19 @@ export function generateMetadata() { return pageMetadata("/", site.title, site.d
 export default function Home() {
   return <main id="main" tabIndex={-1} className="container">
     <NavigationController />
-    <section className="hero" aria-labelledby="top"><p className="eyebrow hero-eyebrow"><span className="blue-dot" />Engineering Portfolio</p><h1 id="top" tabIndex={-1}>{site.hero}</h1><p className="hero-lead">{site.description}</p><div className="hero-actions"><ActionLink primary href="/#selected-work">制作を見る</ActionLink><a href={site.githubUrl} className="text-link">GitHubを見る <span aria-hidden="true">↗</span></a></div><div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><a href="#selected-work" aria-label="代表的な制作へ">Selected Work <span aria-hidden="true">↓</span></a></div></section>
+    <section className="hero" aria-labelledby="top">
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <p className="eyebrow hero-eyebrow"><span className="blue-dot" />Engineering Portfolio <span className="edition">/ 2026</span></p>
+          <h1 id="top" tabIndex={-1} aria-label={site.hero}>学びを、<br /><span>仕組みにする。</span></h1>
+          <p className="hero-lead">{site.description}</p>
+          <div className="hero-actions"><ActionLink primary href="/#selected-work">制作を見る</ActionLink><ActionLink href={site.githubUrl}>GitHubを見る</ActionLink></div>
+          <div className="hero-index"><span><strong>04</strong> Featured projects</span><span><strong>06</strong> Learning collections</span></div>
+        </div>
+        <EngineeringScene />
+      </div>
+      <div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><a href="#selected-work" aria-label="代表的な制作へ">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a></div>
+    </section>
     <section id="selected-work" className="section" aria-label="代表的な制作"><SectionHeader number="01" english="Selected Work" title="代表的な制作" intro="用途と実装の異なる4つの制作を、コードと構成から紹介します。" /><div>{featuredProjects.map(p => <ProjectCard key={p.id} project={p} />)}</div></section>
     <section id="domains" className="section" aria-label="制作と学習の領域"><SectionHeader number="02" english="Engineering Domains" title="制作と学習の領域" intro="アプリを作ること、領域を学ぶこと、設計と品質を考えること。" /><div className="domain-grid">{domains.map(d => <article className="domain-card" key={d.title}><p className="domain-label">{d.title}</p><p className="domain-english">{d.english}</p><h3>{d.subtitle}</h3><p>{d.description}</p><ul>{d.links.map(l => <li key={l.anchor}><a className="text-link" href={`/#${l.anchor}`}>{l.label} <span aria-hidden="true">↗</span></a></li>)}</ul></article>)}</div></section>
     <section id="studies" className="section" aria-label="学習と技術資料"><SectionHeader number="03" english="Selected Studies" title="学習と技術資料" intro="設計・品質・セキュリティを中心に、学習テーマと資料をまとめています。" /><div className="study-grid">{studies.slice(0, 3).map(s => <StudyCard key={s.id} study={s} />)}</div><details id="more-studies" className="more-studies"><summary id="more-studies-toggle"><span className="when-closed">すべての学習を見る（残り3件）</span><span className="when-open">追加の3件を閉じる</span></summary><div className="study-grid">{studies.slice(3).map(s => <StudyCard key={s.id} study={s} />)}</div></details></section>
