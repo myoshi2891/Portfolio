@@ -27,9 +27,10 @@ test("all content is accessible without JavaScript", async ({ browser }) => {
   await context.close();
 });
 
-test("keyboard skip link and disclosure retain a visible focus", async ({ page }) => {
+test("keyboard skip link and disclosure retain a visible focus", async ({ page, browserName }) => {
   await page.goto("/");
-  await page.keyboard.press("Tab");
+  // macOS WebKit uses Option-Tab to include links in keyboard navigation.
+  await page.keyboard.press(browserName === "webkit" && process.platform === "darwin" ? "Alt+Tab" : "Tab");
   await expect(page.getByRole("link", { name: "本文へ移動" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator("main")).toBeFocused();
