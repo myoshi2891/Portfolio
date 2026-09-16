@@ -38,6 +38,7 @@ test("anchor history restores closed state, scroll and focus independently of th
   // Synthetic activation avoids Playwright scrolling the departing link into view.
   await page.locator('a[href="/#work-r01"]').evaluate((el: HTMLAnchorElement) => el.click());
   await expect(page.locator("#work-r01")).toBeFocused();
+  expect(await page.evaluate(() => history.state.portfolioNavigation.focusId)).toBe("work-r01");
   await page.goBack();
   await expect(page).toHaveURL(/#study-r10$/);
   await expect(page.locator("#more-studies")).not.toHaveAttribute("open", "");
