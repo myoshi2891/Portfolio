@@ -65,7 +65,7 @@ export function NavigationController() {
         });
       });
       void document.fonts.ready.then(() => {
-        if (active && current === generation && revision === userRevision) { move(); if (!restoring) save(); }
+        if (active && current === generation && revision === userRevision) { restoring = true; move(); restoring = false; save(); }
       });
     }
     function restore(state: NavigationState) {

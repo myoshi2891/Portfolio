@@ -88,7 +88,7 @@ a:hover { color: var(--color-accent-hover); }
 .section-header > .eyebrow > span { display: inline-grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--color-line); border-radius: 8px; }
 .section-header h2 { margin-top: .75rem; }
 .section-intro { max-width: 42rem; margin-top: 1rem; color: var(--color-muted); font-size: .95rem; }
-.project-row, .secondary-row { display: grid; gap: 1.5rem; padding: 1.5rem; border: 1px solid var(--color-line); border-radius: 16px; margin-bottom: 1.25rem; background: var(--color-surface); }
+.project-row, .secondary-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem; border: 1px solid var(--color-line); border-radius: 16px; margin-bottom: 1.25rem; background: var(--color-surface); }
 .project-number { color: var(--color-accent); font-size: 1.25rem; line-height: 1.5; }
 .project-copy { min-width: 0; }
 .project-copy h3 { margin-block: .5rem 1rem; }
@@ -98,7 +98,7 @@ a:hover { color: var(--color-accent-hover); }
 .project-copy > .screen-preview { margin-bottom: 1.5rem; }
 .badges { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin-block: 1.25rem; }
 .badges li { padding: .2rem .65rem; border: 1px solid var(--color-line); background: var(--color-surface-subtle); color: var(--color-ink); font-size: .85rem; border-radius: 6px; }
-.project-aside { display: flex; flex-direction: column; align-items: flex-start; align-self: start; gap: .65rem; padding: 1.25rem; border-radius: 12px; background: var(--color-surface-subtle); }
+.project-aside { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; align-self: start; gap: .65rem; padding: 1.25rem; border-radius: 12px; background: var(--color-surface-subtle); }
 .highlight { font-size: .9rem; }
 .project-aside .action { margin-top: .5rem; width: 100%; }
 .domain-grid, .study-grid, .philosophy-grid { display: grid; gap: 1.25rem; }
@@ -256,6 +256,8 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .mobile-menu nav { position: absolute; z-index: 10; top: calc(100% + .5rem); inset-inline: 0; display: grid; padding: .75rem; border: 1px solid var(--color-line); border-radius: 12px; background: var(--color-surface); box-shadow: 0 12px 30px #0002; }
   .mobile-menu nav a { padding: .75rem; text-decoration: none; border-radius: 6px; }
   .mobile-menu nav a:hover { background: var(--color-surface-subtle); }
+  .project-row, .secondary-row, .project-aside, .study-card, .feature-story { padding: 16px; }
+  .action { padding: 12px; gap: .5rem; }
   .hero-eyebrow { font-size: .85rem; }
   .hero-preview { padding: .85rem; }
   .hero-foot { margin-top: 2rem; }
