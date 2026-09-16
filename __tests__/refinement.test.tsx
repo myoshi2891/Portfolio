@@ -16,7 +16,7 @@ it('adds breadcrumb context and a meaningful preview of the next project', async
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'multi-vendor-e-commerce' }) }));
   expect(html).toContain('aria-label="パンくず"');
   expect(html).toContain('aria-current="page"');
-  expect(html).toContain('料金ページ');
+  expect(html).toContain('Pythonによる料金データ');
 });
 it('provides a prominent home recovery action on the 404 page', () => {
   const html = renderToStaticMarkup(<NotFound />);

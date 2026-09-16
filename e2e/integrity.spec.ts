@@ -30,5 +30,5 @@ test("all internal links resolve and initial rendering requires no third-party r
   expect(externalRequests).toEqual([]); expect(errors).toEqual([]);
   const missing = await request.get("/projects/unknown/");
   expect(missing.status()).toBe(404);
-  expect(await missing.text()).toContain("Homeへ戻る");
+  expect(await missing.text()).toContain("トップページに戻る");
 });
