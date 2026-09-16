@@ -8,6 +8,8 @@ paths:
   - "__tests__/**/*.ts"
   - "__tests__/**/*.tsx"
   - ".claude/rules/**/*.md"
+  - "README.md"
+  - "prompt.md"
 ---
 
 # TDD & Step-by-Step Commit Workflow Rules
