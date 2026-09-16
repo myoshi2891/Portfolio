@@ -1,3 +1,5 @@
+> 2026-09-17更新: 現在のClient ComponentはHomeの履歴制御、モバイルメニュー、詳細目次。提供画像3件・公開URL7件と静的WebP配信を追加済み。実装の詳細は[デザイン更新記録](design-refresh.md)を優先してください。
+
 # PHASE 3 — Technical Architecture
 
 2026-09-16 Phase 4同期: 承認済みのBun構成へコマンドと依存管理を更新した。以下の設計時点の記述と、実装・検証結果は区別する。現在の実装結果は[Phase 4実装記録](phase-4-implementation.md)を参照。
