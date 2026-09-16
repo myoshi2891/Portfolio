@@ -5,9 +5,11 @@ import { featuredProjects, secondaryProjects } from "../lib/portfolio";
 import { ProjectCard } from "../components/projects/project-card";
 import { StudyCard } from "../components/studies/study-card";
 import { ActionLink, SectionHeader } from "../components/ui/primitives";
+import { NavigationController } from "../components/home/navigation-controller";
 
 export default function Home() {
   return <main id="main" tabIndex={-1} className="container">
+    <NavigationController />
     <section className="hero" aria-labelledby="top"><p className="eyebrow hero-eyebrow"><span className="blue-dot" />Engineering Portfolio</p><h1 id="top" tabIndex={-1}>{site.hero}</h1><p className="hero-lead">{site.description}</p><div className="hero-actions"><ActionLink primary href="/#selected-work">制作を見る</ActionLink><a href={site.githubUrl} className="text-link">GitHubを見る <span aria-hidden="true">↗</span></a></div><div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><a href="#selected-work" aria-label="代表的な制作へ">Selected Work <span aria-hidden="true">↓</span></a></div></section>
     <section id="selected-work" className="section" aria-label="代表的な制作"><SectionHeader number="01" english="Selected Work" title="代表的な制作" intro="用途と実装の異なる4つの制作を、コードと構成から紹介します。" /><div>{featuredProjects.map(p => <ProjectCard key={p.id} project={p} />)}</div></section>
     <section id="domains" className="section" aria-label="制作と学習の領域"><SectionHeader number="02" english="Engineering Domains" title="制作と学習の領域" intro="アプリを作ること、領域を学ぶこと、設計と品質を考えること。" /><div className="domain-grid">{domains.map(d => <article className="domain-card" key={d.title}><p className="domain-label">{d.title}</p><p className="domain-english">{d.english}</p><h3>{d.subtitle}</h3><p>{d.description}</p><ul>{d.links.map(l => <li key={l.anchor}><a className="text-link" href={`/#${l.anchor}`}>{l.label} <span aria-hidden="true">↗</span></a></li>)}</ul></article>)}</div></section>
