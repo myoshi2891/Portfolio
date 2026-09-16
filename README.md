@@ -74,7 +74,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→型・Lint・単体→build→静的出力E2Eを実行します。ローカルで単体20件・E2E 46件成功。Chromium専用BFCache検証のFirefox・WebKitでの2件は対象外です。GitHub Actions上の実行結果はまだありません。
+[CI設定](.github/workflows/ci.yml)は依存導入→型・Lint・単体→build→静的出力E2Eを実行します。2026-09-16 JSTの再検証で、型・Lint・build、単体20件・E2E 46件が成功しました。Chromium専用BFCache検証のFirefox・WebKitでの2件は対象外です。修正したFirefoxのテスト待機と公開設定の検証結果は[実装記録](docs/phase-4-implementation.md)を参照してください。GitHub Actions上の実行結果はまだありません。
 
 Phase 5では総合的な視覚・UX評価、支援技術、実ブラウザでの追加確認、LCP・CLS・JS／フォント配信量などを測定します。今回の検証結果は、紹介対象13リポジトリのテスト成功や性能を意味しません。
 
