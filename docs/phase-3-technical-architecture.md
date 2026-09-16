@@ -1,5 +1,7 @@
 # PHASE 3 — Technical Architecture
 
+2026-09-16 Phase 4同期: 承認済みのBun構成へコマンドと依存管理を更新した。以下の設計時点の記述と、実装・検証結果は区別する。現在の実装結果は[Phase 4実装記録](phase-4-implementation.md)を参照。
+
 ## 0. 結論・対象・開始条件
 
 **Next.js App Router・TypeScript・Tailwind CSSで、HomeとFeatured詳細4ページを静的生成する。掲載内容は手動編集するTypeScriptデータを正とし、GitHub APIを表示やビルドの必須条件にしない。** JavaScriptは学習一覧のアンカー移動と閲覧状態の復元に絞る。初期版ではshadcn/uiを導入せず、Phase 2で必要としたリンク・ラベル・開閉を小さな共通部品で実装する。
@@ -18,7 +20,7 @@
 | TypeScript | 採用。`strict`、`noUncheckedIndexedAccess`、`exactOptionalPropertyTypes` | 公開データの必須項目・種別・証拠参照の誤りを編集時に検出する |
 | Tailwind CSS | v4系を採用候補としPhase 4で互換性を確定 | Phase 2のトークンとレスポンシブ配置を共通化する。CSSの`@theme`に色・書体・寸法を対応付ける |
 | shadcn/ui | 初期版は不採用 | Phase 2にDialog・Drawer・複雑なフォームがない。既定の見た目と依存を追加する必要がなく、ネイティブHTMLで必要な操作を表現できる |
-| Node.js / npm | ビルド・開発用に採用 | Phase 4でNext.jsの対応範囲内のLTS版を選び、ローカルとCIでそろえる。`package-lock.json`を管理し、CIは`npm ci`を使う |
+| Bun / Node.js | Bun 1.3.12・Node.js 22.23.2 | Bunで依存管理・スクリプト実行、Node.jsはツール実行用。`bun.lock`を管理し、CIは`bun install --frozen-lockfile`を使う |
 | CMS / MDX / DB | 初期版は不採用 | 編集対象は13件と4詳細。構造化された静的データと共通記事テンプレートで足りる |
 | 状態管理・取得ライブラリ | 初期版は不採用 | 検索・フィルタ・ログインがなく、開閉と閲覧状態だけをローカルに扱う |
 | Zod | 初期版は不採用 | 静的データは型検査、任意の外部JSONは小さな型ガードで必要項目だけ検証する |
@@ -413,7 +415,7 @@ docs/
 next.config.ts
 tsconfig.json
 package.json
-package-lock.json
+bun.lock
 ```
 
 型定義はデータをruntime importしない。データ → 純粋な取得・変換 → ページの一方向を保ち、コンポーネントからデータを書き換えない。Optional Enrichmentのスクリプト・snapshotは導入を決めた時点でだけ追加する。
@@ -432,19 +434,19 @@ Phase 4開始後に依存・実行基盤を確定し、次のまとまりで実�
 
 ### 10.2 計画するコマンドと検証範囲
 
-現在は`package.json`がないため以下は未作成。Phase 4でセットアップ手順とともにREADMEへ記載する。
+以下はPhase 4で実装済みのコマンド。セットアップは[README](../README.md)に記載する。テストはVitestを使い、Bun組み込みの`bun test`は使わない。
 
 | 計画コマンド | 内容 |
 |---|---|
-| `npm run dev` | 開発サーバー |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint CLI。buildと分けて実行 |
-| `npm test` | Vitestによるデータ整合性・閲覧状態の境界検査 |
-| `npm run build` | データ整合性検査に成功してから`next build`、`out/`生成 |
-| `npm run preview` | `out/`を配信。`next start`をstatic exportの確認に使わない |
-| `npm run test:e2e` | 静的出力に対するPlaywright。開発サーバーだけで合否判定しない |
+| `bun run dev` | 開発サーバー |
+| `bun run typecheck` | `next typegen && tsc --noEmit` |
+| `bun run lint` | ESLint CLI。buildと分けて実行 |
+| `bun run test` | Vitestによるデータ整合性・閲覧状態の境界検査 |
+| `bun run build` | データ整合性検査に成功してから`next build`、`out/`生成 |
+| `bun run preview` | `out/`を配信。`next start`をstatic exportの確認に使わない |
+| `bun run test:e2e` | 静的出力に対するPlaywright。開発サーバーだけで合否判定しない |
 
-CIは`npm ci` → 型・lint・単体検査 → build → 静的出力E2Eを基本とする。GitHub補足の更新はこの必須経路に含めない。初期版のビルドは依存導入後、ローカル資産と編集データだけで成立させる。
+CIは`bun install --frozen-lockfile` → 型・lint・単体検査 → build → 静的出力E2Eを基本とする。GitHub補足の更新はこの必須経路に含めない。初期版のビルドは依存導入後、ローカル資産と編集データだけで成立させる。
 
 ### 10.3 振る舞いの受け入れ条件
 
@@ -473,7 +475,7 @@ CIは`npm ci` → 型・lint・単体検査 → build → 静的出力E2Eを基�
 - [x] Server／Client境界、開閉・履歴復元、フォント配信、SEO・配信条件を具体化した。
 - [x] Phase 4の実装順・検証範囲・未決事項を整理した。
 
-未決事項は、依存の正確なバージョン、フォント資産の取得・容量確認、実際のホストと公開URL。表示名・連絡先等の未提供情報はPhase 2の省略・暫定表示で実装を進められる。公開先が未定でもローカル・previewの実装は進められる。
+設計時点の未決事項は依存バージョン・フォント・公開先だった。Phase 4で依存を`bun.lock`へ固定し、フォントをライセンス付きで配置した。残る未決事項は実際のホストと公開URL、およびPhase 5の性能測定。表示名・連絡先等の未提供情報はPhase 2の省略・暫定表示で実装を進められる。公開先が未定でもローカル・previewの実装は進められる。
 
 本Phaseは設計文書の作成と整合性確認であり、アプリの型検査・build・テストやブラウザ検証を実施したことを意味しない。
 
