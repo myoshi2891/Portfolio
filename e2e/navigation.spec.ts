@@ -1,7 +1,11 @@
 import { chromium, expect, test, type Page } from "@playwright/test";
 
 async function ready(page: Page) {
-  await expect.poll(() => page.evaluate(() => Boolean(history.state?.portfolioNavigation))).toBe(true);
+  // Firefox can replace the execution context while a history traversal settles.
+  // Retry the read as well as the assertion, with a bounded readiness deadline.
+  await expect(async () => {
+    expect(await page.evaluate(() => Boolean(history.state?.portfolioNavigation))).toBe(true);
+  }).toPass({ timeout: 5000 });
 }
 
 test("shared hidden anchors open without stealing focus; same hash can be selected again", async ({ page }) => {
