@@ -1,3 +1,4 @@
+import { demoUrls } from "../../../data/presentation";
 import { DetailContents } from "../../../components/projects/detail-contents";
 import { ScreenPreview } from "../../../components/projects/screen-preview";
 import { FeatureStory } from "../../../components/projects/feature-story";
@@ -42,7 +43,8 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <p className="eyebrow">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
-      <ActionLink primary href={project.githubUrl}>GitHubでコードを見る</ActionLink>
+      {demoUrls[project.id] && <ActionLink primary href={demoUrls[project.id]!}>公開サイトを試す</ActionLink>}
+      <ActionLink primary={!demoUrls[project.id]} href={project.githubUrl}>GitHubでコードを見る</ActionLink>
     </header>
     <ScreenPreview id={project.id} priority />
     <div className="detail-grid">
