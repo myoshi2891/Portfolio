@@ -23,3 +23,13 @@ it('provides a prominent home recovery action on the 404 page', () => {
   expect(html).toMatch(/class="[^"]*action-primary/);
   expect(html).toContain('トップページに戻る');
 });
+
+it('places additional captures on the matching featured, study and secondary entries', async () => {
+  const html = renderToStaticMarkup(<Home />);
+  for (const [id, file] of [['R03', 'The%20Wild%20Oasis.png'], ['R05', 'Next-Store.png'], ['R09', 'Management%20Studies.png'], ['R12', 'Medical%20Studies.png']]) {
+    const article = html.split(`data-repository="${id}"`)[1]?.split('</article>')[0];
+    expect(article?.includes(file!), id).toBe(true);
+  }
+  const medical = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'medical-studies' }) }));
+  expect(medical.includes('Medical%20Studies.png')).toBe(true);
+});
