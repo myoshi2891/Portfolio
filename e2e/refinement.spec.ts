@@ -44,3 +44,15 @@ test("mobile menu and reading cards remain usable in both color schemes", async 
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   }
 });
+
+test('screen previews decode and use responsive local images', async ({ page }) => {
+  await page.goto('/');
+  const image = page.locator('.hero-preview img');
+  await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  expect(await image.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\/images\/optimized\/r06-\d+\.webp$/);
+  await page.locator('#more-studies-toggle').click();
+  for (const preview of await page.locator('.screen-preview img').all()) {
+    await preview.scrollIntoViewIfNeeded();
+    await expect.poll(() => preview.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  }
+});
