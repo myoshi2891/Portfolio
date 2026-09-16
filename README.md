@@ -4,6 +4,8 @@ myoshi2891の制作・学習を紹介する日本語ポートフォリオ。Next
 
 Phase 4の実装・ローカル検証は完了。[実装記録](docs/phase-4-implementation.md)に結果と未検証範囲を記載しています。公開先の選定・デプロイとPhase 5の総合品質・性能監査は別作業です。
 
+デザイン改善として、読み込み時の演出、CSSによる立体アニメーション、カード・ボタンの刷新、主な機能の説明・フロー図・参照コードの表を追加しています。[更新内容と編集方法](docs/design-refresh.md)を参照してください。
+
 ## ローカル起動
 
 Bun **1.3.12**とNode.js **22.23.2**を使用します（`.bun-version`、`.node-version`、`package.json`）。
@@ -64,6 +66,9 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 - `data/`: 掲載順・文案・証拠・未検証範囲。Featured 4件、Studies 6件、Secondary 3件。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
 - `components/home/navigation-controller.tsx`: Homeの開閉・アンカー・履歴復元を担当するClient Component。
+- `components/home/engineering-scene.tsx`: CSSの立体演出と再生ボタン。動きを減らす設定に対応。
+- `data/feature-guides.ts`・`components/projects/feature-story.tsx`: 機能を紹介する理由、処理の流れ、各参照コードの説明。
+- `app/design.css`: 配色、立体演出、カード、ボタン、図表とレスポンシブ表示の更新。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
