@@ -35,7 +35,7 @@ describe("page metadata and discovery", () => {
   it("uses each page's editorial title, description, canonical and OG metadata", async () => {
     vi.stubEnv("SITE_URL", "https://example.com"); vi.stubEnv("DEPLOYMENT_ENV", "production");
     const meta = await generateMetadata({ params: Promise.resolve({ slug: "comparison-of-llms" }) });
-    expect(meta.title).toContain("API");
+    expect(meta.title).toContain("LLM料金の収集と費用計算");
     expect(meta.title).toContain(site.name);
     expect(meta.description).toContain("料金");
     expect(meta.alternates).toEqual({ canonical: "https://example.com/projects/comparison-of-llms/" });

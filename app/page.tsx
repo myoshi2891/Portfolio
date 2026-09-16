@@ -6,6 +6,9 @@ import { ProjectCard } from "../components/projects/project-card";
 import { StudyCard } from "../components/studies/study-card";
 import { ActionLink, SectionHeader } from "../components/ui/primitives";
 import { NavigationController } from "../components/home/navigation-controller";
+import { pageMetadata } from "../lib/metadata";
+
+export function generateMetadata() { return pageMetadata("/", site.title, site.description); }
 
 export default function Home() {
   return <main id="main" tabIndex={-1} className="container">

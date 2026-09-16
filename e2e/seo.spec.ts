@@ -13,5 +13,5 @@ test("preview HTML carries metadata and local OG assets without an invented cano
   expect(await robots.text()).not.toContain("Sitemap:");
   expect(await (await request.get("/sitemap.xml")).text()).not.toContain("<loc>");
   await page.goto("/projects/comparison-of-llms/");
-  await expect(page).toHaveTitle(/API.*myoshi2891/);
+  await expect(page).toHaveTitle("LLM料金の収集と費用計算 — myoshi2891");
 });

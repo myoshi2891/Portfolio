@@ -3,10 +3,18 @@ import { featuredProjects, getFeatured, portfolio } from "../../../lib/portfolio
 import { homeAnchor, projectPath } from "../../../lib/routes";
 import { ActionLink, EvidenceLinks } from "../../../components/ui/primitives";
 import type { DetailSectionId } from "../../../types/portfolio";
+import { pageMetadata } from "../../../lib/metadata";
+import { site } from "../../../data/site";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
   return featuredProjects.map(({ slug }) => ({ slug }));
+}
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = getFeatured(slug);
+  if (!project) notFound();
+  return pageMetadata(projectPath(slug), `${project.title} — ${site.name}`, project.description.text);
 }
 const sectionNames: Record<DetailSectionId, string> = {
   features: "主な機能", architecture: "アーキテクチャ", decisions: "構成と制約", quality: "品質と未検証の範囲",
