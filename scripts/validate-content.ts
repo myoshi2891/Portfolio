@@ -1,6 +1,9 @@
 import { portfolio } from "../lib/portfolio";
 import { validateContent } from "../lib/validate-content";
-const errors = validateContent(portfolio);
+import { validateHomeContent } from "../lib/validate-home-content";
+import { site } from "../data/site";
+import { domains } from "../data/domains";
+const errors = [...validateContent(portfolio), ...validateHomeContent(portfolio, site, domains)];
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
