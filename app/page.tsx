@@ -1,5 +1,4 @@
 import { SiteLink } from "../components/ui/site-link";
-import { ScreenPreview } from "../components/projects/screen-preview";
 import { site } from "../data/site";
 import { domains } from "../data/domains";
 import { studies } from "../data/studies";
@@ -23,7 +22,7 @@ export default function Home() {
           <div className="hero-actions"><ActionLink primary href="/#selected-work">制作を見る</ActionLink><ActionLink href={site.githubUrl}>GitHubを見る</ActionLink></div>
           <div className="hero-index"><span><strong>04</strong> <SiteLink href="/#work-r01">Featured projects</SiteLink></span><span><strong>06</strong> Learning collections</span></div>
         </div>
-        <div className="hero-showcase"><HeroScene><ScreenPreview id="R06" priority /></HeroScene><SiteLink className="text-link hero-project-link" href="/projects/comparison-of-llms/">LLMの費用計算、その仕組みを見る <span aria-hidden="true">→</span></SiteLink></div>
+        <div className="hero-showcase"><HeroScene /><SiteLink className="text-link hero-project-link" href="/#domains">制作と学習の全体を見る <span aria-hidden="true">→</span></SiteLink></div>
       </div>
       <div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><SiteLink href="#selected-work" aria-label="代表的な制作へ">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></SiteLink></div>
     </section>
