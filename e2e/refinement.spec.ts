@@ -48,6 +48,7 @@ test("mobile menu and reading cards remain usable in both color schemes", async 
 test('screen previews decode and use responsive local images', async ({ page }) => {
   await page.goto('/');
   const image = page.locator('[data-repository="R06"] .screen-preview img').first();
+  await image.scrollIntoViewIfNeeded();
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   expect(await image.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\/images\/optimized\/r06-\d+\.webp$/);
   await page.locator('#more-studies-toggle').click();
