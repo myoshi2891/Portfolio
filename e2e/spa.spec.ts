@@ -65,18 +65,17 @@ test('home anchor moves through intermediate positions and reduced motion is imm
   expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollBehavior)).toBe('auto');
 });
 
-test('hero has a pausable 3D animation and a static reduced-motion preview', async ({ page }) => {
+test('hero visualizes the portfolio as an automatic 3D system with a static reduced-motion state', async ({ page }) => {
   await page.goto('/');
   const scene = page.locator('.hero-scene');
-  const plane = scene.locator('.hero-scene-plane');
-  await expect(plane).toBeVisible();
-  await expect.poll(() => plane.evaluate(el => el.getAnimations().some(a => a.playState === 'running'))).toBe(true);
-  expect(await plane.evaluate(el => getComputedStyle(el).transform)).toMatch(/^matrix3d/);
-  const pause = page.getByRole('button', { name: '3Dアニメーションを停止' });
-  await pause.click();
-  await expect(pause).toHaveAttribute('aria-pressed', 'true');
-  expect(await plane.evaluate(el => el.getAnimations().every(a => a.playState === 'paused'))).toBe(true);
+  const world = scene.locator('.hero-scene-world');
+  await expect(world).toBeVisible();
+  await expect.poll(() => world.evaluate(el => el.getAnimations().some(a => a.playState === 'running'))).toBe(true);
+  expect(await world.evaluate(el => getComputedStyle(el).transform)).toMatch(/^matrix3d/);
+  await expect(scene.getByRole('button')).toHaveCount(0);
+  await expect(scene.locator('img')).toHaveCount(0);
+  for (const label of ['BUILD', 'STUDY', 'ENGINEER', 'IMPROVE']) await expect(scene.getByText(label, { exact: true })).toBeVisible();
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  expect(await plane.evaluate(el => el.getAnimations().length)).toBe(0);
-  await expect(scene.locator('img')).toBeVisible();
+  expect(await world.evaluate(el => el.getAnimations().length)).toBe(0);
+  await expect(scene).toBeVisible();
 });
