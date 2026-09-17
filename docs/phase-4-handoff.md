@@ -4,7 +4,7 @@
 
 ## 現在地
 
-**提供画像7枚をすべて反映。今回依頼されたアプリ内遷移とスクロール、3Dヒーローの改善は完了。** 未提供の素材・プロフィール情報と、本番公開に関する作業を以下に整理する。
+**`data/screens.ts`で追跡する画像資産12枚（R02〜R13）をすべて反映。`data/presentation.ts`の公開デモURLは7件。今回依頼されたアプリ内遷移とスクロール、3Dヒーローの改善は完了。** 未提供の素材・プロフィール情報と、本番公開に関する作業を以下に整理する。
 
 - ブランチ: `dev`。ローカルコミット済み。push・デプロイは未実施。
 - 画像反映: `0920fa3`。旧Redテスト`c7046c0`は成功へ移行。
@@ -18,17 +18,22 @@
 
 ### 画像
 
-`data/screens.ts`へ画像・代替文・タイトル・出力幅を共通化し、表示コンポーネントと生成スクリプトの対応表重複を解消。原本は維持し、全7枚に640／1280／1854pxのWebPを生成した。
+`data/screens.ts`へ画像・代替文・タイトル・出力幅を共通化し、表示コンポーネントと生成スクリプトの対応表重複を解消。原本は維持し、追跡対象の全12枚（R02〜R13）に640／1280／1854pxのWebPを生成した。
 
 | 原本 | 対応 | 表示先 |
 |---|---|---|
+| `The Wild Oasis Admin.png` | R02 / The-Wild-Oasis-For-Admin | 代表作・詳細・次の制作 |
+| `The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | その他の制作カード |
+| `AirbnbCloneApp.png` | R04 / AirbnbCloneApp | その他の制作カード |
+| `Next-Store.png` | R05 / Next-Store | その他の制作カード |
 | `LLM Studies.png` | R06 / Comparison-of-LLMs | 代表作・詳細・次の制作 |
 | `QA_STUDIES.png` | R07 / Quality-Assurance-Studies | 学習カード |
-| `Cloud Infrastructure Studies.png` | R10 / Cloud-Infrastructure-and-Network-Studies | 追加学習カード |
-| `Medical Studies.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
+| `Software-Design-and-Architecture.png` | R08 / Software-Design-and-Architecture | 学習カード |
 | `Management Studies.png` | R09 / Management-Team-Building-Studies | 追加学習カード |
-| `Next-Store.png` | R05 / Next-Store | その他の制作カード |
-| `The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | その他の制作カード |
+| `Cloud Infrastructure Studies.png` | R10 / Cloud-Infrastructure-and-Network-Studies | 追加学習カード |
+| `Security Studies.png` | R11 / Security_Studies | 学習カード |
+| `Medical Studies.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
+| `Algorithm-DataStructures-Math-SQL.png` | R13 / Algorithm-DataStructures-Math-SQL | 追加学習カード |
 
 **Wild Oasisの画像・Vercel URLは宿泊者向けR03。管理者向けR02に流用しない。** LLM画像とR06の対応は所有者確認済み。
 
@@ -61,18 +66,18 @@
 | R01 | Multi-Vendor-E-Commerce | **未提供（優先）** | **未提供** |
 | R02 | The-Wild-Oasis-For-Admin | 掲載済み | **未提供** |
 | R03 | The-Wild-Oasis-For-User | 掲載済み | 掲載済み |
-| R04 | AirbnbCloneApp | **未提供** | **未提供** |
+| R04 | AirbnbCloneApp | 掲載済み | **未提供** |
 | R05 | Next-Store | 掲載済み | 掲載済み |
 | R06 | Comparison-of-LLMs | 掲載済み | 掲載済み |
 | R07 | Quality-Assurance-Studies | 掲載済み | 掲載済み |
-| R08 | Software-Design-and-Architecture | **未提供** | **未提供** |
+| R08 | Software-Design-and-Architecture | 掲載済み | **未提供** |
 | R09 | Management-Team-Building-Studies | 掲載済み | **未提供** |
 | R10 | Cloud-Infrastructure-and-Network-Studies | 掲載済み | 掲載済み |
-| R11 | Security_Studies | **未提供** | 掲載済み |
+| R11 | Security_Studies | 掲載済み | 掲載済み |
 | R12 | Medical-Studies | 掲載済み | **未提供** |
-| R13 | Algorithm-DataStructures-Math-SQL | **未提供** | 掲載済み |
+| R13 | Algorithm-DataStructures-Math-SQL | 掲載済み | 掲載済み |
 
-画像は代表作のR01・R02を優先し、主画面と代表操作の画面があるとよい。公開可能なデモがない場合はURL未掲載でよい。未提供のURL・画面を推測して補完しない。
+画像は代表作で唯一未提供のR01を優先し、主画面と代表操作の画面があるとよい。公開可能なデモがない場合はURL未掲載でよい。未提供のURL・画面を推測して補完しない。
 
 サイト全体で必要な情報:
 
