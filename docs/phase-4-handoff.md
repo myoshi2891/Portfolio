@@ -59,7 +59,7 @@
 | ID | 作品 | 画像 | 公開URL |
 |---|---|---|---|
 | R01 | Multi-Vendor-E-Commerce | **未提供（優先）** | **未提供** |
-| R02 | The-Wild-Oasis-For-Admin | **未提供（優先）** | **未提供** |
+| R02 | The-Wild-Oasis-For-Admin | 掲載済み | **未提供** |
 | R03 | The-Wild-Oasis-For-User | 掲載済み | 掲載済み |
 | R04 | AirbnbCloneApp | **未提供** | **未提供** |
 | R05 | Next-Store | 掲載済み | 掲載済み |
