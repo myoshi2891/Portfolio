@@ -14,7 +14,8 @@ test("all internal links resolve and initial rendering requires no third-party r
   const idsByPath = new Map<string, Set<string>>();
   const links: string[] = [];
   for (const path of paths) {
-    await page.goto(path);
+    const response = await page.goto(path);
+    expect(response?.ok(), path).toBe(true);
     await page.evaluate(() => document.fonts.ready);
     const ids = await page.locator("[id]").evaluateAll(nodes => nodes.map(n => n.id));
     expect(new Set(ids).size).toBe(ids.length);
