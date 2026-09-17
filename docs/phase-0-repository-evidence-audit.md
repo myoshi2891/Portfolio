@@ -215,7 +215,7 @@
 - **Verified Features**: 商品・お気に入り・レビュー・カート・注文、Stripe連携コード。 根拠: [R05-F01](#r05-f01)、[R05-F02](#r05-f02)。
 - **Verified Architecture**: Server Actions／Prisma PostgreSQL、Clerk、Supabase Storage。 根拠: [R05-A01](#r05-a01)。
 - **Verified Quality**: ESLint・strict設定。テスト実体は未確認。 根拠: [R05-Q01](#r05-q01)。テスト／設定の存在を確認。実行結果は未確認。
-- **Verified Deployment**:  根拠: [R05-D01](#r05-d01)。設定・記載を確認。本番稼働は未確認。
+- **Verified Deployment**: homepageフィールドへの公開URL記載。 根拠: [R05-D01](#r05-d01)。設定・記載を確認。本番稼働は未確認。
 
 #### Missing Information
 
@@ -223,7 +223,7 @@
 |---|---|---|---|---|---|---|---|
 | Next-Store | Tests / Test framework / CI / Formatting | **R05-M01** 全ツリーで*.test.*／*.spec.*、__tests__、tests、e2e、.github/workflows、Prettier／Biome設定を検索し、テスト実体・CI・専用formatterを確認できない。package.jsonにもtestスクリプトはない。QA計画書は実行テストとして数えない。 確認に必要な情報／扱い: 実行可能なテスト・CI・formatter設定。 | 監査範囲・取得結果 | [コミットの全ファイル一覧](https://github.com/myoshi2891/Next-Store/tree/9468f6811a339f27baba31155ad83c529cb8c7d9) | REPOSITORY_VERIFIED | NOT_FOUND | High |
 | Next-Store | Hosting | **R05-M02** READMEはVercel自動デプロイを説明するが、稼働を証明する設定・記録は未確認。 確認に必要な情報／扱い: Vercelプロジェクト設定・デプロイ記録。 | 監査範囲・取得結果 | [README.md:L344–L347](https://github.com/myoshi2891/Next-Store/blob/9468f6811a339f27baba31155ad83c529cb8c7d9/README.md#L344-L347) | UNVERIFIED | NOT_VERIFIED | Low |
-| Next-Store | Production URL / Runtime | **R05-M03** homepageが空で本番URLは未確定。稼働Node／Bunバージョンも未確認。 確認に必要な情報／扱い: 本番URL・ランタイム設定。 | 監査範囲・取得結果 | [コミットの全ファイル一覧](https://github.com/myoshi2891/Next-Store/tree/9468f6811a339f27baba31155ad83c529cb8c7d9) | UNVERIFIED | NOT_VERIFIED | Low |
+| Next-Store | Production URL / Runtime | **R05-M03** homepageに公開URLの記載を確認したが（[R05-D01](#r05-d01)）、稼働Node／Bunバージョンや対象SHAとの対応は未検証。 確認に必要な情報／扱い: ランタイムバージョン設定とデプロイ記録との対応確認。 | 監査範囲・取得結果 | [コミットの全ファイル一覧](https://github.com/myoshi2891/Next-Store/tree/9468f6811a339f27baba31155ad83c529cb8c7d9) | UNVERIFIED | NOT_VERIFIED | Low |
 | Next-Store | Tests / CI results / Coverage / Performance | **R05-M04** 本監査ではテスト・ビルド・CIを実行せず、対象SHAに対応した成功ログや実測coverage・性能値も取得していない。 確認に必要な情報／扱い: 対象SHA付きのテスト／CIログと測定条件・計測結果。 | 監査範囲・取得結果 | 本監査の実行範囲（§1） | UNVERIFIED | NOT_VERIFIED | Low |
 | Next-Store | Production operation / impact | **R05-M05** 公開URLの疎通・実デプロイとのSHA対応、利用者数、業務効果、チーム規模・担当範囲は未確認。 確認に必要な情報／扱い: デプロイ記録、測定根拠、ユーザーからの明示的な事実提供。 | 監査範囲・取得結果 | 本監査の実行範囲（§1） | UNVERIFIED | NOT_VERIFIED | Low |
 
