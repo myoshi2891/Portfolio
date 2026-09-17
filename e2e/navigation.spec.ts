@@ -57,8 +57,13 @@ test("detail round trip and reload restore expanded notes and a return focus", a
   await page.locator("#more-studies-toggle").click();
   await page.locator("#note-r10-toggle").click();
   await page.locator("#github-r10").focus();
-  const y = await page.evaluate(() => window.scrollY);
-  await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().evaluate((el: HTMLAnchorElement) => el.click());
+  // Read the actual departure position in the same task as activation. Lazy
+  // content and scroll anchoring can otherwise move between two round trips.
+  const y = await page.evaluate(() => {
+    const departureY = window.scrollY;
+    document.querySelector<HTMLAnchorElement>('a[href="/projects/multi-vendor-e-commerce/"]')!.click();
+    return departureY;
+  });
   await expect(page).toHaveURL(/projects\/multi-vendor-e-commerce\/$/);
   await page.goBack(); await ready(page);
   await expect(page.locator("#more-studies")).toHaveAttribute("open", "");
