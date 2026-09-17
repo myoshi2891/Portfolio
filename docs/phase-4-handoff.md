@@ -1,115 +1,106 @@
 # Phase 4 — セッション引き継ぎ
 
-更新日: 2026-09-17 JST。ユーザーの「引き継ぎをして」により実装作業を中断。
+更新日: 2026-09-17 JST。追加4画像・3Dヒーロー・スムーズスクロール・SPA遷移まで実装・検証済み。
 
-## 最優先の現在地
+## 現在地
 
-**最初の3画像・7公開URLとUI改善は実装・検証済み。追加4画像は原本確認とRedテストまでで、まだ表示されない。** 次はこの4画像を反映するGreen実装から再開する。
+**提供画像7枚をすべて反映。今回依頼されたアプリ内遷移とスクロール、3Dヒーローの改善は完了。** 未提供の素材・プロフィール情報と、本番公開に関する作業を以下に整理する。
 
-- ブランチ: `dev`。push・デプロイは未実施。
-- 改善実装の確定コミット: `b5b3011`。
-- 追加画像のRedテスト: `c7046c0`（`__tests__/refinement.test.tsx`）。
-- 現在の単体テスト: **28成功・1失敗**。失敗は追加4画像がまだ表示されないことを確認する意図したRed。削除・スキップしない。
-- 最終の静的出力E2E: **61成功・2対象外、失敗0**（`bun run test:e2e --workers=1`）。追加4画像の実装前にビルドしたサイトに対する結果。
-- 引き継ぎ時点でテスト・ビルドの実行中プロセスはない。今回起動した静的プレビューは`http://127.0.0.1:4173`で稼働。ユーザーの開発サーバーは停止していない。
+- ブランチ: `dev`。ローカルコミット済み。push・デプロイは未実施。
+- 画像反映: `0920fa3`。旧Redテスト`c7046c0`は成功へ移行。
+- SPA・スクロール・3Dの再現テスト: `a1b5b3f`。修正前の4件の失敗を確認済み。
+- 実装: `9b7a874`。
+- 単体テスト: **29成功、失敗0**。型チェック・Lint（警告0）・静的build成功。
+- 全E2E: **75件中73成功・2対象外、失敗0**（`bun run test:e2e --workers=1`）。
+- 静的プレビューは既存の`http://127.0.0.1:4173`を利用。ユーザーの開発サーバーは停止していない。
 
-## 今回の依頼と合意
+## 今回の変更
 
-1. 本書と[改善レビュー](critical-review-and-improvements.md)を確認し、残作業とブラッシュアップを実施。
-2. 所有者が提供した画像・公開URLを反映。
-3. `LLM Studies.png`はComparison-of-LLMs（R06）の画面として使用してよいと確認済み。
-4. 画像・リンクは今後も随時追加予定。**最後に残りの必要素材・情報を一覧にして伝えること。**
-5. 経歴・肩書き・担当範囲・連絡先はまだ提供されていない。推測して埋めない。
+### 画像
 
-## 完了した改善
+`data/screens.ts`へ画像・代替文・タイトル・出力幅を共通化し、表示コンポーネントと生成スクリプトの対応表重複を解消。原本は維持し、全7枚に640／1280／1854pxのWebPを生成した。
 
-- 抽象的な3DスタックとReplayを削除し、ヒーローにLLMの実画面を配置。
-- R06のカード・詳細・次の制作、R07とR10の学習カードに画像を表示。
-- 所有者提供の公開サイト7件を`data/presentation.ts`で管理し、カード・該当詳細からリンク。
-- `app/design.css`を削除、`app/globals.css`へスタイルを統合。OS設定に追従するダークテーマとフォーカスリングを整備。
-- モバイルメニュー、詳細のパンくず、スクロール連動目次、スマートフォンのコード表の縦積み、読みやすい文字サイズ、制約の中立的な色、404と次の制作の導線を改善。
-- 公開内容に基づくプロフィールと、コードに対応した考え方の具体例を追加。個人の経歴や成果は創作しない。
-- Firefoxのキーボード操作失敗を修正。遅れたアンカー位置調整が後から選んだフォーカスを奪うことを防止。
-- WebKitの履歴復元を修正。フォント完了時の移動後に古いfocusIdが履歴に残る競合を解消。
-- フォントCSSを305,603→34,318 bytesへ縮小。日本語用でありInterの重複ではないため、削除ではなく必要文字の定義を生成する方式。
-- 最初の3画像に640／1280／1854pxのWebPを生成。LLM原本666,454 bytesに対し、配信用は19,290／55,682／89,070 bytes。原本は維持。
+| 原本 | 対応 | 表示先 |
+|---|---|---|
+| `LLM Studies.png` | R06 / Comparison-of-LLMs | ヒーロー・代表作・詳細・次の制作 |
+| `QA_STUDIES.png` | R07 / Quality-Assurance-Studies | 学習カード |
+| `Cloud Infrastructure Studies.png` | R10 / Cloud-Infrastructure-and-Network-Studies | 追加学習カード |
+| `Medical Studies.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
+| `Management Studies.png` | R09 / Management-Team-Building-Studies | 追加学習カード |
+| `Next-Store.png` | R05 / Next-Store | その他の制作カード |
+| `The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | その他の制作カード |
 
-編集方法・判断の詳細は[デザイン更新記録](design-refresh.md)。
+**Wild Oasisの画像・Vercel URLは宿泊者向けR03。管理者向けR02に流用しない。** LLM画像とR06の対応は所有者確認済み。
 
-## 再開する追加画像
+### ヒーロー
 
-すべて1854×917pxの原本を目視確認済み。以下の4枚は保存済みだが、画面への紐付け・WebP生成は未実施。
+ユーザーの最新依頼に合わせて、LLMの実画面をCSS 3Dで浮遊させる演出を採用。perspective・rotateX／rotateY・translateZで奥行きを付けた。追加依存なし。
 
-| 原本 | 対応 | 確認した画面 | 次の表示先 |
-|---|---|---|---|
-| `public/images/Medical Studies.png` | R12 / Medical-Studies | 頭痛PROMのダッシュボード | Home代表作・医学詳細・次の制作 |
-| `public/images/Management Studies.png` | R09 / Management-Team-Building-Studies | マネジメント学習ライブラリ | 追加学習カード |
-| `public/images/Next-Store.png` | R05 / Next-Store | 商品ストアのトップ | その他の制作カード |
-| `public/images/The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | Welcome to paradise. / Cabins・Guest area | その他の制作カード |
+- 停止／再生ボタンを用意。
+- 画面外・非表示タブでは停止。
+- reduced-motionでは平面の静止画、JS無効時も静止画と本文を表示。
+- 元レビューで指摘された抽象的なスタックやReplayは再導入していない。
 
-**Wild Oasisの画像・Vercel URLは宿泊者向けR03。管理者向けR02に流用しない。**
+### スクロール・SPA
 
-### 次の具体的な作業
+原因はHomeの`scroll-behavior: auto`と、内部遷移にも通常の`<a>`を使用していたこと。既存の複数フレーム・フォント完了時の位置補正も、smooth指定だけではアニメーションを再起動するため修正した。
 
-1. `git status`と本書を読み、`bun run test __tests__/refinement.test.tsx`でRedの内容を確認。
-2. 画像対応表を追加する。現状は`components/projects/screen-preview.tsx`と`scripts/prepare-images.ts`で対応表が重複している。今後の追加に備え、`data/screens.ts`等へ共通化する案をユーザーへ伝えているが、**まだ実装していない**。
-3. `ProjectCard`は現在`featured && <ScreenPreview ... />`なので、SecondaryのR03・R05にも表示するよう変更。`StudyCard`と詳細はID対応表を追加すれば既存の表示経路を使える。
-4. `bun run images:generate`で追加分のWebPを生成。代替文と画像サイズを設定し、原本を変更しない。
-5. `bun run fonts:generate`、単体、型、Lint、build、画像読込・はみ出し・axe・履歴を含む関連E2Eを検証。新しい画像を含むPC／モバイルの実画面も確認。
-6. Green実装をローカルコミットし、README・本書・design-refreshの画像件数と結果を更新する。段階コミットとステージ済み差分のパス検査を継続。
+- `SiteLink`で内部リンクをNext.js Linkへ統一。詳細・次の制作・パンくず・ヘッダー・フッター・モバイルメニュー・404復帰をSPA化。
+- 共通layoutに`NavigationController`を配置。通常の同一ページ内アンカーはsmooth、ページ切替・共有アンカー初期表示・戻る／進むの位置復元はinstant。
+- 同一ページのクリックをcaptureで扱い、Nextのスクロールと二重処理しない。
+- 次の入力やフォーカス選択で残った移動を中断し、スクロール完了時も履歴位置を保存する。
+- SPAで戻った場合の開閉・位置・フォーカス復元を維持。移動元cleanupから移動先の履歴を上書きしない。
+- JS無効時は通常のリンクとして利用可能。外部リンク・修飾キー操作も維持。
 
-## 素材・リンクの残タスク一覧
+編集手順と判断の詳細は[デザイン更新記録](design-refresh.md)。
 
-「画像未提供」と「提供済みだが反映待ち」を区別する。未提供の公開URLを推測しない。
+## 追加で必要な素材・情報
 
 | ID | 作品 | 画像 | 公開URL |
 |---|---|---|---|
-| R01 | Multi-Vendor-E-Commerce | **未提供** | **未提供** |
-| R02 | The-Wild-Oasis-For-Admin | **未提供** | **未提供** |
-| R03 | The-Wild-Oasis-For-User | 提供済み・反映待ち | 掲載済み |
+| R01 | Multi-Vendor-E-Commerce | **未提供（優先）** | **未提供** |
+| R02 | The-Wild-Oasis-For-Admin | **未提供（優先）** | **未提供** |
+| R03 | The-Wild-Oasis-For-User | 掲載済み | 掲載済み |
 | R04 | AirbnbCloneApp | **未提供** | **未提供** |
-| R05 | Next-Store | 提供済み・反映待ち | 掲載済み |
+| R05 | Next-Store | 掲載済み | 掲載済み |
 | R06 | Comparison-of-LLMs | 掲載済み | 掲載済み |
 | R07 | Quality-Assurance-Studies | 掲載済み | 掲載済み |
 | R08 | Software-Design-and-Architecture | **未提供** | **未提供** |
-| R09 | Management-Team-Building-Studies | 提供済み・反映待ち | **未提供** |
+| R09 | Management-Team-Building-Studies | 掲載済み | **未提供** |
 | R10 | Cloud-Infrastructure-and-Network-Studies | 掲載済み | 掲載済み |
 | R11 | Security_Studies | **未提供** | 掲載済み |
-| R12 | Medical-Studies | 提供済み・反映待ち | **未提供** |
+| R12 | Medical-Studies | 掲載済み | **未提供** |
 | R13 | Algorithm-DataStructures-Math-SQL | **未提供** | 掲載済み |
 
-画像はまず代表作のR01・R02を優先。主画面と代表操作の画面があるとよい。公開可能なデモがない場合はそのまま未掲載でよく、URLを作ることを必須にしない。
+画像は代表作のR01・R02を優先し、主画面と代表操作の画面があるとよい。公開可能なデモがない場合はURL未掲載でよい。未提供のURL・画面を推測して補完しない。
 
-サイト全体として必要な情報:
+サイト全体で必要な情報:
 
 - 掲載する肩書き・経歴・各作品の担当範囲。
-- 公開できるメールアドレスやSNS等の連絡先。
-- **ポートフォリオ本体**の公開先とHTTPS URL（制作物のデモURLとは別）。
+- 公開可能なメールアドレスやSNS等の連絡先。
+- **ポートフォリオ本体**の公開先とHTTPS URL（作品のデモURLとは別）。
 
 ## 検証の記録と限界
 
-- 追加4画像のRedを加える前: 単体28件成功、型・Lint・静的build成功。
-- 追加4画像のRed追加後: 単体28成功・1失敗。型・Lintも引き継ぎ直前に成功。
-- 最終E2E: 63件中61成功、Chromium専用BFCache検証のFirefox／WebKit 2件は対象外。
-- Firefox／WebKitの回帰と320px・文字200%の関連E2Eは、3ブラウザー×3反復で27件成功。
-- 2worker実行ではFirefoxモーションテストのブラウザー接続が一度停止（`Object with guid ... was not bound`）。単独3反復成功後、1workerの全件実行も成功。アプリの既知失敗としては残っていないが、同時実行環境の制約は未特定。
-- Homeと詳細4ページのaxeは3ブラウザーで成功。追加でChromiumのPC・モバイルHome、ライト／ダークHome、モバイル／ダーク詳細、ダーク404を検査して違反0。
-- JavaScript無効、内部リンク、画像のデコード、reduced-motion、320／768／1200／1440px・文字200%・フォント取得失敗、保存拒否・破損、履歴往復を検証。
-- ローカル画面キャプチャは一時ディレクトリに保存したが、永続成果物には含めていない。
-- WebPとフォントCSSのファイルサイズのみ計測。**Lighthouse、LCP、CLS、INP、実機、スクリーンリーダーは未測定。**
-- GitHub Actionsのリモート結果は未確認。ローカル成功をCI成功と書かない。
-- 公開URL7件は読み取り時のHTTP 200と画面内容を確認。認証・購入・外部書き込み・掲載情報の正確性まで検証したわけではない。
+- `bun run test`: 9ファイル・29件成功。
+- `bun run typecheck`・`bun run lint`・`bun run build`: 成功。
+- Chromium／Firefox／WebKitの全E2E: 73成功。Chromium専用BFCache検証の他2ブラウザーは対象外。
+- アンカー履歴の回帰は3ブラウザー×3反復の9件も成功。
+- Homeと詳細4ページのaxe、JS無効、内部リンク、画像デコード、reduced-motion、320／768／1200／1440px・文字200%・フォント取得失敗、保存拒否・破損、履歴往復を検証。
+- 新規E2Eはドキュメントが維持されるSPA遷移、スクロール中間位置、3Dの停止とreduced-motionを検証。
+- PC／モバイル／ダークの画面を目視確認。追加のChromiumダークHome・モバイルHomeのaxeも違反0。
+- Firefoxでは計測からクリックまでにレイアウト／スクロールアンカリングが位置を変えるケースを確認。テストの計測とクリックを同一タスクにし、実際の移動直前の位置を検証するよう修正。
+- BFCacheテストはSPAリンクとは別に明示的なドキュメント移動を実行して維持。
+- スクリーンショットは一時ディレクトリへ保存。永続成果物には含めていない。
+- **Lighthouse・LCP・CLS・INP・実機・スクリーンリーダーは未測定。** リモートCIの実行結果も未確認。
+- 既存の公開URL7件は前回の読み取り時にHTTP 200と内容を確認済み。認証・購入・外部書き込みや掲載情報の正確性まで検証したわけではない。
 
-## 維持する仕様
+## 維持する仕様と次の作業
 
-- Bun 1.3.12、Node.js 22.23.2。`bun run test`はVitest。追加依存なし。
+- Bun 1.3.12、Node.js 22.23.2。`bun run test`はVitest。
 - Home＋Featured詳細4ページのstatic export。13リポジトリの掲載順と固定SHAの証拠を維持。
-- 初期HTMLで本文を読める。`app/loading.tsx`を再導入しない。
-- `SITE_URL`と`DEPLOYMENT_ENV`でSEOを切替。previewのnoindexは意図した仕様。本番の実URLがない状態で無条件にindexを許可しない。
-- Homeのスクロールは履歴保存との整合のためauto、詳細はsmooth。reduced-motionではauto。
-- 未提供の経歴・担当範囲・連絡先・運用実績を補完しない。
-- 元レビューの誤認と対応判断は`critical-review-and-improvements.md`冒頭に補足済み。
-
-## 未コミット差分について
-
-引き継ぎ文書と追加画像の原本・Redテストはローカルコミットして保存する。`next-env.d.ts`の`.next/dev/types`→`.next/types`はbuild／typegenによる自動生成差分。手書き実装に混ぜず、そのまま残している。`git status`で再確認し、破棄・一括コミットしない。
+- 初期HTMLで本文を読める。`app/loading.tsx`は再導入しない。
+- SEOは`SITE_URL`と`DEPLOYMENT_ENV`で切替。本体公開URLが決まったら本番設定で再ビルドする。previewのnoindexは意図した仕様。
+- 新しい画像は`data/screens.ts`へ追加し、`bun run images:generate`。文言追加後は`bun run fonts:generate`。公開URLは`data/presentation.ts`へ追加。
+- 素材・プロフィールを受領したら反映し、本番公開前に実機・支援技術・性能を確認する。push・デプロイは今回実施していない。
+- `next-env.d.ts`には着手前からの生成差分があり、build／typegenでも更新される。今回のコミットから除外して残した。

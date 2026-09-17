@@ -67,18 +67,22 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 
 - `data/`: 掲載順・文案・証拠・未検証範囲。Featured 4件、Studies 6件、Secondary 3件。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
-- `components/home/navigation-controller.tsx`: Homeの開閉・アンカー・履歴復元を担当するClient Component。
+- `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
-- `components/projects/screen-preview.tsx`・`data/presentation.ts`: 提供された実画面と公開サイトの導線。
+- `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを通常のアンカーで表示。
+- `components/home/hero-scene.tsx`: 提供画面のCSS 3Dアニメーション。停止操作・画面外停止・reduced-motion対応。
+- `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 提供された7枚の実画面・代替文と7件の公開サイトの導線。
 - `data/feature-guides.ts`・`components/projects/feature-story.tsx`: 機能を紹介する理由、処理の流れ、各参照コードの説明。
 - `app/globals.css`: 配色トークン、OS連動ダークテーマ、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
-- `public/images/`: 原本PNGと最適化WebP。画像更新後は`images:generate`の結果もコミット。
+- `public/images/`: 原本PNGと最適化WebP。画像追加は`data/screens.ts`を更新し、`images:generate`の結果もコミット。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
 
-本文はServer Componentsで生成し、追加の学習・補足も初期HTMLに含めます。JavaScriptが無効でも`details`で手動展開できます。履歴の補助保存はsessionStorageの直近20件までで、保存拒否・破損時も基本操作を維持します。
+本文はServer Componentsで生成し、追加の学習・補足も初期HTMLに含めます。JavaScriptが無効でも`details`で手動展開できます。通常のアンカー移動はsmooth、履歴復元とページ切替はinstantです。OSのreduced-motion設定時は移動・3D演出を抑制します。
+
+履歴の補助保存はsessionStorageの直近20件までで、保存拒否・破損時も基本操作を維持します。
 
 依存導入後のbuildと表示はGitHub API・Google Fonts通信に依存しません。未提供の担当範囲・連絡先は表示していません。公開URL・画像の提供状況と対応表は[デザイン更新記録](docs/design-refresh.md)を参照してください。
 

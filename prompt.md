@@ -1,4 +1,4 @@
-> 現在地（2026-09-17）: ユーザー依頼によりPhase 4の残作業とブラッシュアップを実施。提供画像・公開URLの掲載、OS連動ダークテーマ、モバイル・目次・履歴復元の改善を含む。現在の仕様と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)と[デザイン更新記録](docs/design-refresh.md)を参照。
+> 現在地（2026-09-17）: ユーザー依頼によりPhase 4の残作業とブラッシュアップを実施。提供画像7枚・公開URL7件の掲載、実画面のCSS 3Dヒーロー、内部リンクのSPA遷移、スムーズスクロール、OS連動ダークテーマ、モバイル・目次・履歴復元の改善を含む。現在の仕様と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)と[デザイン更新記録](docs/design-refresh.md)を参照。
 
 # AI Engineering Portfolio — Master Prompt
 

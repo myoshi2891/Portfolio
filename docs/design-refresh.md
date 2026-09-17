@@ -1,11 +1,11 @@
 # デザイン・導線・品質の更新
 
-更新日: 2026-09-17 JST。最初の3画像・7公開URLを含む改善は実装・検証済み。追加4画像はRedテストまでで反映待ち。最新の現在地と検証結果は[引き継ぎ](phase-4-handoff.md)を参照。
+更新日: 2026-09-17 JST。7画像・7公開URLを掲載済み。追加依頼に合わせて3Dヒーロー・スムーズスクロール・SPA遷移を実装。最新の現在地と検証結果は[引き継ぎ](phase-4-handoff.md)を参照。
 
 ## 現在の表示
 
-- Homeの抽象的な3D演出・Replayを、所有者提供のLLM実画面へ置換。
-- LLMの作品カード・詳細・次の制作、品質保証とクラウドの学習カードに提供画像を配置。画像のない作品に架空のUIを作らない。
+- Homeは所有者提供のLLM実画面をCSSのperspective・rotateX／rotateY・translateZで立体表示。9秒周期の浮遊を停止・再生でき、画面外／非表示タブでは停止。reduced-motionとJS無効時は静止表示。
+- LLM・医学の作品カード／詳細／次の制作、品質保証・クラウド・マネジメントの学習カード、Next-Store・Wild Oasis宿泊者向けのその他制作カードに提供画像を配置。画像のない作品に架空のUIを作らない。
 - 公開サイト7件へリンク。GitHub・詳細への導線も維持。
 - ライト／OS設定に追従するダークテーマ。配色トークンと全レイアウトを`app/globals.css`へ統合し、`app/design.css`は削除。
 - モバイルヘッダーはネイティブ`details`のメニュー。JavaScript有効時はリンク選択・Escapeで閉じる。JS無効でも開閉可能。
@@ -32,13 +32,13 @@
 
 Wild Oasisは「Welcome to paradise.」の宿泊者向けサイト。管理者向けR02に誤って紐付けない。公開版と監査対象の固定コミットが同じとは保証していない。
 
-`components/projects/screen-preview.tsx`が画像・代替文・ブラウザ枠を表示する。提供画像は`public/images`のPNGを原本として保持。LLM画像とR06の対応は所有者に確認済み。表示用WebPは次で再生成する。
+`data/screens.ts`を画像・代替文・タイトル・出力幅の共通定義として、`components/projects/screen-preview.tsx`と生成スクリプトで使用する。提供画像は`public/images`のPNGを原本として保持。LLM画像とR06の対応は所有者に確認済み。表示用WebPは次で再生成する。
 
 ```sh
 bun run images:generate
 ```
 
-`public/images/optimized`の640／1280／1854pxをコミットする。`picture`のsrcsetで表示幅に応じて選択し、PNGをfallbackにする。幅・高さを予約、下部の画像は遅延読込、ヒーローは優先読込。新しい画面を追加する場合は生成スクリプトの対応表も更新する。
+`public/images/optimized`の640／1280／1854pxをコミットする。`picture`のsrcsetで表示幅に応じて選択し、PNGをfallbackにする。幅・高さを予約、下部の画像は遅延読込、ヒーローは優先読込。新しい画面は`data/screens.ts`へ追加するだけで表示・生成の両方へ反映できる。
 
 ## フォントとスタイル
 
@@ -50,7 +50,7 @@ bun run fonts:generate
 
 `dev`起動前と`build`時にも自動生成する。開発中に新しい文字を追加した場合もこのコマンドで再生成する。`app/fonts.css`は生成物としてコミットし、直接編集しない。対象に含まれない動的コンテンツは現在なく、今後追加する際は文字収集範囲を見直す。
 
-- フォントCSS: 305,603 → 34,318 bytes（88.8%削減）。
+- フォントCSS: 305,603 → 35,860 bytes（現在の文言で再生成）。
 - LLM画像: PNG 666,454 bytes → WebP 19,290／55,682／89,070 bytes。
 - 画面サイズに応じた配信で転送量を抑える。元PNGや未使用のフォントファイルは静的出力に残るが、通常表示時に全件転送しない。
 
@@ -60,19 +60,27 @@ Firefoxのキーボード操作失敗は、アンカー移動後の2回目のreq
 
 WebKitの戻る・進む失敗は、フォント完了時の移動が最初のフレームより先に実行され、履歴に古いfocusIdが残る競合。移動後すぐにフォーカスと位置を保存するよう統一した。待機の水増しやテスト削除で回避していない。
 
-詳細のアンカーはsmooth、reduced-motionではauto。Homeは保存位置・履歴復元を優先するためautoを維持する。全体にsmoothを指定すると履歴の位置保存と干渉するため、レビュー案をそのまま適用しない。
+今回、Homeの`scroll-behavior: auto`と通常のアンカーによる画面遷移を見直した。
+
+- `SiteLink`は[Next.js Link](https://nextjs.org/docs/app/api-reference/components/link)を使い、詳細・次の制作・パンくず・ヘッダー・フッター・モバイルメニュー・404復帰をSPA遷移に統一。外部URLは通常のリンク。
+- `NavigationController`をルートlayoutに配置し、pathname変更ごとに対象DOMを更新。クリックのcapture段階で同一ページのアンカーを処理し、Nextのスクロールと二重実行しないよう`scroll={false}`を指定。
+- 通常のアンカーはsmooth、履歴復元・別ページへの移動・初回の共有アンカーはinstant。スムーズ移動をフォント完了／連続フレームで再起動しない。次の入力・フォーカス選択で実行中の移動を中断し、スクロール完了時の位置も保存する。
+- SPAで戻ってきた場合も開閉状態・位置・フォーカスを復元。移動元のcleanupで移動先の履歴を上書きしない。
+- `prefers-reduced-motion`ではスムーズ移動を抑制。JS無効時も通常のアンカーと本文・開閉は利用可能。
+
+Firefoxでは、テストが測った位置から実際のクリックまでの間にレイアウト／スクロールアンカリングで位置が変わることをログで確認。計測とクリックを同一タスクにし、移動直前の位置へ戻ることを検証する。BFCacheのテストは明示的なドキュメント移動で維持し、SPAの検証と区別する。
 
 ## 機能説明の根拠
 
 `data/feature-guides.ts`の8機能について、紹介理由・HTMLの処理図・参照コード表を維持。説明と具体例は[Phase 0の監査](phase-0-repository-evidence-audit.md)に基づく。参照URL・固定SHAは変更していない。
 
-## 追加画像の反映待ち
+## 追加画像の反映完了
 
-Medical Studies（R12）、Management Studies（R09）、Next-Store（R05）、The Wild Oasis宿泊者向け（R03）の原本4枚を追加受領。目視確認とRedテストは済んでいるが、対応表追加・Secondaryへの表示・WebP生成は未実施。画像対応表の共通化も次の作業。
+Medical Studies（R12）、Management Studies（R09）、Next-Store（R05）、The Wild Oasis宿泊者向け（R03）を表示へ反映し、各3サイズのWebPを生成。画像対応表を共通化した。原本は変更していない。
 
 ## 追加情報が必要な項目
 
-- EC、Wild Oasis管理者向けなど未提供の実画面。医学質問票を含む追加4枚は提供済みで反映待ち。作品別の不足一覧は[引き継ぎ](phase-4-handoff.md)を参照。
+- EC、Wild Oasis管理者向けなど未提供の実画面。医学質問票を含む追加4枚は反映済み。作品別の不足一覧は[引き継ぎ](phase-4-handoff.md)を参照。
 - 掲載する肩書き・経歴・各作品の担当範囲、公開可能なメールやSNS。
 - ポートフォリオ本体の公開URLとホスト。制作物のデモURLとは別。
 
