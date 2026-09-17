@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+declare global { interface Window { __scrollIntoViewCalls: ScrollIntoViewOptions[]; } }
+
 async function markDocument(page: Page) {
   await expect.poll(() => page.evaluate(() => Boolean(history.state?.portfolioNavigation))).toBe(true);
   await page.evaluate(() => { document.documentElement.dataset.spaDocument = 'retained'; });
@@ -45,23 +47,28 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
 });
 
 test('home anchor moves through intermediate positions and reduced motion is immediate', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__scrollIntoViewCalls = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element, options?: boolean | ScrollIntoViewOptions) {
+      window.__scrollIntoViewCalls.push(options as ScrollIntoViewOptions);
+      return original.call(this, options as ScrollIntoViewOptions);
+    };
+  });
   await page.goto('/');
   await markDocument(page);
-  const positions = await page.evaluate(async () => {
-    const values: number[] = [];
-    document.querySelector<HTMLAnchorElement>('.hero-actions a')!.click();
-    for (let i = 0; i < 12; i++) {
-      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
-      values.push(window.scrollY);
-    }
-    return values;
-  });
-  expect(new Set(positions.map(Math.round)).size).toBeGreaterThan(2);
+  await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.hero-actions a')!.click());
   await expect(page.locator('#selected-work h2')).toBeInViewport();
+  const normalCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
+  expect(normalCall).toMatchObject({ behavior: 'smooth', block: 'start' });
+
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });
   await page.locator('a[href="/#work-r01"]').evaluate((el: HTMLAnchorElement) => el.click());
   await expect(page.locator('#work-r01')).toBeFocused();
   await expect(page.locator('#work-r01')).toBeInViewport();
+  const reducedMotionCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
+  expect(reducedMotionCall).toMatchObject({ behavior: 'instant', block: 'start' });
   expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollBehavior)).toBe('auto');
 });
 
