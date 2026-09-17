@@ -4,7 +4,7 @@
 
 ## 現在の表示
 
-- Homeは所有者提供のLLM実画面をCSSのperspective・rotateX／rotateY・translateZで立体表示。9秒周期の浮遊を停止・再生でき、画面外／非表示タブでは停止。reduced-motionとJS無効時は静止表示。
+- Homeは「学習を起点に、制作・設計・改善へ循環する」というポートフォリオの構造そのものをCSS 3Dで表現。中央のLEARNとBUILD／STUDY／ENGINEER／IMPROVEを軌道・接続線・異なる奥行きで構成し、画像と停止ボタンは使わない。画面外／非表示タブでは自動停止し、reduced-motionとJS無効時は静止表示。
 - LLM・医学の作品カード／詳細／次の制作、品質保証・クラウド・マネジメントの学習カード、Next-Store・Wild Oasis宿泊者向けのその他制作カードに提供画像を配置。画像のない作品に架空のUIを作らない。
 - 公開サイト7件へリンク。GitHub・詳細への導線も維持。
 - ライト／OS設定に追従するダークテーマ。配色トークンと全レイアウトを`app/globals.css`へ統合し、`app/design.css`は削除。

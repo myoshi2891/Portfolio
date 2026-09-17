@@ -70,7 +70,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを通常のアンカーで表示。
-- `components/home/hero-scene.tsx`: 提供画面のCSS 3Dアニメーション。停止操作・画面外停止・reduced-motion対応。
+- `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像や操作ボタンを使わず、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 提供された7枚の実画面・代替文と7件の公開サイトの導線。
 - `data/feature-guides.ts`・`components/projects/feature-story.tsx`: 機能を紹介する理由、処理の流れ、各参照コードの説明。
 - `app/globals.css`: 配色トークン、OS連動ダークテーマ、全コンポーネントのスタイル。

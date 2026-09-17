@@ -9,8 +9,8 @@
 - ブランチ: `dev`。ローカルコミット済み。push・デプロイは未実施。
 - 画像反映: `0920fa3`。旧Redテスト`c7046c0`は成功へ移行。
 - SPA・スクロール・3Dの再現テスト: `a1b5b3f`。修正前の4件の失敗を確認済み。
-- 実装: `9b7a874`。
-- 単体テスト: **29成功、失敗0**。型チェック・Lint（警告0）・静的build成功。
+- 初回SPA・スクロール・3D実装: `9b7a874`。画像を使わない3Dヒーローへの更新: `c0c2ef2`。
+- 単体テスト: **30成功、失敗0**。型チェック・Lint（警告0）・静的build成功。
 - 全E2E: **75件中73成功・2対象外、失敗0**（`bun run test:e2e --workers=1`）。
 - 静的プレビューは既存の`http://127.0.0.1:4173`を利用。ユーザーの開発サーバーは停止していない。
 
@@ -22,7 +22,7 @@
 
 | 原本 | 対応 | 表示先 |
 |---|---|---|
-| `LLM Studies.png` | R06 / Comparison-of-LLMs | ヒーロー・代表作・詳細・次の制作 |
+| `LLM Studies.png` | R06 / Comparison-of-LLMs | 代表作・詳細・次の制作 |
 | `QA_STUDIES.png` | R07 / Quality-Assurance-Studies | 学習カード |
 | `Cloud Infrastructure Studies.png` | R10 / Cloud-Infrastructure-and-Network-Studies | 追加学習カード |
 | `Medical Studies.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
@@ -34,12 +34,12 @@
 
 ### ヒーロー
 
-ユーザーの最新依頼に合わせて、LLMの実画面をCSS 3Dで浮遊させる演出を採用。perspective・rotateX／rotateY・translateZで奥行きを付けた。追加依存なし。
+ユーザーの最新依頼に合わせて、画像の3D浮遊を廃止し、ポートフォリオの構造そのものをCSS 3Dで表現した。中央のLEARNからBUILD／STUDY／ENGINEER／IMPROVEへ接続する構成で、軌道・接続線・カードの奥行きが緩やかに動く。追加依存なし。
 
-- 停止／再生ボタンを用意。
-- 画面外・非表示タブでは停止。
-- reduced-motionでは平面の静止画、JS無効時も静止画と本文を表示。
-- 元レビューで指摘された抽象的なスタックやReplayは再導入していない。
+- ヒーロー内に画像・停止／再生ボタンを置かない。
+- 操作を要求せず自動再生し、画面外・非表示タブでは自動停止。
+- reduced-motionでは静止した3D構成を表示し、JS無効時も構成と本文を表示。
+- 4領域の件数・設計対象を短いラベルで示し、装飾だけでなくサイトの情報設計を伝える。
 
 ### スクロール・SPA
 
@@ -82,12 +82,12 @@
 
 ## 検証の記録と限界
 
-- `bun run test`: 9ファイル・29件成功。
+- `bun run test`: 9ファイル・30件成功。
 - `bun run typecheck`・`bun run lint`・`bun run build`: 成功。
 - Chromium／Firefox／WebKitの全E2E: 73成功。Chromium専用BFCache検証の他2ブラウザーは対象外。
 - アンカー履歴の回帰は3ブラウザー×3反復の9件も成功。
 - Homeと詳細4ページのaxe、JS無効、内部リンク、画像デコード、reduced-motion、320／768／1200／1440px・文字200%・フォント取得失敗、保存拒否・破損、履歴往復を検証。
-- 新規E2Eはドキュメントが維持されるSPA遷移、スクロール中間位置、3Dの停止とreduced-motionを検証。
+- 新規E2Eはドキュメントが維持されるSPA遷移、スクロール中間位置、画像・操作ボタンを含まない自動3Dとreduced-motionを検証。
 - PC／モバイル／ダークの画面を目視確認。追加のChromiumダークHome・モバイルHomeのaxeも違反0。
 - Firefoxでは計測からクリックまでにレイアウト／スクロールアンカリングが位置を変えるケースを確認。テストの計測とクリックを同一タスクにし、実際の移動直前の位置を検証するよう修正。
 - BFCacheテストはSPAリンクとは別に明示的なドキュメント移動を実行して維持。
