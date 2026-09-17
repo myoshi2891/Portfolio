@@ -1,4 +1,4 @@
-> 2026-09-17更新: 現在のClient ComponentはHomeの履歴制御、モバイルメニュー、詳細目次。提供画像3件・公開URL7件と静的WebP配信を追加済み。実装の詳細は[デザイン更新記録](design-refresh.md)を優先してください。
+> 2026-09-17更新: 現在のClient ComponentはHomeの履歴制御、モバイルメニュー、詳細目次。提供画像12件・公開URL7件と静的WebP配信を追加済み。実装の詳細は[デザイン更新記録](design-refresh.md)を優先してください。
 
 # PHASE 3 — Technical Architecture
 
