@@ -1,5 +1,7 @@
 "use client";
 
+import { SiteLink } from "../ui/site-link";
+
 import { useRef } from "react";
 
 export function MobileMenu() {
@@ -9,7 +11,7 @@ export function MobileMenu() {
     if (event.key === 'Escape') { close(); ref.current?.querySelector('summary')?.focus(); }
   }}><summary aria-label="メニュー">メニュー <span aria-hidden="true">☰</span></summary>
     <nav aria-label="モバイルナビゲーション" onClick={event => { if ((event.target as Element).closest('a')) close(); }}>
-      <a href="/#selected-work">制作</a><a href="/#studies">学習</a><a href="/#about">プロフィール</a><a href="/#philosophy">考え方</a>
+      <SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/#about">プロフィール</SiteLink><SiteLink href="/#philosophy">考え方</SiteLink>
     </nav>
   </details>;
 }

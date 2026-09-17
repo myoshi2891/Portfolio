@@ -19,8 +19,7 @@
   :root { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: auto; }
-html:has(.detail-page) { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-inter), "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.9; overflow-wrap: anywhere; }
 h1, h2, h3, p, ul { margin: 0; }
 h1, h2, h3 { font-weight: 600; line-height: 1.5; text-wrap: pretty; }
@@ -76,6 +75,27 @@ a:hover { color: var(--color-accent-hover); }
 .hero-preview { min-width: 0; padding: 1.25rem; background: var(--hero-tint); border: 1px solid var(--color-line); border-radius: 18px; }
 .hero-preview > .eyebrow { margin-bottom: 1rem; color: var(--color-accent); }
 .hero-preview > .text-link { margin-top: .5rem; }
+.hero-showcase { min-width: 0; }
+.hero-scene { position: relative; isolation: isolate; overflow: clip; background: radial-gradient(ellipse at 75% 25%, color-mix(in srgb, var(--color-accent) 14%, transparent), transparent 65%), var(--hero-tint); }
+.hero-scene::before { content: ""; position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px); background-size: 32px 32px; opacity: .35; mask-image: linear-gradient(transparent, #000); }
+.hero-scene-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.hero-scene-header .eyebrow { color: var(--color-accent); }
+.motion-toggle { display: none; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: .4rem .75rem; border: 1px solid var(--color-line); border-radius: 99px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: .85rem; cursor: pointer; }
+.hero-scene[data-active] .motion-toggle { display: inline-flex; }
+.motion-toggle:hover { background: var(--color-surface-subtle); }
+.hero-scene-stage { position: relative; perspective: 1100px; padding: 2.5rem 1rem 2.75rem; }
+.hero-scene-plane { position: relative; transform-style: preserve-3d; transform: rotateX(9deg) rotateY(-12deg) rotateZ(2deg); animation: interface-float 9s ease-in-out infinite; animation-play-state: paused; }
+.hero-scene-plane::before, .hero-scene-plane::after { content: ""; position: absolute; inset: 0; border: 1px solid color-mix(in srgb, var(--color-accent) 38%, var(--color-line)); border-radius: 12px; background: color-mix(in srgb, var(--color-surface) 60%, transparent); transform: translate3d(12px, 14px, -24px); }
+.hero-scene-plane::after { transform: translate3d(24px, 28px, -48px); background: transparent; }
+.hero-scene-plane > .screen-preview { position: relative; transform: translateZ(0); box-shadow: 0 22px 42px -22px #142c6266; }
+.hero-scene-orbit { position: absolute; inset: 8% 5%; border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent); border-radius: 50%; transform: rotate(-24deg); }
+.hero-scene-caption { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; color: var(--color-muted); font-size: .85rem; }
+.hero-project-link { margin: .75rem .25rem 0; }
+.hero-scene[data-active="true"][data-paused="false"] .hero-scene-plane { animation-play-state: running; }
+@keyframes interface-float {
+  0%, 100% { transform: translateY(0) rotateX(9deg) rotateY(-12deg) rotateZ(2deg); }
+  50% { transform: translateY(-9px) rotateX(3deg) rotateY(-5deg) rotateZ(-1deg); }
+}
 .hero-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--color-line); font-size: .85rem; color: var(--color-muted); }
 .hero-foot p span { color: var(--color-accent); margin-inline: .25rem; }
 .hero-foot a { min-height: 44px; align-content: center; text-decoration: none; font-size: .85rem; }
@@ -278,4 +298,6 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
   .page-entry-line { display: none; }
   .action:hover { transform: none; }
+  .hero-scene-plane { transform: none; }
+  .hero-scene-plane::before, .hero-scene-plane::after, .hero-scene-orbit, .hero-scene[data-active] .motion-toggle { display: none; }
 }

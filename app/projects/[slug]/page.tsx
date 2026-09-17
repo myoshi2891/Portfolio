@@ -1,3 +1,4 @@
+import { SiteLink } from "../../../components/ui/site-link";
 import { demoUrls } from "../../../data/presentation";
 import { DetailContents } from "../../../components/projects/detail-contents";
 import { ScreenPreview } from "../../../components/projects/screen-preview";
@@ -38,7 +39,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const audit = evidenceIds.map(id => portfolio.evidence[id]).find(e => e?.sourceType === "REPOSITORY_VERIFIED");
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   return <main id="main" tabIndex={-1} className="container detail-page">
-    <nav className="breadcrumbs" aria-label="パンくず"><a href="/">Home</a><span aria-hidden="true">/</span><a href={`/#${homeAnchor(project)}`}>代表的な制作</a><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
+    <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
       <p className="eyebrow">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
@@ -59,11 +60,11 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
           {section.limitationIds.map(id => <p className="limitation" key={id}>{portfolio.limitations[id]?.text}</p>)}
         </section>)}
         <section id="evidence"><h2>参照コード</h2>
-          {audit?.sourceType === "REPOSITORY_VERIFIED" && <p>参照コードの確認日：<time dateTime={audit.checkedAt}>{audit.checkedAt}</time><br />対象コミット：<a href={`${project.githubUrl}/tree/${audit.commit}`}><code>{audit.commit.slice(0, 12)}</code></a></p>}
+          {audit?.sourceType === "REPOSITORY_VERIFIED" && <p>参照コードの確認日：<time dateTime={audit.checkedAt}>{audit.checkedAt}</time><br />対象コミット：<SiteLink href={`${project.githubUrl}/tree/${audit.commit}`}><code>{audit.commit.slice(0, 12)}</code></SiteLink></p>}
           <EvidenceLinks ids={evidenceIds} />
         </section>
       </div>
     </div>
-    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink><a className="text-link" href="/#contact">GitHubプロフィールへ</a></nav>
+    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink><SiteLink className="text-link" href="/#contact">GitHubプロフィールへ</SiteLink></nav>
   </main>;
 }

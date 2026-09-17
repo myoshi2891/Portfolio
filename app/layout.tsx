@@ -1,3 +1,4 @@
+import { NavigationController } from "../components/home/navigation-controller";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Navigation, Footer } from "../components/layout/chrome";
@@ -26,11 +27,11 @@ const inter = localFont({
 });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  return <html lang="ja" className={inter.variable}><head>
+  return <html lang="ja" data-scroll-behavior="smooth" className={inter.variable}><head>
     {!readSiteConfig().siteUrl && <>
       <meta property="og:image" content="/og/portfolio.png" />
       <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content="myoshi2891 Engineering Portfolio" />
     </>}
-  </head><body><div className="page-entry-line" aria-hidden="true" /><Navigation />{children}<Footer /></body></html>;
+  </head><body><NavigationController /><div className="page-entry-line" aria-hidden="true" /><Navigation />{children}<Footer /></body></html>;
 }

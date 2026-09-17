@@ -33,10 +33,14 @@ test("anchor history restores closed state, scroll and focus independently of th
   await page.locator("#more-studies-toggle").click();
   await expect(page.locator("#more-studies")).not.toHaveAttribute("open", "");
   await page.locator("#more-studies-toggle").focus();
-  await page.evaluate(() => window.scrollBy(0, -100));
-  const y = await page.evaluate(() => window.scrollY);
-  // Synthetic activation avoids Playwright scrolling the departing link into view.
-  await page.locator('a[href="/#work-r01"]').evaluate((el: HTMLAnchorElement) => el.click());
+  // Capture the departure position in the same task as activation. A separate
+  // round trip lets Firefox's layout/scroll anchoring move it before the click.
+  const y = await page.evaluate(() => {
+    window.scrollBy({ top: -100, behavior: "instant" });
+    const departureY = window.scrollY;
+    document.querySelector<HTMLAnchorElement>('a[href="/#work-r01"]')!.click();
+    return departureY;
+  });
   await expect(page.locator("#work-r01")).toBeFocused();
   expect(await page.evaluate(() => history.state.portfolioNavigation.focusId)).toBe("work-r01");
   await page.goBack();
@@ -103,7 +107,9 @@ test("actual Chromium BFCache restores the document and its disclosures", async 
     await page.locator("#more-studies-toggle").click();
     await page.locator("#note-r10-toggle").click();
     await page.locator("#github-r10").focus();
-    await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().evaluate((el: HTMLAnchorElement) => el.click());
+    // Internal links now use SPA transitions; explicitly leave the document to
+    // continue testing real BFCache restoration as a separate browser behavior.
+    await page.goto('http://127.0.0.1:4173/projects/multi-vendor-e-commerce/');
     await expect(page).toHaveURL(/projects\/multi-vendor-e-commerce\/$/);
     await page.goBack();
     await expect(page.locator("html")).toHaveAttribute("data-persisted", "true");

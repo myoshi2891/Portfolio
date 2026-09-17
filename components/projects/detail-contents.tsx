@@ -1,5 +1,7 @@
 "use client";
 
+import { SiteLink } from "../ui/site-link";
+
 import { useEffect, useState } from "react";
 
 export function DetailContents({ sections }: { sections: { id: string; label: string }[] }) {
@@ -28,6 +30,6 @@ export function DetailContents({ sections }: { sections: { id: string; label: st
   }, [sections]);
 
   return <nav className="detail-contents" aria-label="このページの内容"><details open><summary>このページの内容</summary><ul>
-    {sections.map(({ id, label }, index) => <li key={id}><a href={`#${id}`} aria-current={active === id ? 'location' : undefined}><span aria-hidden="true">{String(index).padStart(2, '0')}</span>{label}</a></li>)}
+    {sections.map(({ id, label }, index) => <li key={id}><SiteLink href={`#${id}`} aria-current={active === id ? 'location' : undefined}><span aria-hidden="true">{String(index).padStart(2, '0')}</span>{label}</SiteLink></li>)}
   </ul></details></nav>;
 }
