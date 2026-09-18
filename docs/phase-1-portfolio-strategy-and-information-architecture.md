@@ -1,5 +1,7 @@
 # PHASE 1 — Portfolio Strategy & Information Architecture
 
+> 本書は2026-09-16 JST時点の計画スナップショット。現行の実装・検証状況は[README.md](../README.md)および[phase-4-handoff.md](phase-4-handoff.md)を参照。
+
 ## 0. 結論・対象・証拠の扱い
 
 **提案: Webアプリケーションの実装を中心に、AI・医療の題材をツールに落とし込み、設計・品質・セキュリティの学習をコードとともに示すポートフォリオとする。** Featured Worksは4件、Knowledge & Deep Studiesは6件、Secondaryは3件。Homeで概要を理解し、Featuredの詳細から実装根拠へ進む二層構造を採用する。
