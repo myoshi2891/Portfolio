@@ -58,7 +58,7 @@ AI エージェントは、`git commit` などのコミットを行う前に、�
 # コミット対象の差分にローカル絶対パス（Users/ や home/）またはチルダパス（~/）が含まれていないかチェック
 # 本ルールファイル自体は禁止例・許可例のサンプルを含むためパス指定で除外する
 # （内容文字列でのサンプル除外は行わない。実際の違反を握りつぶす恐れがあるため）
-git diff --cached -- . ':(exclude).claude/rules/no-absolute-paths.md' \
+git diff --cached -- ':/' ':(exclude,top).claude/rules/no-absolute-paths.md' \
   | grep -E '^\+[^+]' \
   | grep -E '(/Users/[A-Za-z0-9_.-]+(/|$)|/home/[A-Za-z0-9_.-]+(/|$)|C:\\Users\\[A-Za-z0-9_.-]+(\\|$)|~/[A-Za-z0-9_.-]+)'
 ```
