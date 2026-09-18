@@ -38,6 +38,19 @@ LLM-Studies は、単一リポジトリで 2 つの役割を担うプロジェ�
 | JA/EN バイリンガル基盤 | `T` オブジェクト + `t()`/`tRich()` によるテキスト管理（現状ガイドページは JA 固定） | `lib/i18n.tsx` |
 | 3 層フォールバック価格解決 | スクレイプ失敗時も過去の実績値・ハードコード値で価格を維持 | `scraper/src/scraper/provenance.py` |
 
+### コスト計算機の入出力（`lib/cost.ts`）
+
+コスト計算機はすべて副作用のない純粋関数で構成されており、以下の入出力契約を持ちます。
+
+| 関数 | 入力 | 出力 | 振る舞い |
+|---|---|---|---|
+| `calcApiCost` | `priceIn`（USD/100万トークン）, `priceOut`, `inputTokens`, `outputTokens`, `hours` | USD 金額 | `(input/1e6 * priceIn + output/1e6 * priceOut) * hours` の単純計算。丸め処理なし |
+| `calcSubCost` | `monthly`（USD月額）, `annual`（USD年額 or `null`）, `hours` | USD 金額 | `hours >= 8760` は年額をそのまま採用、`hours <= 720` は月額を時間按分、それ以外は `hours/720` で月額を按分。`monthly=0` かつ `annual` 未設定なら常に 0 |
+| `colorIndex` | 金額 | 表示用インデックス | UI 上の価格帯の色分けに使用 |
+| `fmtUSD` / `fmtJPY` | 金額（+ `fmtJPY` は為替レート） | 表示用文字列 | `$0.001` 未満は `<$0.01` と表示。`fmtJPY` は `ja-JP` ロケールで桁区切り |
+
+期間プリセット（`PERIODS`）は `1h / 8h / 24h / 7d / 30d / 4mo / 12mo` の 7 段階固定（`web-next/lib/cost.ts:13-21`）。ユーザーはこの期間とモデル/ツールを選択し、`HomePage.tsx` が `pricing.json`（`data/pricing.json` から static import）の価格データと組み合わせて上記関数を呼び出し、比較表を描画します。
+
 ---
 
 ## 02 アーキテクチャ
@@ -173,14 +186,13 @@ bash update.sh --no-scrape  # 為替レートのみ更新
 
 ## 04 品質と未検証の範囲
 
-### テスト構成（現状把握できる範囲）
+### テスト構成（2026-09-18 実測。詳細は [`docs/TESTING.md`](TESTING.md)）
 
-| 種別 | ツール | テストファイル数 |
+| 種別 | ツール | 結果 |
 |---|---|---|
-| フロントエンド | Vitest | 177 |
-| バックエンド | pytest | 5（`test_providers.py` / `test_imports.py` / `test_browser.py` / `test_tools.py` / `smoke/test_smoke.py`） |
-
-`CLAUDE.md` のコミット前チェック基準では「vitest 177 files / 1639 tests pass」と記載されていますが、**本ドキュメント作成時点でこのセッションは `bun run test` / `bun run build` / `bun run typecheck` / `bun run lint` / `uv run pytest` のいずれも実行していません**。上記の数値はリポジトリのドキュメント記述とファイル数の突合のみによるもので、実行結果による裏付けではない点に注意してください。
+| フロントエンド | Vitest | 177 files / **1639 tests** 全 Green（`bun run test` を実行し確認） |
+| バックエンド | pytest | 5 files（`test_providers.py` / `test_imports.py` / `test_browser.py` / `test_tools.py` / `smoke/test_smoke.py`） / **100 tests** 全 Green（`uv run pytest` を実行し確認） |
+| E2E | Playwright（`web-next/e2e/`） | 実装済みだが CI 未組込。`calculator.e2e.ts` は現行 DOM に存在しない `#scenario-selector` / `#api-pricing-table` を参照しており、実行すれば失敗する可能性が高いことをソース照合で確認済み |
 
 ### テストポリシー
 
@@ -193,6 +205,8 @@ bash update.sh --no-scrape  # 為替レートのみ更新
 - **Google AI/Vertex の価格取得**（`scraper/src/scraper/providers/google.py`）は、料金ページの構造的不安定性（モデル名の複数出現、価格ラベルの曖昧さ）を理由に、意図的にライブスクレイプを行わずハードコード値（`_FALLBACKS`）に固定されています。これは「バグ」ではなく設計判断です
 - 各プロバイダーのスクレイプ成功率はネットワーク環境・料金ページの HTML 構造変更に依存するため、リポジトリの静的読解だけでは実行時の成否を保証できません
 - SonarQube Cloud 解析（`make sonar`）は `SONAR_TOKEN` 等の初回手動セットアップが前提であり、未設定環境では実行できません
+- **GitHub Actions（`.github/workflows/test.yaml`）は `bun run test` と `uv run pytest` のみを実行し、`typecheck` / `lint` / `build` / E2E は含みません**。これらは `CLAUDE.md` に定める「コミット前チェック」としてローカル/エージェント側の運用に委ねられており、リモート CI では強制されていません
+- **`web-next/e2e/` の Playwright E2E テストは CI 未組込かつ一部が現行実装と不整合**: `calculator.e2e.ts` の `should load calculator UI elements` は `#scenario-selector` / `#api-pricing-table` という ID を参照しますが、この ID はリポジトリ全体（テストファイル自身を除く）のどこにも定義されておらず、実行すれば失敗する可能性が高いことを確認済みです。旧 Vite 版（`legacy/`）由来のテストが Next.js 移行後も更新されず残存したものと推測されます。詳細は [`docs/TESTING.md`](TESTING.md) の「E2E テストの位置づけ」を参照
 
 ### 品質担保の仕組み（機械的チェック）
 
