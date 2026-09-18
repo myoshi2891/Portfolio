@@ -2,7 +2,7 @@ import type { Portfolio } from "../types/portfolio";
 import { homeAnchor, projectPath } from "./routes";
 
 type HomeReferences = { heroEvidenceIds: readonly string[]; philosophy: readonly { href: string }[] };
-type DomainReferences = readonly { links: readonly { anchor: string }[] }[];
+type DomainReferences = readonly { links: readonly { anchor: string; href?: string }[] }[];
 
 export function validateHomeContent(data: Portfolio, home: HomeReferences, domains: DomainReferences): string[] {
   const errors: string[] = [];
@@ -17,7 +17,11 @@ export function validateHomeContent(data: Portfolio, home: HomeReferences, domai
     if (data.evidence[id]?.status !== "VERIFIED") errors.push(`invalid hero evidence: ${id}`);
   }
   for (const { links } of domains) {
-    for (const { anchor } of links) if (!anchors.has(anchor)) errors.push(`invalid domain anchor: ${anchor}`);
+    for (const { anchor, href } of links) {
+      if (href !== undefined) {
+        if (!destinations.has(href)) errors.push(`invalid domain link: ${href}`);
+      } else if (!anchors.has(anchor)) errors.push(`invalid domain anchor: ${anchor}`);
+    }
   }
   for (const { href } of home.philosophy) if (!destinations.has(href)) errors.push(`invalid philosophy link: ${href}`);
   return errors;
