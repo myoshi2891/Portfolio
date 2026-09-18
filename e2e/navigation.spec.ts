@@ -30,6 +30,7 @@ test("shared hidden anchors open without stealing focus; same hash can be select
 test("anchor history restores closed state, scroll and focus independently of the hash", async ({ page }) => {
   await page.goto("/"); await ready(page);
   await page.getByRole("link", { name: "Cloud", exact: false }).click();
+  await expect(page.locator("#study-r10")).toBeFocused();
   await page.locator("#more-studies-toggle").click();
   await expect(page.locator("#more-studies")).not.toHaveAttribute("open", "");
   await page.locator("#more-studies-toggle").focus();
