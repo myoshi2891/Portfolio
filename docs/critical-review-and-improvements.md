@@ -156,7 +156,7 @@
 - `/projects/multi-vendor-e-commerce`（ECアプリ・注文トランザクション）
 - `/projects/comparison-of-llms`（LLM料金収集・トークン計算）
 - `/projects/the-wild-oasis-for-admin`（客室予約・管理ダッシュボード）
-- `/projects/medical-studies`（医学研究データ抽出・検索）
+- `/projects/medical-studies`（質問票の計算・記録ツール）
 
 ### ① 【最大の欠点】詳細ページにすら「実際のUI画面・スクリーンショット」が1枚もない
 * **現状:** 各プロジェクトの詳細解説ページでありながら、トップページ同様に**実際のWebアプリのUIスクリーンショット、画面キャプチャ、GIF/動画デモが1枚も存在しない**。
