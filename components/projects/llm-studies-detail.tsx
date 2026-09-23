@@ -217,7 +217,7 @@ export function LlmStudiesDetail() {
         <tbody>
           <tr><th scope="row"><code>calcApiCost</code></th><td>API単価、トークン数、時間からUSD金額を算出。計算内では丸めません。</td></tr>
           <tr><th scope="row"><code>calcSubCost</code></th><td>月額を時間按分し、8760時間以上では年額を採用します。</td></tr>
-          <tr><th scope="row"><code>fmtUSD / fmtJPY</code></th><td>表示用に通貨を整形し、$0.001未満は &lt;$0.01 と表示します。</td></tr>
+          <tr><th scope="row"><code>fmtUSD / fmtJPY</code></th><td><code>fmtUSD</code> は有限の正数が $0.005 未満なら &lt;$0.01、それ以外の正数は小数第2位まで表示し、非有限値・0以下は $0.00 とします。<code>fmtJPY</code> は換算後が 0 円超・1 円未満なら &lt;¥1、それ以上は四捨五入して桁区切りし、換算後が 0 以下なら ¥0、金額または為替レートが無効なら ¥— とします。</td></tr>
         </tbody>
       </table></div>
       <CuratedReferences items={references.features} />

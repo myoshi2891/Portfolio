@@ -53,11 +53,19 @@ const slides = [
 
 export function LlmStudiesSlideshow() {
   const [active, setActive] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const visualIndexRef = useRef(1);
   const pausedRef = useRef(false);
+  const manualPausedRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const focusedRef = useRef(false);
   const visualSlides = [slides.at(-1)!, ...slides, slides[0]!];
+
+  const syncPaused = () => {
+    pausedRef.current = manualPausedRef.current || hoveredRef.current || focusedRef.current;
+  };
 
   const positionTrack = useCallback((index: number, animate: boolean) => {
     const viewport = viewportRef.current;
@@ -79,15 +87,25 @@ export function LlmStudiesSlideshow() {
 
   useEffect(() => {
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (motionPreference.matches) return;
-    const timer = window.setInterval(() => {
-      if (pausedRef.current || document.hidden) return;
-      const next = visualIndexRef.current + 1;
-      visualIndexRef.current = next;
-      setActive((next - 1 + slides.length) % slides.length);
-      positionTrack(next, true);
-    }, 5000);
-    return () => window.clearInterval(timer);
+    let timer: number | undefined;
+    const updateTimer = () => {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+      if (motionPreference.matches) return;
+      timer = window.setInterval(() => {
+        if (pausedRef.current || document.hidden) return;
+        const next = visualIndexRef.current + 1;
+        visualIndexRef.current = next;
+        setActive((next - 1 + slides.length) % slides.length);
+        positionTrack(next, true);
+      }, 5000);
+    };
+    updateTimer();
+    motionPreference.addEventListener("change", updateTimer);
+    return () => {
+      motionPreference.removeEventListener("change", updateTimer);
+      if (timer !== undefined) window.clearInterval(timer);
+    };
   }, [positionTrack]);
 
   const settleLoop = () => {
@@ -105,8 +123,14 @@ export function LlmStudiesSlideshow() {
     className="project-slideshow"
     aria-label="LLM Studiesの画面ギャラリー"
     aria-roledescription="カルーセル"
-    onMouseEnter={() => { pausedRef.current = true; }}
-    onMouseLeave={() => { pausedRef.current = false; }}
+    onMouseEnter={() => { hoveredRef.current = true; syncPaused(); }}
+    onMouseLeave={() => { hoveredRef.current = false; syncPaused(); }}
+    onFocusCapture={() => { focusedRef.current = true; syncPaused(); }}
+    onBlurCapture={(event) => {
+      if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return;
+      focusedRef.current = false;
+      syncPaused();
+    }}
   >
     <div className="slideshow-browser-bar" aria-hidden="true"><span>● ● ●</span><span>LLM Studies / Gallery</span><span>{String(active + 1).padStart(2, "0")}</span></div>
     <div className="slideshow-viewport" ref={viewportRef}>
@@ -131,6 +155,17 @@ export function LlmStudiesSlideshow() {
     </div>
     <div className="slideshow-meta">
       <figcaption><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
+      <button
+        className="slideshow-toggle"
+        type="button"
+        aria-label={isPaused ? "スライドショーを再生" : "スライドショーを一時停止"}
+        aria-pressed={isPaused}
+        onClick={() => {
+          manualPausedRef.current = !manualPausedRef.current;
+          setIsPaused(manualPausedRef.current);
+          syncPaused();
+        }}
+      >{isPaused ? "再生" : "一時停止"}</button>
       <div className="slideshow-dots" aria-hidden="true">
         {slides.map((item, index) => <span key={item.file} className={index === active ? "is-active" : undefined} />)}
       </div>

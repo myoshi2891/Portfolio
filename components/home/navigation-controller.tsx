@@ -8,6 +8,13 @@ export function NavigationController() {
   const pathname = usePathname();
   const previousPath = useRef<string | null>(null);
   useEffect(() => {
+    const masthead = document.querySelector<HTMLElement>(".masthead");
+    const updateMastheadHeight = () => {
+      if (masthead) document.documentElement.style.setProperty("--masthead-rendered-height", `${masthead.getBoundingClientRect().height}px`);
+    };
+    updateMastheadHeight();
+    const mastheadObserver = new ResizeObserver(updateMastheadHeight);
+    if (masthead) mastheadObserver.observe(masthead);
     const routePath = location.pathname;
     const routeChanged = previousPath.current !== null;
     previousPath.current = pathname;
@@ -184,6 +191,7 @@ export function NavigationController() {
     return () => {
       // The URL may already belong to the destination: never save old DOM here.
       active = false; generation++;
+      mastheadObserver.disconnect();
       clearTimeout(scrollTimer); cancelAnimationFrame(frame); cancelAnimationFrame(settleFrame);
       history.scrollRestoration = oldRestoration;
       document.removeEventListener("click", click, true);
