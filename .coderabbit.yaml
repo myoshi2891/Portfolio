@@ -3,3 +3,4 @@
 reviews:
   path_filters:
     - '!public/**'
+    - '!**/*.png'
