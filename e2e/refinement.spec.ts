@@ -62,6 +62,20 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /antigravity-agent-skills-guide\.png$/);
 });
 
+test("LLM Studies gallery slides are reachable with previous and next buttons under reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/projects/comparison-of-llms/');
+  const gallery = page.locator('.project-slideshow');
+  const activeImage = gallery.locator('.slideshow-slide.is-active img');
+  await gallery.getByRole('button', { name: '前のスライド' }).press('Enter');
+  await expect(activeImage).toHaveAttribute('src', /whats-new-guides\.png$/);
+  await expect(gallery.locator('figcaption')).toContainText('9 / 9');
+  await gallery.getByRole('button', { name: '次のスライド' }).press('Enter');
+  await gallery.getByRole('button', { name: '次のスライド' }).press('Enter');
+  await expect(activeImage).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await expect(gallery.locator('figcaption')).toContainText('2 / 9');
+});
+
 test("wrapped masthead height offsets anchors and sticky contents", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 900 });
   await page.goto('/projects/comparison-of-llms/');
