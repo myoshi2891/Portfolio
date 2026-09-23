@@ -168,7 +168,7 @@ sequenceDiagram
 | 図解 | Mermaid 10.9.8 | HTML/Next.js 双方で使用。SRI ハッシュ・エンティティエスケープの規約あり |
 | Lint/Format | Biome ^2.5.0 | `bun run lint` / `lint:fix` |
 | テスト | Vitest ^4.1.4 + Testing Library | `test` / `test:coverage` / `test:watch` |
-| 外部連携 | Google Sheets API（`drive.file` スコープ） | サーバ・秘密情報なしのゼロ知識設計 |
+| 外部連携 | Google Sheets API（`drive.file` スコープ） | OAuth をクライアント側で完結させ、サーバに秘密情報を保持しない設計。エクスポート時は選択したデータを Google Sheets API へ送信 |
 | CI | GitHub Actions | 5 ジョブ（後述 04 節） |
 | レガシー生成系 | Python 3.12（`scripts/bodyparts3d/*`）、Node.js（`scripts/*.mjs`） | BodyParts3D モデル抽出、Markdown 整形、HTML スケルトン生成 |
 
@@ -260,34 +260,34 @@ sequenceDiagram
 
 | パス | 役割・主要ロジック |
 |---|---|
-| [web-next/next.config.ts](../web-next/next.config.ts) | セキュリティヘッダ・CSP の静的付与、Turbopack ルート設定 |
-| [web-next/lib/security/csp.ts](../web-next/lib/security/csp.ts) | CSP 文字列を組み立てる純粋関数（`buildContentSecurityPolicy`） |
-| [web-next/lib/content/registry.ts](../web-next/lib/content/registry.ts) | 全コンテンツページのメタ情報（カテゴリ・鮮度・関連ページ）を集約する SSoT レジストリ |
-| [web-next/lib/content/search.ts](../web-next/lib/content/search.ts) | サイト内横断検索の純粋関数コア |
-| [web-next/lib/anatomy/manifest.ts](../web-next/lib/anatomy/manifest.ts) | 3D 解剖アトラスの構造・モデルパス・MRI・md リンクを宣言する manifest |
-| [web-next/lib/anatomy/types.ts](../web-next/lib/anatomy/types.ts) | `validateManifest` 等、`any` を使わない型ガードによる検証ロジック |
-| [web-next/lib/anatomy/png-sanitize.ts](../web-next/lib/anatomy/png-sanitize.ts) | 公開用 MRI PNG から PHI 相当メタデータ（tEXt 等）を除去する処理 |
-| [web-next/lib/prom/registry.ts](../web-next/lib/prom/registry.ts) | HIT-6/MIDAS/MSQ 等 PROM 尺度の宣言的レジストリ（制限尺度は redaction 済み） |
-| [web-next/lib/prom/scoring.ts](../web-next/lib/prom/scoring.ts) | 尺度別の採点ロジック（純粋関数） |
-| [web-next/lib/prom/storage.ts](../web-next/lib/prom/storage.ts) | `StorageAdapter` インターフェースと `localStorage` 実装（依存性逆転により将来の永続化先差し替えに対応） |
-| [web-next/lib/prom/restricted-loader.ts](../web-next/lib/prom/restricted-loader.ts) | 制限尺度のローカル専用オーバーレイ読み込み（本番ビルドでは無効化） |
-| [web-next/lib/export/workbook.ts](../web-next/lib/export/workbook.ts) | エクスポート中間表現 `ExportWorkbook` の構築（フォーマット非依存） |
-| [web-next/lib/export/registry.ts](../web-next/lib/export/registry.ts) | `ReportExporter`（CSV / Google Sheets）の宣言的レジストリ |
-| [web-next/lib/export/google/sheetsClient.ts](../web-next/lib/export/google/sheetsClient.ts) | Google Sheets API クライアント（`drive.file` 最小スコープ） |
-| [web-next/lib/glossary/glossary.ts](../web-next/lib/glossary/glossary.ts) | 用語集レジストリ本体（162 語、読み仮名＋やさしい解説） |
-| [web-next/components/glossary/AutoGlossary.tsx](../web-next/components/glossary/AutoGlossary.tsx) | 本文初出の専門用語を自動的に `<Term>` へラップするラッパーコンポーネント |
-| [web-next/components/anatomy/ModelViewer.tsx](../web-next/components/anatomy/ModelViewer.tsx) | `@google/model-viewer` の遅延ロード・失敗時降格表示 |
-| [web-next/components/anatomy/MriSliceViewer.tsx](../web-next/components/anatomy/MriSliceViewer.tsx) | MRI PNG スライスのスクラブ表示 |
-| [web-next/components/site/SiteSearch.tsx](../web-next/components/site/SiteSearch.tsx) | ヘッダー検索 UI（WAI-ARIA combobox） |
-| [web-next/app/layout.tsx](../web-next/app/layout.tsx) | ルートレイアウト（`SiteHeader` / `DisclaimerBanner` / `SiteFooter` を全ページ共通適用） |
-| [web-next/app/sitemap.ts](../web-next/app/sitemap.ts) | サイトマップ生成（`NEXT_PUBLIC_SITE_URL` 未設定時は本番ビルドを fail-closed で拒否） |
-| [.github/workflows/ci.yml](../.github/workflows/ci.yml) | CI 5 ジョブ定義（typecheck/lint/test/build・ライセンスゲート・markdown・Mermaid・PII チェック） |
-| [docs/architecture.md](architecture.md) | `/anatomy` 3D 解剖アトラスの詳細設計書（v1.3、リスコープ宣言を含む） |
-| [docs/google-sheets-sync-design.md](google-sheets-sync-design.md) | PROM の Google スプレッドシート同期／CSV エクスポート詳細設計 |
-| [docs/publishing/README.md](publishing/README.md) | 公開ガバナンス監査サマリ（F1〜F7）とステータス一覧 |
-| [plans/README.md](../plans/README.md) | 実装計画群（001〜015）の進行順・依存関係・Status 一覧 |
-| [PROGRESS.md](../PROGRESS.md) | コンテンツ移行進捗・テスト実測値・次の作業 |
-| [.claude/rules/no-absolute-paths.md](../.claude/rules/no-absolute-paths.md) | コミット対象ファイルへの絶対パス記載禁止ルールと CI 検証コマンド |
+| [web-next/next.config.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/next.config.ts) | セキュリティヘッダ・CSP の静的付与、Turbopack ルート設定 |
+| [web-next/lib/security/csp.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/security/csp.ts) | CSP 文字列を組み立てる純粋関数（`buildContentSecurityPolicy`） |
+| [web-next/lib/content/registry.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/content/registry.ts) | 全コンテンツページのメタ情報（カテゴリ・鮮度・関連ページ）を集約する SSoT レジストリ |
+| [web-next/lib/content/search.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/content/search.ts) | サイト内横断検索の純粋関数コア |
+| [web-next/lib/anatomy/manifest.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/anatomy/manifest.ts) | 3D 解剖アトラスの構造・モデルパス・MRI・md リンクを宣言する manifest |
+| [web-next/lib/anatomy/types.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/anatomy/types.ts) | `validateManifest` 等、`any` を使わない型ガードによる検証ロジック |
+| [web-next/lib/anatomy/png-sanitize.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/anatomy/png-sanitize.ts) | 公開用 MRI PNG から PHI 相当メタデータ（tEXt 等）を除去する処理 |
+| [web-next/lib/prom/registry.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/prom/registry.ts) | HIT-6/MIDAS/MSQ 等 PROM 尺度の宣言的レジストリ（制限尺度は redaction 済み） |
+| [web-next/lib/prom/scoring.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/prom/scoring.ts) | 尺度別の採点ロジック（純粋関数） |
+| [web-next/lib/prom/storage.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/prom/storage.ts) | `StorageAdapter` インターフェースと `localStorage` 実装（依存性逆転により将来の永続化先差し替えに対応） |
+| [web-next/lib/prom/restricted-loader.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/prom/restricted-loader.ts) | 制限尺度のローカル専用オーバーレイ読み込み（本番ビルドでは無効化） |
+| [web-next/lib/export/workbook.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/export/workbook.ts) | エクスポート中間表現 `ExportWorkbook` の構築（フォーマット非依存） |
+| [web-next/lib/export/registry.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/export/registry.ts) | `ReportExporter`（CSV / Google Sheets）の宣言的レジストリ |
+| [web-next/lib/export/google/sheetsClient.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/export/google/sheetsClient.ts) | Google Sheets API クライアント（`drive.file` 最小スコープ） |
+| [web-next/lib/glossary/glossary.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/lib/glossary/glossary.ts) | 用語集レジストリ本体（162 語、読み仮名＋やさしい解説） |
+| [web-next/components/glossary/AutoGlossary.tsx](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/components/glossary/AutoGlossary.tsx) | 本文初出の専門用語を自動的に `<Term>` へラップするラッパーコンポーネント |
+| [web-next/components/anatomy/ModelViewer.tsx](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/components/anatomy/ModelViewer.tsx) | `@google/model-viewer` の遅延ロード・失敗時降格表示 |
+| [web-next/components/anatomy/MriSliceViewer.tsx](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/components/anatomy/MriSliceViewer.tsx) | MRI PNG スライスのスクラブ表示 |
+| [web-next/components/site/SiteSearch.tsx](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/components/site/SiteSearch.tsx) | ヘッダー検索 UI（WAI-ARIA combobox） |
+| [web-next/app/layout.tsx](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/app/layout.tsx) | ルートレイアウト（`SiteHeader` / `DisclaimerBanner` / `SiteFooter` を全ページ共通適用） |
+| [web-next/app/sitemap.ts](https://github.com/myoshi2891/Medical-Studies/blob/main/web-next/app/sitemap.ts) | サイトマップ生成（`NEXT_PUBLIC_SITE_URL` 未設定時は本番ビルドを fail-closed で拒否） |
+| [.github/workflows/ci.yml](https://github.com/myoshi2891/Medical-Studies/blob/main/.github/workflows/ci.yml) | CI 5 ジョブ定義（typecheck/lint/test/build・ライセンスゲート・markdown・Mermaid・PII チェック） |
+| [docs/architecture.md](https://github.com/myoshi2891/Medical-Studies/blob/main/docs/architecture.md) | `/anatomy` 3D 解剖アトラスの詳細設計書（v1.3、リスコープ宣言を含む） |
+| [docs/google-sheets-sync-design.md](https://github.com/myoshi2891/Medical-Studies/blob/main/docs/google-sheets-sync-design.md) | PROM の Google スプレッドシート同期／CSV エクスポート詳細設計 |
+| [docs/publishing/README.md](https://github.com/myoshi2891/Medical-Studies/blob/main/docs/publishing/README.md) | 公開ガバナンス監査サマリ（F1〜F7）とステータス一覧 |
+| [plans/README.md](https://github.com/myoshi2891/Medical-Studies/blob/main/plans/README.md) | 実装計画群（001〜015）の進行順・依存関係・Status 一覧 |
+| [PROGRESS.md](https://github.com/myoshi2891/Medical-Studies/blob/main/PROGRESS.md) | コンテンツ移行進捗・テスト実測値・次の作業 |
+| [.claude/rules/no-absolute-paths.md](../../.claude/rules/no-absolute-paths.md) | Portfolio のコミット対象ファイルへの絶対パス記載禁止ルールと CI 検証コマンド |
 
 ---
 

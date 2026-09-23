@@ -20,7 +20,7 @@
 | 販売者 | `SELLER` | 自店舗の商品・在庫・配送ルール・クーポンを管理する中小事業者 | 自店舗完結型の商品/在庫/注文/クーポン管理ダッシュボード |
 | 管理者 | `ADMIN` | カテゴリ・サブカテゴリ・オファータグ・店舗ステータスを管理する運営者 | プラットフォーム全体のカタログ統制、横断的な注文・店舗監視 |
 
-> 参照: [`.claude/steering/product.md`](../.claude/steering/product.md)、ロードマップは `docs/architecture/saas-roadmap.md`、仕様の Single Source of Truth は `specs/multi-vendor-ecommerce/`。
+> 参照: [`.claude/steering/product.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/product.md)、ロードマップは [`docs/architecture/saas-roadmap.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/docs/architecture/saas-roadmap.md)、仕様の Single Source of Truth は [`specs/multi-vendor-ecommerce/`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/tree/main/specs/multi-vendor-ecommerce)。
 
 ---
 
@@ -184,7 +184,7 @@ flowchart LR
 | 認可ガードの try/catch 外配置 | 認可エラー（"Unauthenticated." 等）を汎用 DB エラーメッセージで上書きしないための意図的設計 |
 | CSRF 対策 | 専用トークンモジュールを新設せず、Next.js 16 Server Actions の Origin/Host 検証と Clerk `SameSite=Lax` セッション Cookie に依拠（[ADR-001](architecture/decisions/001-csrf-policy.md)） |
 
-> 参照: [`.claude/steering/tech.md`](../.claude/steering/tech.md)、[`.claude/steering/structure.md`](../.claude/steering/structure.md)
+> 参照: [`.claude/steering/tech.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/tech.md)、[`.claude/steering/structure.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/structure.md)
 
 ---
 
@@ -254,7 +254,7 @@ flowchart LR
 | `requireSeller()` | `requireUser` + ロール `SELLER` 検証 | `"Only sellers can perform this action."` |
 | `requireStoreOwner(storeUrl)` | `requireSeller` + 指定店舗の所有権検証、`{ user, store }` を返す | `"Forbidden: store not owned by current user."` |
 
-承認済み例外（`src/queries/profile.ts` 5 箇所、`src/queries/paypal.ts` 1 箇所）は詳細な理由と共に [`.claude/steering/tech.md`](../.claude/steering/tech.md) の「認可ガードの承認済み例外」に記載されている。
+承認済み例外（`src/queries/profile.ts` 5 箇所、`src/queries/paypal.ts` 1 箇所）は詳細な理由と共に [`.claude/steering/tech.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/tech.md) の「認可ガードの承認済み例外」に記載されている。
 
 ### ミドルウェアで保護されているルート（`src/middleware.ts`）
 
@@ -273,7 +273,7 @@ flowchart LR
 | `api/webhooks/stripe` | POST | Stripe 決済 Webhook |
 | `api/webhooks/paypal` | POST | PayPal 決済 Webhook |
 
-> 参照: [`.claude/steering/tech.md`](../.claude/steering/tech.md)、[`.claude/steering/structure.md`](../.claude/steering/structure.md)、`docs/architecture/decisions/`
+> 参照: [`.claude/steering/tech.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/tech.md)、[`.claude/steering/structure.md`](https://github.com/myoshi2891/Multi-Vendor-E-Commerce/blob/main/.claude/steering/structure.md)、`docs/architecture/decisions/`
 
 ---
 

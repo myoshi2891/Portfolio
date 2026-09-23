@@ -2,7 +2,7 @@
 
 最終更新日: 2026-09-18
 
-> クイックスタートは [`README.md`](../README.md)、アーキテクチャの一次情報は [`CLAUDE.md`](../CLAUDE.md) を参照。本ドキュメントはそれらを俯瞰する形で「00 概要 / 01 主な機能 / 02 アーキテクチャ / 03 構成と制約 / 04 品質と未検証の範囲 / 05 参照コード」の 6 項目に整理したものです。
+> クイックスタートは [`README.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/README.md)、アーキテクチャの一次情報は [`CLAUDE.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/CLAUDE.md) を参照。本ドキュメントはそれらを俯瞰する形で「00 概要 / 01 主な機能 / 02 アーキテクチャ / 03 構成と制約 / 04 品質と未検証の範囲 / 05 参照コード」の 6 項目に整理したものです。
 
 ---
 
@@ -47,7 +47,7 @@ LLM-Studies は、単一リポジトリで 2 つの役割を担うプロジェ�
 | `calcApiCost` | `priceIn`（USD/100万トークン）, `priceOut`, `inputTokens`, `outputTokens`, `hours` | USD 金額 | `(input/1e6 * priceIn + output/1e6 * priceOut) * hours` の単純計算。丸め処理なし |
 | `calcSubCost` | `monthly`（USD月額）, `annual`（USD年額 or `null`）, `hours` | USD 金額 | `hours >= 8760` は年額をそのまま採用、`hours <= 720` は月額を時間按分、それ以外は `hours/720` で月額を按分。`monthly=0` かつ `annual` 未設定なら常に 0 |
 | `colorIndex` | 金額 | 表示用インデックス | UI 上の価格帯の色分けに使用 |
-| `fmtUSD` / `fmtJPY` | 金額（+ `fmtJPY` は為替レート） | 表示用文字列 | `$0.001` 未満は `<$0.01` と表示。`fmtJPY` は `ja-JP` ロケールで桁区切り |
+| `fmtUSD` / `fmtJPY` | 金額（+ `fmtJPY` は為替レート） | 表示用文字列 | `fmtUSD` は有限の正数が `$0.005` 未満なら `<$0.01`、それ以外の正数は小数第2位まで桁区切りし、非有限値・0以下は `$0.00`。`fmtJPY` は換算後が 0 円超・1 円未満なら `<¥1`、1 円以上は四捨五入して `ja-JP` ロケールで桁区切りし、換算後が 0 以下なら `¥0`、金額または為替レートが無効なら `¥—` |
 
 期間プリセット（`PERIODS`）は `1h / 8h / 24h / 7d / 30d / 4mo / 12mo` の 7 段階固定（`web-next/lib/cost.ts:13-21`）。ユーザーはこの期間とモデル/ツールを選択し、`HomePage.tsx` が `pricing.json`（`data/pricing.json` から static import）の価格データと組み合わせて上記関数を呼び出し、比較表を描画します。
 
@@ -110,19 +110,19 @@ flowchart TD
 
 | パス | 役割 |
 |---|---|
-| [`update.sh`](../update.sh) | scrape → copy を実行するオーケストレーター |
-| [`scraper/src/scraper/main.py`](../scraper/src/scraper/main.py) | スクレイパー CLI エントリポイント |
-| [`scraper/src/scraper/models.py`](../scraper/src/scraper/models.py) | `PricingData` / `ApiModel` / `SubTool` の Pydantic スキーマ（型の SSoT） |
-| [`scraper/src/scraper/provenance.py`](../scraper/src/scraper/provenance.py) | 3 層フォールバックの出自解決（`FallbackResolver`） |
+| [`update.sh`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/update.sh) | scrape → copy を実行するオーケストレーター |
+| [`scraper/src/scraper/main.py`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/scraper/src/scraper/main.py) | スクレイパー CLI エントリポイント |
+| [`scraper/src/scraper/models.py`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/scraper/src/scraper/models.py) | `PricingData` / `ApiModel` / `SubTool` の Pydantic スキーマ（型の SSoT） |
+| [`scraper/src/scraper/provenance.py`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/scraper/src/scraper/provenance.py) | 3 層フォールバックの出自解決（`FallbackResolver`） |
 | `scraper/src/scraper/providers/` | API プロバイダー別スクレイパー（anthropic / openai / google / aws / deepseek / xai / moonshot / zhipu） |
 | `scraper/src/scraper/tools/` | コーディングツール別スクレイパー（cursor / github_copilot / windsurf / claude_code / jetbrains / openai_codex / google_one / antigravity） |
-| [`web-next/lib/page-registry.ts`](../web-next/lib/page-registry.ts) | 全ページメタデータの SSoT |
-| [`web-next/lib/pricing.ts`](../web-next/lib/pricing.ts) | Zod スキーマ + 型パリティのコンパイル時検証 |
+| [`web-next/lib/page-registry.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/page-registry.ts) | 全ページメタデータの SSoT |
+| [`web-next/lib/pricing.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/pricing.ts) | Zod スキーマ + 型パリティのコンパイル時検証 |
 | `web-next/app/` | App Router のページ実体（コスト計算機ホーム + 84 ガイドページ） |
 | `web-next/components/site/` | 共通インフラ（`SiteHeader` / `DisclaimerBanner` / `PageFreshness` / `RelatedPages`） |
-| [`web-next/data/pricing.json`](../web-next/data/pricing.json) | ビルド時 static import 用 |
-| [`web-next/public/pricing.json`](../web-next/public/pricing.json) | `/pricing.json` URL 配信用 |
-| [`netlify.toml`](../netlify.toml) | Netlify デプロイ設定 |
+| [`web-next/data/pricing.json`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/data/pricing.json) | ビルド時 static import 用 |
+| [`web-next/public/pricing.json`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/public/pricing.json) | `/pricing.json` URL 配信用 |
+| [`netlify.toml`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/netlify.toml) | Netlify デプロイ設定 |
 | `legacy/` | 旧 Vite/HTML 資産。`.gitignore` 済・移行完了につき編集凍結 |
 
 ---
@@ -178,15 +178,15 @@ bash update.sh --no-scrape  # 為替レートのみ更新
 - 元 HTML/Markdown ガイドの Next.js 移植は **100% 忠実転写**が絶対ルール（代表例のみの抜粋・要約は違反）
 - 型は `scraper/src/scraper/models.py`（Pydantic）が SSoT、`web-next/types/pricing.ts` は手動ミラー。片方の変更時は両方を同期する
 - ナビゲーションは `page-registry.ts` からの導出のみ。`nav-links.ts` への手書き禁止
-- コミット対象ファイルにユーザー名を含む絶対パスを記載しない（[`.claude/rules/no-absolute-paths.md`](../.claude/rules/no-absolute-paths.md)）
-- Mermaid 図解のレイアウト（中央寄せ・縮小フィット）はページ側で再実装せず共有コンポーネントに一任する（[`.claude/rules/mermaid-diagram-layout.md`](../.claude/rules/mermaid-diagram-layout.md)）
-- `globals.css` 変更後は `web-next/.next` を削除して再起動する（[`.claude/rules/css-cache-reset.md`](../.claude/rules/css-cache-reset.md)）
+- コミット対象ファイルにユーザー名を含む絶対パスを記載しない（[`.claude/rules/no-absolute-paths.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/.claude/rules/no-absolute-paths.md)）
+- Mermaid 図解のレイアウト（中央寄せ・縮小フィット）はページ側で再実装せず共有コンポーネントに一任する（[`.claude/rules/mermaid-diagram-layout.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/.claude/rules/mermaid-diagram-layout.md)）
+- `globals.css` 変更後は `web-next/.next` を削除して再起動する（[`.claude/rules/css-cache-reset.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/.claude/rules/css-cache-reset.md)）
 
 ---
 
 ## 04 品質と未検証の範囲
 
-### テスト構成（2026-09-18 実測。詳細は [`docs/TESTING.md`](TESTING.md)）
+### テスト構成（2026-09-18 実測。詳細は [`docs/TESTING.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/TESTING.md)）
 
 | 種別 | ツール | 結果 |
 |---|---|---|
@@ -206,7 +206,7 @@ bash update.sh --no-scrape  # 為替レートのみ更新
 - 各プロバイダーのスクレイプ成功率はネットワーク環境・料金ページの HTML 構造変更に依存するため、リポジトリの静的読解だけでは実行時の成否を保証できません
 - SonarQube Cloud 解析（`make sonar`）は `SONAR_TOKEN` 等の初回手動セットアップが前提であり、未設定環境では実行できません
 - **GitHub Actions（`.github/workflows/test.yaml`）は `bun run test` と `uv run pytest` のみを実行し、`typecheck` / `lint` / `build` / E2E は含みません**。これらは `CLAUDE.md` に定める「コミット前チェック」としてローカル/エージェント側の運用に委ねられており、リモート CI では強制されていません
-- **`web-next/e2e/` の Playwright E2E テストは CI 未組込かつ一部が現行実装と不整合**: `calculator.e2e.ts` の `should load calculator UI elements` は `#scenario-selector` / `#api-pricing-table` という ID を参照しますが、この ID はリポジトリ全体（テストファイル自身を除く）のどこにも定義されておらず、実行すれば失敗する可能性が高いことを確認済みです。旧 Vite 版（`legacy/`）由来のテストが Next.js 移行後も更新されず残存したものと推測されます。詳細は [`docs/TESTING.md`](TESTING.md) の「E2E テストの位置づけ」を参照
+- **`web-next/e2e/` の Playwright E2E テストは CI 未組込かつ一部が現行実装と不整合**: `calculator.e2e.ts` の `should load calculator UI elements` は `#scenario-selector` / `#api-pricing-table` という ID を参照しますが、この ID はリポジトリ全体（テストファイル自身を除く）のどこにも定義されておらず、実行すれば失敗する可能性が高いことを確認済みです。旧 Vite 版（`legacy/`）由来のテストが Next.js 移行後も更新されず残存したものと推測されます。詳細は [`docs/TESTING.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/TESTING.md) の「E2E テストの位置づけ」を参照
 
 ### 品質担保の仕組み（機械的チェック）
 
@@ -223,18 +223,18 @@ bash update.sh --no-scrape  # 為替レートのみ更新
 
 | 項目 | 参照先 |
 |---|---|
-| プロジェクト全体の一次情報（AI エージェント向け） | [`CLAUDE.md`](../CLAUDE.md) |
-| リポジトリ概要（人間向け） | [`docs/README.md`](README.md) |
-| テスト戦略 | [`docs/TESTING.md`](TESTING.md) |
-| 現在の進捗 | [`docs/PROGRESS.md`](PROGRESS.md) |
-| Phase A–F 移行計画（アーカイブ） | [`docs/archive/NEXTJS_PHASE_A_F_PLAN.md`](archive/NEXTJS_PHASE_A_F_PLAN.md) |
-| 型スキーマ（Python 側 SSoT） | [`scraper/src/scraper/models.py`](../scraper/src/scraper/models.py) |
-| 型スキーマ（TypeScript 側ミラー） | [`web-next/types/pricing.ts`](../web-next/types/pricing.ts) |
-| 3 層フォールバック解決ロジック | [`scraper/src/scraper/provenance.py`](../scraper/src/scraper/provenance.py) |
-| ページメタデータ SSoT | [`web-next/lib/page-registry.ts`](../web-next/lib/page-registry.ts) |
-| ナビ表示順の定義 | [`web-next/lib/nav-taxonomy.ts`](../web-next/lib/nav-taxonomy.ts) |
-| コスト計算の純粋関数 | [`web-next/lib/cost.ts`](../web-next/lib/cost.ts) |
-| Mermaid 共有コンポーネント | [`web-next/components/docs/MermaidDiagram.tsx`](../web-next/components/docs/MermaidDiagram.tsx) |
-| i18n（JA/EN テキスト管理） | [`web-next/lib/i18n.tsx`](../web-next/lib/i18n.tsx) |
-| Netlify デプロイ設定 | [`netlify.toml`](../netlify.toml) |
-| Docker 管理 | [`Makefile`](../Makefile), [`docker-compose.yml`](../docker-compose.yml) |
+| プロジェクト全体の一次情報（AI エージェント向け） | [`CLAUDE.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/CLAUDE.md) |
+| リポジトリ概要（人間向け） | [`docs/README.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/README.md) |
+| テスト戦略 | [`docs/TESTING.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/TESTING.md) |
+| 現在の進捗 | [`docs/PROGRESS.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/PROGRESS.md) |
+| Phase A–F 移行計画（アーカイブ） | [`docs/archive/NEXTJS_PHASE_A_F_PLAN.md`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docs/archive/NEXTJS_PHASE_A_F_PLAN.md) |
+| 型スキーマ（Python 側 SSoT） | [`scraper/src/scraper/models.py`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/scraper/src/scraper/models.py) |
+| 型スキーマ（TypeScript 側ミラー） | [`web-next/types/pricing.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/types/pricing.ts) |
+| 3 層フォールバック解決ロジック | [`scraper/src/scraper/provenance.py`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/scraper/src/scraper/provenance.py) |
+| ページメタデータ SSoT | [`web-next/lib/page-registry.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/page-registry.ts) |
+| ナビ表示順の定義 | [`web-next/lib/nav-taxonomy.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/nav-taxonomy.ts) |
+| コスト計算の純粋関数 | [`web-next/lib/cost.ts`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/cost.ts) |
+| Mermaid 共有コンポーネント | [`web-next/components/docs/MermaidDiagram.tsx`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/components/docs/MermaidDiagram.tsx) |
+| i18n（JA/EN テキスト管理） | [`web-next/lib/i18n.tsx`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/web-next/lib/i18n.tsx) |
+| Netlify デプロイ設定 | [`netlify.toml`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/netlify.toml) |
+| Docker 管理 | [`Makefile`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/Makefile), [`docker-compose.yml`](https://github.com/myoshi2891/Comparison-of-LLMs/blob/main/docker-compose.yml) |

@@ -33,18 +33,20 @@ The Wild Oasis は、ホテル運営スタッフが客室・予約・ゲスト�
 | ダッシュボード | `useRecentBookings`, `useRecentStays`, `Stats`, `SalesChart`, `DurationChart` | URL クエリパラメータ `last`（7/30/90日）に応じて期間集計し、売上・稼働率・滞在日数分布を可視化 |
 | 客室管理 | `useCabins`, `useCreateCabin`, `useEditCabin`, `useDeleteCabin` | 客室の一覧取得・作成・編集（画像アップロード含む）・削除。作成時は Supabase Storage への画像アップロードを伴う |
 | 予約管理 | `useBookings`, `useBooking`, `useDeleteBooking` | フィルタ/ソート/ページネーション付き一覧、詳細取得、削除 |
-| チェックイン/アウト | `useCheckin`, `useCheckout`, `useTodayActivity` | 支払い確認・朝食オプションを伴うチェックイン、チェックアウト、本日の入退室一覧ら|
-| 設定 | `useSettings`, `useUpdateSetting` | 朝食仡格、最小/最大宿泊日数、最大ゲスト数の取得・更新 |
+| チェックイン/アウト | `useCheckin`, `useCheckout`, `useTodayActivity` | 支払い確認・朝食オプションを伴うチェックイン、チェックアウト、本日のチェックイン・チェックアウト対象一覧の取得 |
+| 設定 | `useSettings`, `useUpdateSetting` | 朝食価格、最小/最大宿泊日数、最大ゲスト数の取得・更新 |
 
 ### 入出力・振る舞いの例
 
 代表的なフックの入出力と副作用を以下に示す。
-| フック | 入力 | 出力 | 主な遯作用 |
+| フック | 入力 | 出力 | 主な副作用 |
 | --- | --- | --- | --- |
 | `useCheckin` | `{ bookingId, breakfast? }` | `{ checkin, isCheckingIn }` | `status` を `checked-in`、`isPaid` を `true` に更新。成功時に、`bookings`/`booking` キャッシュを無効化し `/` へ遷移 |
 | `useCheckout` | `bookingId: number` | `{ checkout, isCheckingOut }` | `status` を `checked-out` に更新。キャッシュ無効化のみ（遷移なし） |
+| `useTodayActivity` | なし | `{ activities, isLoading }` | `getStaysTodayActivity` を `today-activity` クエリとして実行し、本日のチェックイン・チェックアウト対象を取得 |
+| `useSettings` | なし | `{ isLoading, error, settings }` | `getSettings` を `setting` クエリとして実行し、設定の単一行を取得 |
 | `useLogin` | `{ email, password }` | `{ login, isLoading }` | 成功時 `["user"]` キャッシュを更新し `/dashboard` へ遷移。失敗時はトースト表示のみ（メッセージは汎用化され、詳細は開発環境のみ console 出力） |
-| `useUpdateSetting` | `SettingsUpdate`（部分更新） | `{ updateSetting, isUpdating }` | 成功時 `settings` クエリを無効化しトースト表示。設定は常に `id=1` の単一行 |
+| `useUpdateSetting` | `SettingsUpdate`（部分更新） | `{ updateSetting, isUpdating }` | 設定の単一行（`id=1`）を更新し、成功時に `settings` クエリを無効化してトースト表示（取得側の `setting` とはクエリキーが一致していない） |
 | `useRecentBookings` | URL クエリ `?last=` （未指定時 7） | `{ isLoading, bookings }` | 現在日から N 日前までの予約を取得しダッシュボードの売上集計に使用 |
 
 > `useCheckin` / `useCheckout` はキャンセル・削除フローを持たず、ステータス遷移は一方向（unconfirmed → checked-in → checked-out）であることが `src/types/domain.ts` の `BookingStatus` 型から確認できる。
@@ -53,7 +55,7 @@ The Wild Oasis は、ホテル運営スタッフが客室・予約・ゲスト�
 
 ### システム全体設計と責務分離
 
-React SPA + Supabase BaaS の 2 層構成であり、自前 API サーバーは持たない。フロントエンド内部ではルーティング層、UH 層、サーバー状態層（React Query）、API 層（`src/services/`）に責務が分離されている。`ProtectedRoute`（`src/ui/ProtectedRoute.tsx`）が `useUser` を経由して認証状態を判定し、未認証の場合は `/login` へリダイレクトする（`src/App.tsx` のルート定義で確認済み）。
+React SPA + Supabase BaaS の 2 層構成であり、自前 API サーバーは持たない。フロントエンド内部ではルーティング層、UI 層、サーバー状態層（React Query）、API 層（`src/services/`）に責務が分離されている。`ProtectedRoute`（`src/ui/ProtectedRoute.tsx`）が `useUser` を経由して認証状態を判定し、未認証の場合は `/login` へリダイレクトする（`src/App.tsx` のルート定義で確認済み）。
 
 ```mermaid
 flowchart TB
@@ -155,7 +157,7 @@ flowchart LR
 | `src/App.tsx` | ルート定義 + プロバイダー（QueryClientProvider、DarkModeProvider、Toaster） |
 | `src/features/` | 機能モジュール（authentication, bookings, cabins, check-in-out, dashboard, settings） |
 | `src/pages/` | ルートに対応するページコンポーネント |
-| `src/ui/` | 写回し可能な共通UIコンポーネント（`.tsx`） |
+| `src/ui/` | 再利用可能な共通UIコンポーネント（`.tsx`） |
 | `src/services/` | Supabase API クライアント初期化設定 |
 | `src/hooks/` | 汎用カスタムフック（`useLocalStorageState`, `useMoveBack`, `useOutsideClick`） |
 | `src/context/` | Context API（`DarkModeContext`） |
@@ -219,14 +221,14 @@ flowchart LR
 | `src/services/apiCabins.ts` | `getCabins`、`createEditCabin`（画像アップロードと失敗時ロールバック） |
 | `src/services/apiSettings.ts` | `getSettings` / `updateSetting`（単一行 `id=1` を常に更新） |
 | `src/types/domain.ts` | Supabase生成型（`Database`）から派生するドメイン型（`Cabin`, `Booking`, `Guest`, `Settings` 等）と JOIN 拡張型（`BookingWithSummary`, `BookingWithDetails` 等）、フォーム入力型 |
-| `src/types/supabase.ts` | Supabaseテーブルスキーマの生成垚義 |
+| `src/types/supabase.ts` | Supabaseテーブルスキーマの生成型定義 |
 | `src/features/check-in-out/useCheckin.ts` / `useCheckout.ts` | 予約ステータス遷移（`checked-in`/`checked-out`）とキャッシュ無効化を担うミューセーションフック |
 | `src/features/dashboard/useRecentBookings.ts` / `useRecentStays.ts` | URLクエリ `last` に基づく期間集計データ取得 |
 | `src/context/DarkModeContext.tsx` | ダークモード/ライトモードの切替状態を Context で全体共有 |
 | `src/styles/GlobalStyles.ts` | styled-components のグローバルスタイル定義の集約先 |
 | `src/test/setup.ts` | Vitest（jsdom環境）のテスト初期化設定 |
-| e2e/seed.ts` | E2E用シードデータ注入スクリプト。砺網全と実行防止のガード。`--force-seed`/`ALLOW_DESTRUCTIVE_SEED`）を実装 |
-| `vite.config.ts` | Vite/Vitest統合設定。`environment: "jsdom"`、`e2e/**/*.spec.ts` を Vitest 対象から晌外 |
-| `tsconfig.json` | TypeScript strict�設定（`strict`, `noUnusedLocals`, `noUnusedParameters` 等） |
+| `e2e/seed.ts` | E2E用シードデータ注入スクリプト。誤実行防止のガード（`--force-seed` / `ALLOW_DESTRUCTIVE_SEED`）を実装 |
+| `vite.config.ts` | Vite/Vitest統合設定。`environment: "jsdom"`、`e2e/**/*.spec.ts` を Vitest 対象から除外 |
+| `tsconfig.json` | TypeScript strict 設定（`strict`, `noUnusedLocals`, `noUnusedParameters` 等） |
 
-> 上表は代表的なファイルの抵籋であり、全ファイルを網羅するものではない。各機能モジュールの完全な一覧は 03. 構成と制約のディレクトリ構成表、およびリポジトリの `src/features/` 以下を参照。
+> 上表は代表的なファイルの抜粋であり、全ファイルを網羅するものではない。各機能モジュールの完全な一覧は 03. 構成と制約のディレクトリ構成表、およびリポジトリの `src/features/` 以下を参照。
