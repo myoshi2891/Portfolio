@@ -195,7 +195,10 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
 .detail-header .action { margin-right: .75rem; margin-bottom: .5rem; }
 .detail-updated { display: flex; flex-wrap: wrap; gap: .35rem; width: fit-content; margin-top: 1.25rem; padding: .35rem .7rem; border: 1px solid color-mix(in srgb, var(--color-accent) 28%, var(--color-line)); border-radius: 6px; color: var(--color-muted); background: color-mix(in srgb, var(--color-surface) 55%, transparent); font-size: .8rem; }
 .detail-updated time { color: var(--color-ink); font-weight: 600; }
-.llm-detail-page .hero-lead, .llm-detail-page .section-intro { max-width: none; }
+.llm-detail-page .hero-lead, .llm-detail-page .section-intro,
+.medical-detail-page .hero-lead, .medical-detail-page .section-intro,
+.multi-vendor-detail-page .hero-lead, .multi-vendor-detail-page .section-intro,
+.wild-oasis-detail-page .hero-lead, .wild-oasis-detail-page .section-intro { max-width: none; }
 .detail-page > .screen-preview { margin-block: 0 3rem; }
 .project-slideshow { min-width: 0; margin: 0 0 3rem; overflow: hidden; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
 .slideshow-browser-bar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .55rem .9rem; color: var(--color-muted); font-size: .78rem; }
@@ -281,6 +284,53 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
 .quality-columns ul { padding-left: 1.25rem; margin: .75rem 0 0; }
 .quality-columns li + li { margin-top: .35rem; }
 .boundary-card { border-left: 3px solid var(--color-accent) !important; }
+.medical-role-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+.medical-role-grid article { display: grid; align-content: start; min-width: 0; padding: 1.35rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.medical-role-grid h3 { margin-block: .75rem; font-size: 1.1rem; }
+.medical-role-grid article > p:not(.eyebrow) { min-height: 5.5rem; color: var(--color-muted); font-size: .9rem; }
+.medical-role-grid strong { margin-top: 1.25rem; color: var(--color-accent); font-size: 1.8rem; line-height: 1.1; }
+.medical-role-grid article > span { margin-top: .25rem; color: var(--color-muted); font-size: .75rem; }
+.medical-feature { margin-top: 1rem; }
+.medical-capabilities { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.medical-capabilities span { padding: .4rem .7rem; border: 1px solid var(--color-line); border-radius: 99px; color: var(--color-muted); background: var(--color-surface-subtle); font-size: .78rem; }
+.prom-flow { margin-top: 1rem; padding: 1.25rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.prom-flow figcaption { margin-bottom: 1rem; font-size: .9rem; font-weight: 600; }
+.prom-flow ol { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.prom-flow li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .1rem .65rem; min-width: 0; padding: .75rem; border-radius: 8px; background: var(--color-surface-subtle); }
+.prom-flow li > span { grid-row: 1 / 3; color: var(--color-accent); font-size: .72rem; }
+.prom-flow strong { font-size: .82rem; }
+.prom-flow code { color: var(--color-muted); font-size: .72rem; overflow-wrap: anywhere; }
+.medical-detail-page .limitation code, .medical-detail-page .section-intro code { overflow-wrap: anywhere; color: var(--color-ink); }
+.commerce-role-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+.commerce-role-grid article { display: grid; align-content: start; min-width: 0; padding: 1.35rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.commerce-role-grid h3 { margin-block: .75rem; font-size: 1.1rem; }
+.commerce-role-grid article > p:not(.eyebrow) { min-height: 5.5rem; color: var(--color-muted); font-size: .9rem; }
+.commerce-role-grid strong { margin-top: 1.25rem; color: var(--color-accent); font-size: 1rem; letter-spacing: .08em; }
+.commerce-role-grid article > span { margin-top: .25rem; color: var(--color-muted); font-size: .75rem; }
+.commerce-feature { margin-top: 1rem; }
+.commerce-flow { margin-top: 1rem; padding: 1.25rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.commerce-flow figcaption { margin-bottom: 1rem; font-size: .9rem; font-weight: 600; }
+.commerce-flow ol { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.commerce-flow li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .1rem .65rem; min-width: 0; padding: .75rem; border-radius: 8px; background: var(--color-surface-subtle); }
+.commerce-flow li > span { grid-row: 1 / 3; color: var(--color-accent); font-size: .72rem; }
+.commerce-flow strong { font-size: .82rem; }
+.commerce-flow small { color: var(--color-muted); font-size: .72rem; overflow-wrap: anywhere; }
+.multi-vendor-detail-page .limitation code, .multi-vendor-detail-page .section-intro code { overflow-wrap: anywhere; color: var(--color-ink); }
+.wild-role-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+.wild-role-grid article { display: grid; align-content: start; min-width: 0; padding: 1.35rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.wild-role-grid h3 { margin-block: .75rem; font-size: 1.1rem; }
+.wild-role-grid article > p:not(.eyebrow) { min-height: 5.5rem; color: var(--color-muted); font-size: .9rem; }
+.wild-role-grid strong { margin-top: 1.25rem; color: var(--color-accent); font-size: 1rem; letter-spacing: .08em; }
+.wild-role-grid article > span { margin-top: .25rem; color: var(--color-muted); font-size: .75rem; }
+.wild-feature { margin-top: 1rem; }
+.wild-feature code, .wild-oasis-detail-page .limitation code, .wild-oasis-detail-page .section-intro code { overflow-wrap: anywhere; color: var(--color-ink); }
+.wild-flow { margin-top: 1rem; padding: 1.25rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.wild-flow figcaption { margin-bottom: 1rem; font-size: .9rem; font-weight: 600; }
+.wild-flow ol { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.wild-flow li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .1rem .65rem; min-width: 0; padding: .75rem; border-radius: 8px; background: var(--color-surface-subtle); }
+.wild-flow li > span { grid-row: 1 / 3; color: var(--color-accent); font-size: .72rem; }
+.wild-flow strong { font-size: .82rem; }
+.wild-flow small { color: var(--color-muted); font-size: .72rem; overflow-wrap: anywhere; }
 .curated-references { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-line); }
 .curated-references > h3 { font-size: 1.05rem; }
 .curated-references > p { margin-top: .35rem; color: var(--color-muted); font-size: .82rem; }
@@ -361,6 +411,12 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .llm-role-grid, .architecture-grid, .quality-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .guide-feature-grid, .constraint-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quality-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .medical-role-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .prom-flow ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .commerce-role-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .commerce-flow ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wild-role-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wild-flow ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .contact { padding: 3rem; }
 }
 @media (min-width: 1200px) {
@@ -382,6 +438,9 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .system-flow li { grid-template-columns: 1fr; align-content: start; }
   .system-flow li > span { grid-row: auto; }
   .system-flow li:not(:last-child)::after { content: "→"; position: absolute; right: -.95rem; top: 50%; z-index: 2; color: var(--color-accent); transform: translateY(-50%); }
+  .prom-flow ol { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .commerce-flow ol { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .wild-flow ol { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 }
 @media (max-width: 767px) {
   .masthead-inner { gap: .5rem; }
