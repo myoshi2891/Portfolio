@@ -25,7 +25,7 @@ test("detail contents follow scrolling and anchor selection", async ({ page }) =
   await expect(contents.locator('[aria-current="location"]')).toHaveAttribute('href', '#quality');
 });
 
-test("LLM Studies gallery slides horizontally without controls", async ({ page }) => {
+test("LLM Studies gallery slides horizontally and provides an autoplay control", async ({ page }) => {
   await page.clock.install();
   await page.goto('/projects/comparison-of-llms/');
   const gallery = page.locator('.project-slideshow');
@@ -39,10 +39,40 @@ test("LLM Studies gallery slides horizontally without controls", async ({ page }
   expect(activeBox!.x).toBeGreaterThan(viewportBox!.x);
   expect(previousBox!.x + previousBox!.width).toBeGreaterThan(viewportBox!.x);
   expect(nextBox!.x).toBeLessThan(viewportBox!.x + viewportBox!.width);
-  await expect(gallery.getByRole('button')).toHaveCount(0);
+  const toggle = gallery.getByRole('button', { name: 'スライドショーを一時停止' });
+  await expect(toggle).toBeVisible();
+  await toggle.focus();
+  await page.clock.fastForward(5100);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await toggle.press('Enter');
+  await page.keyboard.press('Tab');
+  await page.clock.fastForward(5100);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await gallery.getByRole('button', { name: 'スライドショーを再生' }).click();
+  await page.mouse.move(0, 0);
+  await page.keyboard.press('Tab');
   await page.clock.fastForward(5100);
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
   await expect.poll(() => track.evaluate(element => getComputedStyle(element).transform)).not.toBe(initialTransform);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.clock.fastForward(5100);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.clock.fastForward(5100);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /antigravity-agent-skills-guide\.png$/);
+});
+
+test("wrapped masthead height offsets anchors and sticky contents", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await page.goto('/projects/comparison-of-llms/');
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+  await page.getByRole('navigation', { name: 'このページの内容' }).getByRole('link', { name: 'アーキテクチャ' }).click();
+  await expect.poll(() => page.locator('.masthead').evaluate(el => el.getBoundingClientRect().height)).toBeGreaterThan(75);
+  const masthead = await page.locator('.masthead').boundingBox();
+  const heading = await page.locator('#architecture').boundingBox();
+  const contents = await page.locator('.detail-contents').boundingBox();
+  expect(heading!.y).toBeGreaterThanOrEqual(masthead!.y + masthead!.height);
+  expect(contents!.y).toBeGreaterThanOrEqual(masthead!.y + masthead!.height);
 });
 
 test("LLM Studies copy uses the available detail width before wrapping", async ({ page }) => {

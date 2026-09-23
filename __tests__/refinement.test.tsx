@@ -34,7 +34,7 @@ it('renders the LLM Studies gallery and its full-width detail layout', async () 
   expect(html).toContain('aria-roledescription="カルーセル"');
   expect(html).toContain('cost-calculator-overview.png');
   expect(html.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(9);
-  expect(html.match(/class="project-slideshow"[\s\S]*?<\/figure>/)?.[0]).not.toContain('<button');
+  expect(html.match(/class="project-slideshow"[\s\S]*?<\/figure>/)?.[0]).toContain('aria-label="スライドショーを一時停止"');
 });
 it('provides a prominent home recovery action on the 404 page', () => {
   const html = renderToStaticMarkup(<NotFound />);
