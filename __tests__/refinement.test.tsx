@@ -28,6 +28,14 @@ it('adds breadcrumb context and a meaningful preview of the next project', async
   expect(html).toContain('aria-current="page"');
   expect(html).toContain('Pythonによる料金データ');
 });
+it('renders the LLM Studies gallery and its full-width detail layout', async () => {
+  const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'comparison-of-llms' }) }));
+  expect(html).toContain('class="container detail-page llm-detail-page"');
+  expect(html).toContain('aria-roledescription="カルーセル"');
+  expect(html).toContain('cost-calculator-overview.png');
+  expect(html.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(9);
+  expect(html.match(/class="project-slideshow"[\s\S]*?<\/figure>/)?.[0]).not.toContain('<button');
+});
 it('provides a prominent home recovery action on the 404 page', () => {
   const html = renderToStaticMarkup(<NotFound />);
   expect(html).toMatch(/class="[^"]*action-primary/);
