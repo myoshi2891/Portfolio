@@ -149,7 +149,7 @@ sequenceDiagram
 
 ### セキュリティ・アーキテクチャ
 
-`web-next` はサーバサイド API・サーバ秘密情報を持たない完全クライアント型アプリである（`app/api/` は存在しない、`SECURITY.md` 記載）。`next.config.ts` が `lib/security/csp.ts` の純粋関数からセキュリティヘッダ（CSP, HSTS, X-Frame-Options 等）を静的生成し、全ルートへ強制付与する。CSP は `script-src` に `'unsafe-inline'` を許容しており（Next.js の inline bootstrap script のため、per-request nonce は静的プリレンダと両立しない）、これは `docs/publishing/04-security-policy.md` に**受入済み残余リスク**として明記されている（詳細は 03/04 節）。
+`web-next` は主に静的プリレンダで配信され、ランタイム API・サーバ秘密情報を持たない（`app/api/` は存在しない、`SECURITY.md` 記載）。`next.config.ts` が `lib/security/csp.ts` の純粋関数からセキュリティヘッダ（CSP, HSTS, X-Frame-Options 等）を静的生成し、全ルートへ強制付与する。CSP は `script-src` に `'unsafe-inline'` を許容しており（Next.js の inline bootstrap script のため、per-request nonce は静的プリレンダと両立しない）、これは `docs/publishing/04-security-policy.md` に**受入済み残余リスク**として明記されている（詳細は 03/04 節）。
 
 ---
 
