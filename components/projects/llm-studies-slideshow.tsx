@@ -117,6 +117,17 @@ export function LlmStudiesSlideshow() {
       positionTrack(1, false);
     }
   };
+  // 手動移動。reduced-motion では transitionend が発火しないため、クローンを経由せず実スライドへ直接移動する
+  const step = (delta: 1 | -1) => {
+    settleLoop();
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const next = visualIndexRef.current + delta;
+    const nextActive = (next - 1 + slides.length) % slides.length;
+    const target = reduceMotion ? nextActive + 1 : next;
+    visualIndexRef.current = target;
+    setActive(nextActive);
+    positionTrack(target, !reduceMotion);
+  };
   const slide = slides[active]!;
 
   return <figure
@@ -155,6 +166,8 @@ export function LlmStudiesSlideshow() {
     </div>
     <div className="slideshow-meta">
       <figcaption><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
+      <button className="slideshow-toggle" type="button" aria-label="前のスライド" onClick={() => step(-1)}>前へ</button>
+      <button className="slideshow-toggle" type="button" aria-label="次のスライド" onClick={() => step(1)}>次へ</button>
       <button
         className="slideshow-toggle"
         type="button"
