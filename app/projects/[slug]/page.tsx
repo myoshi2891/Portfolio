@@ -10,6 +10,8 @@ import { ActionLink, EvidenceLinks } from "../../../components/ui/primitives";
 import type { DetailSectionId } from "../../../types/portfolio";
 import { pageMetadata } from "../../../lib/metadata";
 import { site } from "../../../data/site";
+import { LlmStudiesDetail, llmDetailSections } from "../../../components/projects/llm-studies-detail";
+import { LlmStudiesSlideshow } from "../../../components/projects/llm-studies-slideshow";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -38,19 +40,22 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   ])];
   const audit = evidenceIds.map(id => portfolio.evidence[id]).find(e => e?.sourceType === "REPOSITORY_VERIFIED");
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
-  return <main id="main" tabIndex={-1} className="container detail-page">
+  const isLlmStudies = project.slug === "comparison-of-llms";
+  return <main id="main" tabIndex={-1} className={`container detail-page${isLlmStudies ? " llm-detail-page" : ""}`}>
     <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
       <p className="eyebrow">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
+      {isLlmStudies && <p className="detail-updated">画面の最終更新日：<time dateTime="2026-09-23">2026年9月23日</time></p>}
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
       {demoUrls[project.id] && <ActionLink primary href={demoUrls[project.id]!}>公開サイトを試す</ActionLink>}
       <ActionLink primary={!demoUrls[project.id]} href={project.githubUrl}>GitHubでコードを見る</ActionLink>
     </header>
-    <ScreenPreview id={project.id} priority sizes="(min-width: 1336px) 1240px, 100vw" />
+    {isLlmStudies ? <LlmStudiesSlideshow /> : <ScreenPreview id={project.id} priority sizes="(min-width: 1336px) 1240px, 100vw" />}
     <div className="detail-grid">
-      <DetailContents sections={[{ id: "overview", label: "概要" }, ...(detail.scope ? [{ id: "scope", label: "制作背景・担当範囲" }] : []), ...sections.map(([id]) => ({ id, label: sectionNames[id] })), { id: "evidence", label: "参照コード" }]} />
+      <DetailContents sections={isLlmStudies ? [...llmDetailSections] : [{ id: "overview", label: "概要" }, ...(detail.scope ? [{ id: "scope", label: "制作背景・担当範囲" }] : []), ...sections.map(([id]) => ({ id, label: sectionNames[id] })), { id: "evidence", label: "参照コード" }]} />
       <div className="detail-body">
+        {isLlmStudies ? <LlmStudiesDetail /> : <>
         {detail.scope && <section id="scope"><h2>制作背景・担当範囲</h2>{detail.scope.map(c => <div key={c.text}><p>{c.text}</p><EvidenceLinks ids={c.evidenceIds} /></div>)}</section>}
         {sections.map(([id, section]) => <section key={id} id={id}><h2>{sectionNames[id]}</h2>
           {id === "features" && <p className="section-intro feature-intro">操作の入口からデータの処理まで。取り上げる理由と、コードを読むポイントを機能ごとにまとめました。</p>}
@@ -63,6 +68,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
           {audit?.sourceType === "REPOSITORY_VERIFIED" && <p>参照コードの確認日：<time dateTime={audit.checkedAt}>{audit.checkedAt}</time><br />対象コミット：<SiteLink href={`${project.githubUrl}/tree/${audit.commit}`}><code>{audit.commit.slice(0, 12)}</code></SiteLink></p>}
           <EvidenceLinks ids={evidenceIds} />
         </section>
+        </>}
       </div>
     </div>
     <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink><SiteLink className="text-link" href="/#contact">GitHubプロフィールへ</SiteLink></nav>

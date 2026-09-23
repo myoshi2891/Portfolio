@@ -7,7 +7,7 @@ export const screens: Partial<Record<RepositoryId, { file: string; alt: string; 
   R03: { file: "The Wild Oasis.png", alt: "The Wild Oasis宿泊者向けサイト。山と客室の写真から宿泊施設を探すトップ画面", title: "The Wild Oasis · Guest" },
   R04: { file: "AirbnbCloneApp.png", alt: "AirbnbCloneApp。物件の検索と予約、お気に入りを扱うトップ画面", title: "AirbnbCloneApp" },
   R05: { file: "Next-Store.png", alt: "Next-Store。商品検索と家具の紹介、注目商品を表示するストアのトップ画面", title: "Next-Store" },
-  R06: { file: "LLM Studies.png", alt: "LLM費用計算ツール。利用シナリオとトークン量を選ぶ画面", title: "LLM Studies" },
+  R06: { file: "llm-studies/cost-calculator-overview.png", alt: "LLM費用計算ツール。利用シナリオとトークン量を選ぶ画面", title: "LLM Studies" },
   R07: { file: "QA_STUDIES.png", alt: "品質保証の学習サイト。レベル別ガイドとキーワード検索の画面", title: "Quality Assurance Studies" },
   R08: { file: "Software-Design-and-Architecture.png", alt: "ソフトウェア設計とアーキテクチャの学習サイト。カテゴリから資料をたどる画面", title: "Software Design and Architecture" },
   R09: { file: "Management Studies.png", alt: "マネジメント学習ライブラリ。資格・書籍・テーマから学習ガイドを探す画面", title: "Management Studies" },

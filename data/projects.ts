@@ -90,6 +90,13 @@ export const projects = [
         "evidenceIds": [
           "R06-T01"
         ]
+      },
+      {
+        "text": "Pydantic / Zod",
+        "evidenceIds": [
+          "R06-T01",
+          "R06-A01"
+        ]
       }
     ],
     "highlights": [
