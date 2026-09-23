@@ -47,7 +47,7 @@ For a supplied multi-image gallery in this portfolio:
 - Store images under `public/images/<slug>/`.
 - Keep the central slide large while showing the edges of the previous and next slides on wide and narrow screens.
 - Move the whole track horizontally with a transform transition; avoid cross-fading when the requested interaction is spatial sliding.
-- If automatic rotation is requested, cycle at a calm interval and loop without a long reverse jump. Pause while hovered, while the document is hidden, and when reduced motion is preferred.
+- If automatic rotation is requested, cycle at a calm interval and loop without a long reverse jump. Pause while hovered, while focus is within the gallery, while the document is hidden, and when reduced motion is preferred.
 - If controls are explicitly unwanted, use non-interactive position indicators rather than buttons.
 - Render an informative first image without JavaScript. Give the active image a descriptive alt; hide duplicate loop slides from accessibility APIs.
 - Keep source dimensions/aspect ratio stable to avoid layout shift. Update screen metadata and path encoding when an existing featured preview moves into a subdirectory.
