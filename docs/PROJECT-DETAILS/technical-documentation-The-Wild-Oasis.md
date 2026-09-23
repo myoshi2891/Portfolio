@@ -191,7 +191,7 @@ flowchart LR
 
 | レイヤー | ツール | 保証状況 |
 | --- | --- | --- |
-| 単体/結合テスト | Vitest + Testing Library（jsdom） | リポジトリ内に **71** 件の `*.test.ts(x)` が存在。`src/features/*` のカスタムフック/コンポーネント、`src/services/services.test.ts`、`src/types/domain.test.ts`、`src/hooks/*`、`src/utils/*` をカバー |
+| 単体/結合テスト | Vitest + Testing Library（jsdom） | リポジトリ内に **71** 件の `*.test.ts(x)` が存在。`src/features/*` のカスタムフック/コンポーネント、`src/services/__tests__/services.test.ts`、`src/types/domain.test.ts`、`src/hooks/*`、`src/utils/*` をカバー |
 | E2Eテスト | Playwright | `e2e/` 以下に 8 本の `.spec.ts`（navigation, checkin, bookings, cabins, settings, dashboard, account, authentication）。`test:e2e` は `seed:e2e`（`--force-seed` 付与）を自動連鎖 |
 | 型検査 | `tsc --noEmit` | `tsconfig.json` で `strict: true` 、`noUnusedLocals`/`noUnusedParameters` 有効 |
 | Lint | ESLint | `--max-warnings 0` で警告も許容しない設定 |
