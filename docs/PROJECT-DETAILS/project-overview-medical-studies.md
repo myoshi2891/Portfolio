@@ -196,7 +196,7 @@ sequenceDiagram
 
 | 制約 | 内容 | 出典・根拠 |
 |---|---|---|
-| サーバ API なし | `web-next` はクライアント完結型。サーバ秘密情報を持たない設計 | `SECURITY.md` |
+| サーバ API なし | `web-next` は主に静的プリレンダで配信され、ランタイム API・サーバ秘密情報を持たない設計 | `SECURITY.md` |
 | CSP の残余リスク | `script-src 'unsafe-inline'` を許容しており inline XSS 防御は無効。受入済みリスクとして文書化済み | `docs/publishing/04-security-policy.md` §3、`plans/README.md` Plan 011 |
 | PROM 著作権制約 | HIT-6・MSQ v2.1 の質問文は権利者所有のためリポジトリに掲載していない。ローカル専用オーバーレイ（gitignore 対象）でのみ復元可能。本番ビルドでは読み込まれない二重ゲート | `web-next/README.md`、`plans/README.md` Plan 008（F1 是正、DONE） |
 | 3D モデルのライセンス | BodyParts3D/Anatomography 由来モデルは CC-BY-SA 2.1 JP。ShareAlike 条件により、コード（MIT）とは別スコープでライセンス管理 | `docs/architecture.md` §5.2/§8.3、`LICENSE`、`THIRD_PARTY_NOTICES.md` |

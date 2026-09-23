@@ -49,7 +49,7 @@ The Wild Oasis は、ホテル運営スタッフが客室・予約・ゲスト�
 | `useUpdateSetting` | `SettingsUpdate`（部分更新） | `{ updateSetting, isUpdating }` | 設定の単一行（`id=1`）を更新し、成功時に `settings` クエリを無効化してトースト表示（取得側の `setting` とはクエリキーが一致していない） |
 | `useRecentBookings` | URL クエリ `?last=` （未指定時 7） | `{ isLoading, bookings }` | 現在日から N 日前までの予約を取得しダッシュボードの売上集計に使用 |
 
-> `useCheckin` / `useCheckout` はキャンセル・削除フローを持たず、ステータス遷移は一方向（unconfirmed → checked-in → checked-out）であることが `src/types/domain.ts` の `BookingStatus` 型から確認できる。
+> `src/types/domain.ts` の `BookingStatus` 型が定義する予約ステータスの有効値は `unconfirmed` / `checked-in` / `checked-out` の 3 つである。
 
 ## 02. アーキテクチャ
 

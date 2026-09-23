@@ -28,7 +28,7 @@ flowchart LR
     C --> D["index.vue / SiteHeader.vue<br/>ホーム・ナビ"]
     C --> E["ハブページ・サイト内検索"]
     B --> F["MermaidDiagram.vue"]
-    A -.機械照合 exit 0.-> G["audit_source_parity.mjs"]
+    A -.機械照合（PAL-EBM・PSPBMの意図的差分により非0終了）.-> G["audit_source_parity.mjs"]
 ```
 
 主要コンポーネントの役割:
