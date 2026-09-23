@@ -130,3 +130,97 @@ test('screen previews decode and use responsive local images', async ({ page }) 
     await expect.poll(() => preview.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   }
 });
+
+test('Medical Studies gallery and case study remain usable across display modes', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/projects/medical-studies/');
+  const gallery = page.getByRole('figure', { name: 'Medical Studiesの画面ギャラリー' });
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
+  await gallery.getByRole('button', { name: '次のスライド' }).click();
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /anatomy-cervical-spine-viewer\.png$/);
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const section = await page.locator('#features').boundingBox();
+  expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await expect(page.locator('.medical-role-grid article').first()).toBeVisible();
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+});
+
+test('Medical Studies keeps its core content and first image without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4173/projects/medical-studies/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('頭痛医療教育・記録プラットフォーム');
+  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
+  await expect(page.getByRole('heading', { name: '学ぶ・理解する・記録するを、1つのWebアプリへ' })).toBeVisible();
+  await context.close();
+});
+
+test('Multi-Vendor E-Commerce case study stays readable without a project image', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/projects/multi-vendor-e-commerce/');
+  await expect(page.getByRole('heading', { name: '顧客・販売者・管理者を、1つの市場でつなぐ' })).toBeVisible();
+  await expect(page.locator('main > .screen-preview, main > .project-slideshow')).toHaveCount(0);
+  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const section = await page.locator('#features').boundingBox();
+  expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await expect(page.locator('.commerce-role-grid article').first()).toBeVisible();
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+});
+
+test('Multi-Vendor E-Commerce keeps its case study in no-JavaScript HTML', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4173/projects/multi-vendor-e-commerce/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('複数店舗の商品・注文管理');
+  await expect(page.getByRole('heading', { name: '顧客・販売者・管理者を、1つの市場でつなぐ' })).toBeVisible();
+  await expect(page.locator('main > .screen-preview, main > .project-slideshow')).toHaveCount(0);
+  await context.close();
+});
+
+test('The Wild Oasis gallery and case study remain usable across display modes', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/projects/the-wild-oasis-for-admin/');
+  const gallery = page.getByRole('figure', { name: 'The Wild Oasis管理画面ギャラリー' });
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
+  await gallery.getByRole('button', { name: '次のスライド' }).click();
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /bookings-management\.png$/);
+  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const section = await page.locator('#features').boundingBox();
+  expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await expect(page.locator('.wild-role-grid article').first()).toBeVisible();
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+  expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+});
+
+test('The Wild Oasis keeps core content and the first image without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4173/projects/the-wild-oasis-for-admin/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('宿泊施設の管理アプリ');
+  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
+  await expect(page.getByRole('heading', { name: 'ホテルの日次業務を、1つの管理画面へ' })).toBeVisible();
+  await context.close();
+});

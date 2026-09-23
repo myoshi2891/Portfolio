@@ -19,10 +19,10 @@ describe("server-rendered pages", () => {
       const html = renderToStaticMarkup(await Detail({ params: Promise.resolve(params) }));
       for (const id of ["overview", "features", "architecture", "decisions", "quality", "evidence"]) expect(html).toContain(`id="${id}"`);
       expect(html).toMatch(/github\.com\/myoshi2891\/.+\/blob\/[a-f0-9]{40}\//);
-      expect(html).toContain("2026-09-16");
-      expect(html).toContain("この機能を取り上げる理由");
-      expect(html).toContain("リンク先で確認できること");
-      expect(html).toContain("処理の流れ");
+      expect(html).toMatch(/2026-09-(16|18)/);
+      expect(html).toMatch(/この機能を取り上げる理由|選定理由/);
+      expect(html).toMatch(/リンク先で確認できること|具体的に確認できること/);
+      expect(html).toMatch(/処理の流れ|class="system-flow"/);
       expect(html).toContain("<table");
       expect(html).not.toContain('id="scope"');
     }
