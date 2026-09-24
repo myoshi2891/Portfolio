@@ -62,6 +62,20 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /antigravity-agent-skills-guide\.png$/);
 });
 
+test("LLM Studies gallery autoplay keeps the active slide centered when transitionend never fires", async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/projects/comparison-of-llms/');
+  // トランジションを無効化し transitionend による末尾クローンからの巻き戻しを発生させない
+  await page.addStyleTag({ content: '.slideshow-track { transition: none !important; }' });
+  const gallery = page.locator('.project-slideshow');
+  await page.mouse.move(0, 0);
+  for (let tick = 0; tick < 10; tick += 1) await page.clock.fastForward(5000);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  const viewportBox = await gallery.locator('.slideshow-viewport').boundingBox();
+  const activeBox = await gallery.locator('.slideshow-slide.is-active').boundingBox();
+  expect(Math.abs(activeBox!.x + activeBox!.width / 2 - (viewportBox!.x + viewportBox!.width / 2))).toBeLessThan(2);
+});
+
 test("LLM Studies gallery slides are reachable with previous and next buttons under reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/projects/comparison-of-llms/');
