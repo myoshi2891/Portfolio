@@ -25,9 +25,12 @@ test("all content is accessible without JavaScript", async ({ browser }) => {
   await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().click();
   await expect(page.locator("#evidence")).toBeVisible();
   await page.goto("http://127.0.0.1:4173/projects/comparison-of-llms/");
-  const galleryViewport = await page.locator('.slideshow-viewport').boundingBox();
-  const firstSlide = await page.locator('.slideshow-slide.is-active').boundingBox();
-  expect(Math.abs((firstSlide!.x + firstSlide!.width / 2) - (galleryViewport!.x + galleryViewport!.width / 2))).toBeLessThan(2);
+  // Firefox は読み込み直後にトラックの transform トランジションが走るため、収束を待って判定する
+  await expect.poll(async () => {
+    const galleryViewport = await page.locator('.slideshow-viewport').boundingBox();
+    const firstSlide = await page.locator('.slideshow-slide.is-active').boundingBox();
+    return Math.abs((firstSlide!.x + firstSlide!.width / 2) - (galleryViewport!.x + galleryViewport!.width / 2));
+  }).toBeLessThan(2);
   await context.close();
 });
 
