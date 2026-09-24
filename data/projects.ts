@@ -90,6 +90,13 @@ export const projects = [
         "evidenceIds": [
           "R06-T01"
         ]
+      },
+      {
+        "text": "Pydantic / Zod",
+        "evidenceIds": [
+          "R06-T01",
+          "R06-A01"
+        ]
       }
     ],
     "highlights": [
@@ -107,9 +114,9 @@ export const projects = [
   {
     "id": "R12",
     "name": "Medical-Studies",
-    "title": "質問票の計算・記録ツール",
+    "title": "頭痛医療教育・記録プラットフォーム",
     "description": {
-      "text": "患者報告アウトカム（PROM）の回答検証、スコア計算、記録保存、データ出力を扱うWebアプリの構成を紹介します。",
+      "text": "頭痛の教育コンテンツ、3D解剖アトラス、患者報告アウトカム（PROM）の自己記録を統合したWebアプリの設計と公開上の制約を紹介します。",
       "evidenceIds": [
         "R12-T01",
         "R12-A01",
@@ -158,7 +165,7 @@ export const projects = [
     "name": "The-Wild-Oasis-For-Admin",
     "title": "宿泊施設の管理アプリ",
     "description": {
-      "text": "客室登録、画像保存、予約のチェックインを扱う管理アプリ。画面・フック・データ処理の分割を紹介します。",
+      "text": "ホテルスタッフが客室・予約・ゲスト情報、チェックイン／アウト、売上と稼働率を一元管理する業務ダッシュボードです。",
       "evidenceIds": [
         "R02-T01",
         "R02-A01",
@@ -186,6 +193,13 @@ export const projects = [
       {
         "text": "Supabase",
         "evidenceIds": [
+          "R02-A01"
+        ]
+      },
+      {
+        "text": "TanStack Query",
+        "evidenceIds": [
+          "R02-T01",
           "R02-A01"
         ]
       }

@@ -22,7 +22,7 @@
 
 | 原本 | 対応 | 表示先 |
 |---|---|---|
-| `The Wild Oasis Admin.png` | R02 / The-Wild-Oasis-For-Admin | 代表作・詳細・次の制作 |
+| `The Wild Oasis Admin/dashboard-overview.png` | R02 / The-Wild-Oasis-For-Admin | 代表作・詳細・次の制作 |
 | `The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | その他の制作カード |
 | `AirbnbCloneApp.png` | R04 / AirbnbCloneApp | その他の制作カード |
 | `Next-Store.png` | R05 / Next-Store | その他の制作カード |
@@ -32,7 +32,7 @@
 | `Management Studies.png` | R09 / Management-Team-Building-Studies | 追加学習カード |
 | `Cloud Infrastructure Studies.png` | R10 / Cloud-Infrastructure-and-Network-Studies | 追加学習カード |
 | `Security Studies.png` | R11 / Security_Studies | 学習カード |
-| `Medical Studies.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
+| `Medical-Studies/prom-checker-dashboard.png` | R12 / Medical-Studies | 代表作・医学詳細・次の制作 |
 | `Algorithm-DataStructures-Math-SQL.png` | R13 / Algorithm-DataStructures-Math-SQL | 追加学習カード |
 
 **Wild Oasisの画像・Vercel URLは宿泊者向けR03。管理者向けR02に流用しない。** LLM画像とR06の対応は所有者確認済み。
