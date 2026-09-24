@@ -50,6 +50,11 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
       if (motionPreference.matches) return;
       timer = window.setInterval(() => {
         if (pausedRef.current || document.hidden) return;
+        // transitionend が発火せず末尾クローンに留まった場合、実スライド先頭へ戻してから進める
+        if (visualIndexRef.current === slides.length + 1) {
+          visualIndexRef.current = 1;
+          positionTrack(1, false);
+        }
         const next = visualIndexRef.current + 1;
         visualIndexRef.current = next;
         setActive((next - 1 + slides.length) % slides.length);
