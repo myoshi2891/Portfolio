@@ -86,7 +86,7 @@
 
 ### システム全体設計と責務分離
 
-- **プレゼンテーション層**: `src/app/` の Server Component が主体。UI コンポーネントから `src/queries/` を直接 import することは禁止されており、必ず Server Component 経由でサーバーアクションを呼び出す。
+- **プレゼンテーション層**: `src/app/` の Server Component が主体。Client Component からも Server Action を直接 import して呼び出す（例: `src/components/store/cards/place-order.tsx` は `placeOrder` / `emptyUserCart` を `@/queries/user` から import する）。
 - **アプリケーション層（Server Actions）**: `src/queries/` に集約。認可は `src/lib/auth-guards.ts` の `requireUser` / `requireAdmin` / `requireSeller` / `requireStoreOwner` を通じて一元検証する。外部呼び出し（Prisma / Clerk / Stripe / PayPal）は `try/catch` でラップする。
 - **データアクセス層**: `src/lib/db.ts` の Prisma シングルトン経由のみ。`withAccelerate()` 拡張を使用し、CI のビルド時に DB 接続が発生しないよう **遅延初期化（Proxy によるレイジー生成）** を採用している点が特徴的である（後述）。
 - **外部サービス層**: Clerk（認証）、Stripe / PayPal（決済）、Cloudinary（画像）、Svix（Webhook 署名検証）。
@@ -144,7 +144,7 @@ flowchart TB
 sequenceDiagram
     actor U as 顧客
     participant CO as チェックアウトページ
-    participant QA as Server Action (queries/order.ts)
+    participant QA as Server Action (queries/user.ts)
     participant PG as Stripe/PayPal
     participant WH as Webhook Route Handler
     participant DB as PostgreSQL (Prisma)
