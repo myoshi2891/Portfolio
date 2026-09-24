@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
 export type ProjectSlide = { file: string; title: string; alt: string };
+
+// サーバー描画とハイドレーション中は false、以降は true を返す
+const subscribeNothing = () => () => {};
 
 export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }: {
   slides: readonly ProjectSlide[];
@@ -13,6 +16,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
 }) {
   const [active, setActive] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const isInteractive = useSyncExternalStore(subscribeNothing, () => true, () => false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const visualIndexRef = useRef(1);
@@ -115,12 +119,14 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
     </div>
     <div className="slideshow-meta">
       <figcaption><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
+      {isInteractive && <>
       <button className="slideshow-toggle" type="button" aria-label="前のスライド" onClick={() => step(-1)}>前へ</button>
       <button className="slideshow-toggle" type="button" aria-label="次のスライド" onClick={() => step(1)}>次へ</button>
       <button className="slideshow-toggle" type="button" aria-label={isPaused ? "スライドショーを再生" : "スライドショーを一時停止"} aria-pressed={isPaused}
         onClick={() => { manualPausedRef.current = !manualPausedRef.current; setIsPaused(manualPausedRef.current); syncPaused(); }}>
         {isPaused ? "再生" : "一時停止"}
       </button>
+      </>}
       <div className="slideshow-dots" aria-hidden="true">{slides.map((item, index) => <span key={item.file} className={index === active ? "is-active" : undefined} />)}</div>
     </div>
   </figure>;
