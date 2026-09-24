@@ -219,7 +219,7 @@ flowchart LR
 | `src/services/supabase.ts` | Supabaseクライアント初期化（`supabaseUrl` をエクスポートし他サービスがストレージURL構築に利用） |
 | `src/services/apiAuth.ts` | `signup` / `login` / `getCurrentUser` / `logout` / `updateCurrentUser`（パスワード・表示名・アバター更新、失敗時のアバタークリーンアップを実装） |
 | `src/services/apiBookings.ts` | `getBookings`（フィルタ/ソート/ページネーション）、`getBooking`、`getBookingsAfterDate`、`getStaysAfterDate`、`getStaysTodayActivity`（本日の入退室OR条件）、`updateBooking`、`deleteBooking` |
-| `src/services/apiCabins.ts` | `getCabins`、`createEditCabin`（画像アップロードと失敗時ロールバック） |
+| `src/services/apiCabins.ts` | `getCabins`、`createEditCabin`（レコード保存後に画像アップロード。新規作成時のアップロード失敗では作成したレコードの削除を試みる） |
 | `src/services/apiSettings.ts` | `getSettings` / `updateSetting`（単一行 `id=1` を常に更新） |
 | `src/types/domain.ts` | Supabase生成型（`Database`）から派生するドメイン型（`Cabin`, `Booking`, `Guest`, `Settings` 等）と JOIN 拡張型（`BookingWithSummary`, `BookingWithDetails` 等）、フォーム入力型 |
 | `src/types/supabase.ts` | Supabaseテーブルスキーマの生成型定義 |

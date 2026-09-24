@@ -20,7 +20,7 @@ const references = {
   decisions: [
     { label: "依存関係と実行条件", path: "package.json:L19–L31", href: `${repo}/package.json#L19-L31`, reason: "React・Supabase・状態管理など主要技術の根拠になるため。", detail: "管理画面を構成するランタイム依存関係と、フロントエンド中心の技術選定を確認できます。" },
     { label: "Supabase接続", path: "src/services/supabase.ts", href: `${repo}/src/services/supabase.ts`, reason: "自前APIサーバーを持たない構成の外部接続点だから。", detail: "認証・PostgreSQL・Storageへ各サービスが接続する共通クライアントの初期化を確認できます。" },
-    { label: "客室保存のロールバック", path: "src/services/apiCabins.ts:L44–L95", href: `${repo}/src/services/apiCabins.ts#L44-L95`, reason: "複数の外部更新が失敗した場合の扱いを示すため。", detail: "画像アップロード後に客室作成が失敗した場合、Storage上の画像を削除する補償処理を確認できます。" },
+    { label: "客室保存のロールバック", path: "src/services/apiCabins.ts:L44–L95", href: `${repo}/src/services/apiCabins.ts#L44-L95`, reason: "複数の外部更新が失敗した場合の扱いを示すため。", detail: "客室レコードを先に保存し、新規作成時に画像アップロードが失敗した場合は作成したレコードの削除を試みる補償処理を確認できます。" },
   ],
   quality: [
     { label: "Vitest構成", path: "vite.config.ts:L1–L16", href: `${repo}/vite.config.ts#L1-L16`, reason: "単体・結合テストの実行環境と対象範囲を示すため。", detail: "jsdomを使うVitest構成と、E2Eシナリオを単体テスト対象から分ける設定を確認できます。" },
@@ -78,7 +78,7 @@ export function WildOasisDetail() {
         <div className="feature-reason"><h4>この機能を取り上げる理由</h4><p>スタッフの操作、サーバー状態、Supabaseの更新、画面遷移まで、日次業務の主要なデータフローを一つの処理で追えるためです。</p></div>
       </article>
       <article className="feature-story wild-feature"><div className="feature-heading"><span className="feature-number">02</span><h3>客室データと画像をまとめて管理</h3></div>
-        <p>客室の作成・編集・削除に加え、Supabase Storageへ画像を保存します。データ登録が失敗した場合はアップロード済み画像を削除し、不整合を残しにくくします。</p>
+        <p>客室の作成・編集・削除に加え、Supabase Storageへ画像を保存します。レコードを先に保存してから画像をアップロードし、新規作成時にアップロードが失敗した場合は作成したレコードの削除を試みて、不整合を残しにくくします。</p>
         <div className="feature-reason"><h4>この機能を取り上げる理由</h4><p>PostgreSQLのレコードとStorage上のファイルという、異なる保存先を扱う際の責務と失敗時の考慮が表れるためです。</p></div>
       </article>
       <CuratedReferences items={references.features} />
