@@ -26,7 +26,7 @@
 | `The Wild Oasis.png` | R03 / The-Wild-Oasis-For-User | その他の制作カード |
 | `AirbnbCloneApp.png` | R04 / AirbnbCloneApp | その他の制作カード |
 | `Next-Store.png` | R05 / Next-Store | その他の制作カード |
-| `LLM Studies.png` | R06 / Comparison-of-LLMs | 代表作・詳細・次の制作 |
+| `llm-studies/cost-calculator-overview.png` | R06 / Comparison-of-LLMs | 代表作・詳細・次の制作 |
 | `QA_STUDIES.png` | R07 / Quality-Assurance-Studies | 学習カード |
 | `Software-Design-and-Architecture.png` | R08 / Software-Design-and-Architecture | 学習カード |
 | `Management Studies.png` | R09 / Management-Team-Building-Studies | 追加学習カード |
