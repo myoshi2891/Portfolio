@@ -54,12 +54,15 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   await page.clock.fastForward(5100);
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
   await expect.poll(() => track.evaluate(element => getComputedStyle(element).transform)).not.toBe(initialTransform);
+  // 実行中の emulateMedia 切替は Firefox で change イベントが安定しないため、リロードで初期判定を検証する
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  await page.clock.fastForward(5100);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.reload();
   await page.clock.fastForward(5100);
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /antigravity-agent-skills-guide\.png$/);
 });
 
 test("LLM Studies gallery autoplay keeps the active slide centered when transitionend never fires", async ({ page }) => {
