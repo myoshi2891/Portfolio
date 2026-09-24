@@ -39,6 +39,7 @@ The Wild Oasis は、ホテル運営スタッフが客室・予約・ゲスト�
 ### 入出力・振る舞いの例
 
 代表的なフックの入出力と副作用を以下に示す。
+
 | フック | 入力 | 出力 | 主な副作用 |
 | --- | --- | --- | --- |
 | `useCheckin` | `{ bookingId, breakfast? }` | `{ checkin, isCheckingIn }` | `status` を `checked-in`、`isPaid` を `true` に更新。成功時に、`bookings`/`booking` キャッシュを無効化し `/` へ遷移 |
