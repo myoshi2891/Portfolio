@@ -80,7 +80,7 @@ Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジト
 | Medical | 11 | `Medical-Studies` | `medical-studies-slideshow.tsx` |
 | Wild Oasis管理 | 4 | `The Wild Oasis Admin` | `wild-oasis-slideshow.tsx` |
 
-Medicalのブラウザ風バーには既存の「7 views」表記が残っています。実際の登録・操作カウンターは11枚です。ギャラリーの枚数を確認するときはスライド配列と操作カウンターを基準にします。
+Medicalのブラウザ風バーの「N views」表記はスライド配列の件数（現在11枚）から算出します。ギャラリーの枚数を確認するときはスライド配列と操作カウンターを基準にします。
 
 ### Multi Vendorの画像対応
 
