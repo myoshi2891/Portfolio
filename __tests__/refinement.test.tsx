@@ -89,6 +89,7 @@ it('renders the Medical Studies documented case study and its supplied views', a
     'headaches-migraine-guide.png', 'treatment-acute-headache-guide.png', 'blocks-occipital-nerve-guide.png',
     'therapies-physical-therapy-guide.png', 'prom-headache-diary-guide.png',
   ]) expect(html).toContain(file);
+  expect(html).toContain('Medical Studies / 11 views');
   expect(html).toContain('2026年9月18日');
   expect(html).toContain('2026年10月2日');
   expect(html).not.toContain('github.com');
