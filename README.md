@@ -1,10 +1,10 @@
 # Engineering Portfolio
 
-myoshi2891の制作・学習を紹介する日本語ポートフォリオ。Next.js App RouterでHomeと代表作の詳細4ページを静的生成します。13リポジトリの掲載情報は、固定コミットの証拠と編集データを正としています。
+myoshi2891の制作・学習を紹介する日本語ポートフォリオ。Next.js App RouterでHomeと代表作の詳細4ページを静的生成します。Homeの13リポジトリの掲載情報は固定コミットの証拠と編集データ、4詳細の本文は`docs/PROJECT-DETAILS/`の基準資料と画面向けMarkdownで管理します。
 
-実画面12件・公開URL7件・3Dヒーロー・スムーズスクロール・SPA遷移まで実装・検証済み。単体30件成功、E2E 75件中73件成功・2件対象外（Chromium専用BFCache検証）・失敗0件。
+2026-10-02更新: 全13件のHomeプレビュー、4詳細の実画面ギャラリー（10／9／11／4枚）、資料に基づく本文・Markdown表・Mermaid図12件、全画面共通のライト／ダーク切り替えを実装。詳細画面のGitHubリンクはすべて削除しました。ライトモードは白・チャコール・シルバーを基調に、ブルーの3Dパネルと光の反射をアクセントにしています。
 
-2026-09-17の改善で、実画面12件・公開サイト7件の導線、モバイルメニュー、目次の現在地表示、ダークテーマ、フォント・画像の軽量化を追加。Firefox／WebKitのフォーカス・履歴復元も修正しました。[更新内容と編集方法](docs/design-refresh.md)、[現在の検証結果と残作業](docs/phase-4-handoff.md)を参照してください。
+単体34件成功。最新デザインのChromium画面テスト8件、Multi Vendorギャラリー2件とHome画像のPC・モバイル表示を確認しました。このセッションではエージェントによるbuild・全3ブラウザE2Eを実行していません。[現行仕様](docs/current-specification.md)、[編集手順](docs/design-refresh.md)、[検証結果と残作業](docs/phase-4-handoff.md)を参照してください。
 
 ## ローカル起動
 
@@ -15,7 +15,7 @@ bun install --frozen-lockfile
 bun run dev
 ```
 
-開発サーバーは通常 `http://localhost:3000`。静的生成したサイトを確認する場合は以下を実行します。
+開発サーバーは通常 `http://localhost:3000`。ポート使用中は起動ログで実際のポートを確認します（このセッションの最終確認は3001）。静的生成したサイトを確認する場合は以下を実行します。
 
 ```sh
 bun run build
@@ -36,7 +36,9 @@ bun run preview
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
-| `bun run images:generate` | 提供PNGから表示幅別のWebPを再生成 |
+| `bun run images:generate` | Homeの提供PNGから表示幅別のWebPを再生成 |
+| `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
+| `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
 | `bun scripts/generate-og.ts` | 文字主体のOG画像を再生成 |
 
 `bun run test`はVitestを呼び出します。Bun組み込みの`bun test`へ置き換えないでください。E2E初回はブラウザを導入し、事前にビルドします。
@@ -65,22 +67,30 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 
 ## 編集と構成
 
-- `data/`: 掲載順・文案・証拠・未検証範囲。Featured 4件、Studies 6件、Secondary 3件。
+- `data/`: 掲載順・文案・証拠・未検証範囲。Featured 4件、Studies 6件、Secondary 3件。4詳細本文は`*-detail.md`、共通対応表は`project-documentation.ts`。
+- `docs/PROJECT-DETAILS/`: 詳細説明の基準資料。資料と表示用Markdownの対応は[現行仕様](docs/current-specification.md#ページと情報源)。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを通常のアンカーで表示。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像や操作ボタンを使わず、画面外停止・reduced-motionに対応。
-- `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 提供された7枚の実画面・代替文と7件の公開サイトの導線。
-- `data/feature-guides.ts`・`components/projects/feature-story.tsx`: 機能を紹介する理由、処理の流れ、各参照コードの説明。
-- `app/globals.css`: 配色トークン、OS連動ダークテーマ、全コンポーネントのスタイル。
+- `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
+- `components/projects/documented-project-detail.tsx`・`multi-vendor-detail.tsx`: Markdown本文・表・生成済みMermaid SVGをサーバー描画。旧`project-details.ts`・`feature-guides.ts`は現在の4詳細本文の編集先ではありません。
+- `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
+- `lib/theme.ts`・`components/layout/theme-toggle.tsx`: OS追従・保存・タブ同期を持つ全画面共通テーマ切り替え。
+- `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。Homeの導線は維持。
+- `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
-- `public/images/`: 原本PNGと最適化WebP。画像追加は`data/screens.ts`を更新し、`images:generate`の結果もコミット。
+- `public/images/`: 原本PNG、Home用WebP、詳細用Mermaid SVG。Home画像は`data/screens.ts`、ギャラリーは対応するスライド配列を更新。生成物も管理。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
 
+図のソースを変更した場合は、build前に`bun run diagrams:generate`を実行して生成SVGを更新します。図中文字は1remを維持し、狭い画面では図の領域内で横スクロールできます。ASCII図解は使用しません。
+
 本文はServer Componentsで生成し、追加の学習・補足も初期HTMLに含めます。JavaScriptが無効でも`details`で手動展開できます。通常のアンカー移動はsmooth、履歴復元とページ切替はinstantです。OSのreduced-motion設定時は移動・3D演出を抑制します。
+
+テーマはlocalStorageの`portfolio-theme`へ保存し、未選択時はOSへ追従します。JavaScript無効時はOS配色とギャラリーの先頭画像を表示し、テーマ切り替え・ギャラリー操作は提供しません。
 
 履歴の補助保存はsessionStorageの直近20件までで、保存拒否・破損時も基本操作を維持します。
 

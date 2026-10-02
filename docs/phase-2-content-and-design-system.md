@@ -1,8 +1,10 @@
+> 2026-10-02更新: 詳細・配色・テーマ・画像・図の現行契約を同期しました。歴史的な文案・承認記録は当時の状態です。現在の画面・編集先・操作仕様は[現行仕様](current-specification.md)を優先します。
+
 # PHASE 2 — Content & Design System
 
 ## 0. 決定案・対象・証拠の扱い
 
-**用途が伝わる日本語の見出しと、実装へ進めるリンクを中心にした、明るい編集記事型のポートフォリオを提案する。** オフホワイトと墨色を基調に、操作箇所に青を使う。Featuredは横長の4行、学習は簡潔なカード、詳細は読み幅を絞った記事とし、文字の大きさ・余白・罫線で階層を作る。
+**用途が伝わる日本語の見出しと、実装へ進めるリンクを中心にした、明るい編集記事型のポートフォリオを提案する。** オフホワイトと墨色を基調に、操作箇所に青を使う。Featuredは横長の4行、学習は簡潔なカード、詳細は本文カラムの幅を使った記事とし、文字の大きさ・余白・罫線で階層を作る。
 
 - 要件: [prompt.md](../prompt.md) のPHASE 2（2-1〜2-6）。今回の「PHASE 2の対応を進めて」をPhase 1案に基づく開始承認として扱う。
 - 継承: [Phase 1](phase-1-portfolio-strategy-and-information-architecture.md) のFeatured 4件、学習6件、その他3件、Home＋Featured詳細4ページ、掲載順・アンカー・条件付きContact。
@@ -24,7 +26,7 @@ Homeは採用担当者が用途と制作の違いを把握できる文章、詳�
 
 | Section / 計画アンカー | Purpose | Information | Priority | CTA / 遷移 |
 |---|---|---|---|---|
-| Navigation | 目的の区画へ直接進む | 表示名、制作・学習・考え方、GitHub。連絡先は提供時のみ | P0 | `/#selected-work`、`/#studies`、`/#philosophy`、GitHubプロフィール |
+| Navigation | 目的の区画へ直接進む | 表示名、制作・学習・考え方、テーマ切り替え。HomeのみGitHub。連絡先は提供時のみ | P0 | `/#selected-work`、`/#studies`、`/#philosophy`、GitHubプロフィール |
 | Hero / `#top` | 誰の、何を紹介するサイトか伝える | 表示名、Webアプリ制作を中心とする説明、AI・医療・設計／品質の題材 | P0 | 「制作を見る」→ `/#selected-work`、「GitHubを見る」→ プロフィール |
 | Selected Work / `#selected-work` | 代表作4件の用途と違いを見せる | 用途、Repository名、説明、構成の見どころ、技術3つ | P0 | 「実装と構成を見る」→ 各詳細、「GitHub」→ 各Repository |
 | Engineering Domains / `#domains` | 実装の中心と学習の広がりを区別する | BUILD / STUDY / ENGINEERと日本語補足、対象領域、対応する制作・学習 | P1 | 各制作・学習のHomeアンカー |
@@ -61,7 +63,7 @@ Homeに監査ステータス、評価点、全依存一覧を並べない。技�
 |---|---|---|---|
 | 01 / R01 / Multi-Vendor-E-Commerce | **複数店舗の商品・注文管理** — 店舗・商品管理、注文作成、決済連携を扱うECアプリ。ロールと所有者の確認、注文処理の構成を紹介します。 | 所有者確認と注文トランザクション / Next.js・TypeScript・Prisma | [T01](phase-0-repository-evidence-audit.md#r01-t01)、[A01](phase-0-repository-evidence-audit.md#r01-a01)、[A02](phase-0-repository-evidence-audit.md#r01-a02)、[F01](phase-0-repository-evidence-audit.md#r01-f01)、[F02](phase-0-repository-evidence-audit.md#r01-f02)、[F03](phase-0-repository-evidence-audit.md#r01-f03) |
 | 02 / R06 / Comparison-of-LLMs | **LLM料金の収集と費用計算** — Pythonによる料金データの収集と、入力・出力トークン数や期間に応じた費用計算を組み合わせたWebツールです。 | 収集データとWebの検証境界 / Python・Next.js・TypeScript | [T01](phase-0-repository-evidence-audit.md#r06-t01)、[A01](phase-0-repository-evidence-audit.md#r06-a01)、[F01](phase-0-repository-evidence-audit.md#r06-f01)、[F02](phase-0-repository-evidence-audit.md#r06-f02) |
-| 03 / R12 / Medical-Studies | **質問票の計算・記録ツール** — 患者報告アウトカム（PROM）の回答検証、スコア計算、記録保存、データ出力を扱うWebアプリの構成を紹介します。 | 計算・保存・出力の責務分割 / Next.js・TypeScript・React | [T01](phase-0-repository-evidence-audit.md#r12-t01)、[A01](phase-0-repository-evidence-audit.md#r12-a01)、[F01](phase-0-repository-evidence-audit.md#r12-f01)、[F02](phase-0-repository-evidence-audit.md#r12-f02) |
+| 03 / R12 / Medical-Studies | **頭痛医療教育・記録プラットフォーム** — 頭痛の教育コンテンツ、3D解剖アトラス、患者報告アウトカム（PROM）の自己記録を統合したWebアプリの設計と公開上の制約を紹介します。 | 計算・保存・出力の責務分割 / Next.js・TypeScript・React | [T01](phase-0-repository-evidence-audit.md#r12-t01)、[A01](phase-0-repository-evidence-audit.md#r12-a01)、[F01](phase-0-repository-evidence-audit.md#r12-f01)、[F02](phase-0-repository-evidence-audit.md#r12-f02) |
 | 04 / R02 / The-Wild-Oasis-For-Admin | **宿泊施設の管理アプリ** — 客室登録、画像保存、予約のチェックインを扱う管理アプリ。画面・フック・データ処理の分割を紹介します。 | 管理操作からデータ保存まで / React・TypeScript・Supabase | [T01](phase-0-repository-evidence-audit.md#r02-t01)、[A01](phase-0-repository-evidence-audit.md#r02-a01)、[F01](phase-0-repository-evidence-audit.md#r02-f01)、[F02](phase-0-repository-evidence-audit.md#r02-f02) |
 
 各行のアンカーは順に `#work-r01`、`#work-r06`、`#work-r12`、`#work-r02`。詳細URLはPhase 1の `/projects/multi-vendor-e-commerce`、`/projects/comparison-of-llms`、`/projects/medical-studies`、`/projects/the-wild-oasis-for-admin`。Repositoryリンクは `https://github.com/myoshi2891/` に表のRepository名をつなぐ。タイトルとCTAは同じ詳細へ進み、GitHubは別リンクとする。
@@ -108,58 +110,41 @@ Philosophyは次の4項目を順に示す。Improveの文章は方針であり�
 
 ### 1.7 Featured詳細のコンテンツ仕様
 
-全4ページに共通の節順と安定したアンカーを使う。概要とGitHubはページ先頭に置き、根拠リンクは本文の主張の近くにも置く。Scope・Technical Decisionsのために本人の説明を作らない。
+全4詳細は資料から編集したMarkdown本文と実画面ギャラリーで構成します。概要CTA・本文・共通ヘッダー・末尾を含め、詳細画面にGitHubリンクを置きません。HomeのGitHub導線は維持します。Scopeは未提供のため省略します。
 
-| 節 / アンカー | Purpose / Information | Priority | CTA |
-|---|---|---|---|
-| Overview / `#overview` | §1.4の用途見出しと説明を再利用。Repository名、確認済みの構成を添える | P0 | GitHub、Homeの元カードへ戻る |
-| Scope / `#scope`（条件付き） | 本人提供の制作背景・担当範囲があるときだけ掲載 | P1 | 元教材・差分等の根拠がある場合のみリンク |
-| Features / `#features` | 下表の主要処理を2〜3項目で示す | P0 | 「注文作成のコード」など対象が分かるソースリンク |
-| Architecture / `#architecture` | 確認済みの処理境界とデータフローを説明。外部サービスは接続成功と区別 | P1 | 対応するソース・設定 |
-| Structure & Constraints / `#decisions` | 公開見出しは「構成と制約」。本人の採用理由が未提供のTechnical Decisionsをこの説明で扱う | P1 | 構造を確認できるコード。理由・代替案は根拠を得てから追加 |
-| Quality & Limitations / `#quality` | テストや検査設定の所在と、機能を理解するための未検証範囲 | P1 | テスト・CI定義へのリンク |
-| Evidence & Next / `#evidence` | 「参照コードの確認日：2026-09-16」、対象コミット、関連ファイル | P2 | 固定コミット、GitHub、次のFeatured、Home末尾 |
+| 節 | 表示内容・導線 |
+|---|---|
+| `#overview` | 用途、Repository名、技術タグ、画面更新日、提供済み公開サイト、パンくず |
+| ギャラリー | Multi Vendor 10枚、LLM 9枚、Medical 11枚、Wild Oasis管理4枚 |
+| `#features` | 利用者の役割・具体的な機能・操作 |
+| `#orders` | Multi Vendorのみ。店舗別注文と決済の流れ |
+| `#architecture` | 責務・データフロー・Mermaid図 |
+| `#decisions` | 技術の役割、構成と制約。根拠のない採用理由を作らない |
+| `#quality` | 基準資料の検証時点・結果・継続課題。現在の保証と区別 |
+| `#documentation` | 基準資料名と調査日、品質統計日、画面更新日 |
+| 次の制作 | プレビュー、要約、技術タグ、次の詳細へのリンク |
 
-以下を詳細本文の基本原稿とする。各欄の証拠は§1.4と下表のQuality参照に対応する。表示する構成図を後続Phaseで作る場合も、この範囲から矢印を追加しない。
+本文の対応表・資料名・目次IDは[現行仕様のページと情報源](current-specification.md#ページと情報源)に記載。テーブルはGFM Markdown、フローとシーケンスはMermaid。ASCII図解は禁止、図中文字は1rem。詳細本文と概要の説明は利用できるカラム幅へ広げ、図は専用領域内で横スクロールします。
 
-| ID | Features / Architectureの文案 | 構成と制約・Qualityの文案 |
-|---|---|---|
-| R01 | 商品フォームから商品更新処理を呼び出します。チェックアウトではカート・配送先の所有者を確認し、トランザクション内で注文を作成します。画面、Server Actions、PrismaによるDB処理を分けた構成です。 | ロール・店舗所有者の確認と、決済作成・Webhookの処理を実装しています。決済成功や認可の十分性は未検証です。Jest・Playwrightの設定と、lint・テスト・build等のCI定義を確認しています。実行結果・coverageは未確認です。[Q01](phase-0-repository-evidence-audit.md#r01-q01)、[Q02](phase-0-repository-evidence-audit.md#r01-q02) |
-| R06 | Pythonの収集処理が料金JSONを書き出し、Web側へ複製します。Web側はJSONを検証して画面へ渡し、入力・出力トークン数と期間から費用を計算します。 | 取得失敗時には既存値やfallbackを利用する経路があるため、価格の鮮度は保証しません。紹介対象は料金収集・計算のコードで、LLMの性能比較ではありません。WebとPythonのテスト実体・CI定義を確認しています。実行結果は未確認です。[Q01](phase-0-repository-evidence-audit.md#r06-q01) |
-| R12 | 質問票フォームの回答を検証してスコアを計算し、localStorageへ記録します。画面、計算、StorageAdapter、exporterを分け、JSON入出力とCSV・Google Sheets向けの出力処理を持ちます。 | 公開時に利用を制限する質問票があります。Google Sheetsへの接続成功は未確認です。ここでは計算・記録の実装を紹介し、臨床的な有効性は検証していません。Vitest・型検査・lint・CI定義を確認しています。実行結果は未確認です。[F03](phase-0-repository-evidence-audit.md#r12-f03)、[Q01](phase-0-repository-evidence-audit.md#r12-q01) |
-| R02 | 客室作成フォームからフック、サービスを経て客室データと画像を保存します。チェックイン操作は予約の状態を更新します。画面・フック・サービスとSupabaseクライアントを分けたSPA構成です。 | 認証・DB・Storageへの操作コードを確認しています。実環境のアクセス制御とゲスト向けアプリとの統合運用は未確認です。Vitestの単体テスト、Playwrightの認証E2E、CIの検査定義を配置しています。実行結果は未確認です。[Q01](phase-0-repository-evidence-audit.md#r02-q01) |
+### 1.8 未提供情報の扱い
 
-編集用の証拠ID・Source Type・Statusは本書で管理する。公開画面の根拠リンクはPhase 0の対応行が持つSHA固定のファイルURLを使い、監査資料を経由しなくてもソースへ到達できるようにする。短縮SHAの表示は可、リンク先には完全なSHAを使う。
-
-### 1.8 未提供情報・空状態・表現の制約
-
-| 項目 | 状態 | 公開時の扱い |
-|---|---|---|
-| 本人指定の表示名・肩書き・連絡先 | UNVERIFIED / NOT_VERIFIED | 暫定表示はmyoshi2891。肩書き、メール、SNS、履歴書、採用可否の表示は省略。情報提供後に置換 |
-| 担当範囲・制作背景・独自の変更 | UNVERIFIED / NOT_VERIFIED | Scope欄を省略。「独自開発」「全工程を担当」等を書かない |
-| Live Demo・本番稼働 | NOT_VERIFIED。URLが監査範囲でNOT_FOUNDのものもある | Demo CTAを省略し、詳細とGitHubで成立させる。無効ボタンや架空URLを置かない |
-| 実画面画像 | 利用可能性はNOT_VERIFIED | 画像枠ごと省略。実アプリに見える生成画像を代用しない |
-| テスト成功・性能・coverage・利用規模 | UNVERIFIED / NOT_VERIFIED | 成功バッジ・スコア・数値を載せない。「設定を確認」と実行結果を区別 |
-| R05のhomepage | Phase 0に記述の不整合が残る | Demo導線には使用しない。必要になった時点で再確認 |
-| 臨床的有効性 | NOT_APPLICABLE（技術監査の対象外） | 診断・治療効果・臨床実績の訴求をしない |
-
-「Production-ready」「Enterprise-grade」「高性能」「安全な設計」「常に最新」は根拠が得られるまで掲載しない。これは公開コピーの編集条件であり、画面に警告一覧を置く指定ではない。
+肩書き・経歴・担当範囲・連絡先を補わない方針を維持します。Homeは全13件に実画面プレビューを掲載、4詳細に提供画像のギャラリーを配置します。提供済み公開URLは7件、その他はCTAごと省略します。紹介対象アプリの品質数値は基準資料の記録として日付と範囲を明記し、現在の実行結果・安全性・医学的有効性・価格鮮度の保証へ変換しません。
 
 ## 2. Visual Direction（2-2）
 
-**余白のある技術記事を読み進める方向**を採る。主役は用途を表す見出しとコードへの入口。Linear・Vercel・Stripe・Raycast・Appleは `prompt.md` が挙げる明快さ・整列・節度という抽象的な参考に留め、各社の画面・文案・ブランド資産は流用しない。
+**余白のある技術記事を読み進める方向**を採る。主役は用途を表す見出し・実画面・資料に基づく具体的な説明。Linear・Vercel・Stripe・Raycast・Appleは `prompt.md` が挙げる明快さ・整列・節度という抽象的な参考に留め、各社の画面・文案・ブランド資産は流用しない。
 
 | 要素 | 方針 |
 |---|---|
 | Hero | 左揃え。短いH1と本文、CTAを縦に配置。全画面高に固定せず、その下にSelected Workが続くと分かる余白 |
-| Selected Work | 画像のない横長4行。小さな通し番号、用途見出し、説明、構成の見どころを罫線で区切る。4件の順番で編集上の優先度を示す |
+| Selected Work | 実画面プレビュー付きの横長4行。小さな通し番号、用途見出し、説明、構成の見どころを罫線で区切る。4件の順番で編集上の優先度を示す |
 | Studies | 簡潔な白い面のカード。技術ロゴではなく、学習テーマを見出しにする |
 | More Work | さらに簡潔な罫線付きのリスト。Featuredと同じ大きさの見出しにしない |
-| 詳細 | 冒頭に用途・GitHub、続いて記事。広い画面のみ横に節ナビ。図は確認済み構造を説明するときだけ使用 |
-| 面・線 | 原則影なし。白い面と細い罫線、角丸は小さく統一。区切りを過剰な箱の入れ子にしない |
-| 画像・装飾 | 初期版は画像なしで成立。実画面の利用が確認できた場合だけキャプションとともに追加 |
-| 動き | 色・下線の状態変化を中心とする。スクロール出現、パララックス、カーソル追従、粒子、3Dは使わない |
-| テーマ | 初期版はライトのみ。ダーク切替は要件・検証対象を増やすため採用しない |
+| 詳細 | 冒頭に用途・画面更新日、続いてギャラリーと資料ベースの記事。広い画面のみ横に節ナビ。図は確認済み構造を説明するときだけ使用 |
+| 面・線 | 白い面と細い罫線、控えめな影、穏やかな角丸で階層を作る。区切りを過剰な箱の入れ子にしない |
+| 画像・装飾 | 提供済み実画面をキャプション・altとともに掲載。HomeはWebP、詳細はPNGギャラリー。架空のUIは作らない |
+| 動き | 色・下線の状態変化を中心とする。HeroのCSS 3D軌道と10秒周期の光の反射、ギャラリーの水平移動を使用。画面外停止・reduced-motionを尊重 |
+| テーマ | 全画面共通のライト／ダーク切り替え。保存値優先、未選択時はOS追従。SPA・reload・タブ間で同期 |
 
 見た目の差はカードを大量に並べることで作らず、Hero → 制作の横長行 → 領域の3枠 → 学習カード → 記事的な方針説明という情報の形で作る。
 
@@ -167,41 +152,16 @@ Philosophyは次の4項目を順に示す。Improveの文章は方針であり�
 
 ### 3.1 セマンティックトークン
 
-以下は実装言語に依存しない値の仕様。アクセントは青1色の濃淡のみ。カテゴリや検証状態に別の色相を足さない。
+最終ライト案は白・チャコール・シルバーを基調にブルーをアクセントとします。途中のアイボリーと制作別多色パレットは廃止しました。現在のライト／ダークの正確なトークン表は[現行仕様](current-specification.md#ライトモードの最終デザイン)と`app/globals.css`を参照してください。
 
-| Token | 値 | 用途 |
-|---|---|---|
-| color.canvas | `#F7F7F2` | ページ全体のオフホワイト |
-| color.surface | `#FFFFFF` | カード・ボタン文字の白 |
-| color.surface-subtle | `#ECEDE8` | 補足面、hoverのニュートラル背景、技術ラベル背景 |
-| color.text | `#191C20` | 見出し・本文・主ナビ |
-| color.text-muted | `#555B64` | Repository名、補足、日付。薄すぎる灰色にしない |
-| color.line | `#D9DCD6` | 装飾的な区切り線のみ |
-| color.control-border | `#737B86` | 操作部品の識別に必要な枠線 |
-| color.accent | `#2457C5` | 主CTA、本文リンク、フォーカス |
-| color.accent-hover | `#1D469F` | 主CTA・リンクのhover |
-| color.accent-active | `#17377D` | 押下中の主CTA・リンク |
+- ライトのcanvas `#f7f8fa`、surface `#ffffff`、ink `#20242c`、muted `#606873`、accent `#234bdb`。
+- 主CTAはチャコール＋白文字、hoverでブルー。リンク・現在目次・小さなラベルにブルーを配置。
+- カード、技術バッジ、表、図はニュートラルな面と罫線で統一。制作ごとの色分けはしない。
+- Heroのみブルーのエナメルパネル・シルバーの軌道・ガラスを思わせる面と穏やかな反射で見せ場を作る。
 
-基本の組み合わせ以外で半透明化しない。disabledは`surface-subtle`と`text-muted`、枠線に`control-border`を使い、必要な場合だけ非活性を文言でも示す。初期コンテンツに欠けたリンクは非活性ボタンにせず省略する。
+### 3.2 コントラストと状態
 
-### 3.2 色の組み合わせ確認
-
-通常の文字は4.5:1以上、操作識別とフォーカスは3:1以上を本設計の下限とする。下表はsRGB値を線形化し、相対輝度の比 `(明るい方 + 0.05) / (暗い方 + 0.05)` を計算した値。画面実装の適合判定ではない。
-
-| 前景 / 背景 | 比率 | 指定用途 |
-|---|---|---|
-| text / canvas | 15.91:1 | 見出し・本文 |
-| text-muted / canvas | 6.37:1 | 補足文 |
-| text-muted / surface-subtle | 5.82:1 | 技術ラベル |
-| accent / canvas | 6.02:1 | 本文リンク・フォーカス |
-| surface / accent | 6.47:1 | 主CTAの白文字 |
-| surface / accent-hover | 8.65:1 | 主CTA hover |
-| surface / accent-active | 11.18:1 | 主CTA active |
-| control-border / canvas | 3.98:1 | 操作部品の枠 |
-| control-border / surface | 4.28:1 | 白い面の操作部品の枠 |
-| accent / surface-subtle | 5.50:1 | 補足面上のリンク・フォーカス |
-
-`line`は操作部品を識別する唯一の手掛かりに使わない。リンクは下線、選択中の節は文字の太さと線を併用する。focus-visibleは外側2pxのaccentリング、3pxのオフセットを基本とし、背景との間を空ける。青いボタンも外側にリングを出す。実装時に切れ・重なりを確認する。
+最終ライトのHome＋4詳細でaxe違反0を確認。両テーマの操作も検証しています。旧配色の計算比率を現在の検証値へ流用しません。リンクの下線、目次の現在地・左線、focus-visibleの3pxリング＋4pxオフセットなど、色以外の識別を維持します。実機・支援技術での確認は未実施です。
 
 ## 4. Typography（2-4）
 
@@ -212,6 +172,8 @@ Philosophyは次の4項目を順に示す。Improveの文章は方針であり�
 ウェイトは400（本文）、500（ラベル・ナビ）、600（見出し・CTA）の3つ。読めることを優先し、日本語は通常字間。短い英語の補助ラベルに限り0.06emまで字間を広げる。本文を大文字化しない。フォントの取得・配信・サブセット化はPhase 3で検討し、読み込み失敗時にも内容が読めることを要件とする。
 
 ### 4.2 文字サイズと読み幅
+
+以下のS／M／L数値は初期設計の目安です。現行CSSでは見出しにclampを使用し、実際の値はapp/globals.cssを優先します。今回確定したMermaid図中文字はすべて1remです。
 
 数値は標準文字サイズ16pxを基準とした設計値。実装ではrem等で文字拡大を尊重する。S／M／Lは§5の画面区分。
 
@@ -228,7 +190,7 @@ Philosophyは次の4項目を順に示す。Improveの文章は方針であり�
 | action | 16 / 16 / 16px | 1.5 | 600 | ボタン・主要リンク |
 | code | 14 / 14 / 14px | 1.7 | 400 | パス・SHA・コード |
 
-本文の最大幅は42rem（672px）、Hero本文は40rem。長い英数字のRepository名とURLは折り返しを許可する。日本語は句読点の禁則を尊重し、手動改行は意味の切れ目だけにする。見出し・ボタン・ナビの高さを固定して折り返しを切らない。日本語だけの見出し幅を英字の`ch`単位で管理しない。
+Homeの説明は最大42rem、Hero本文は40rem。4詳細の概要・記事の説明は詳細カラム幅を使う。長い英数字のRepository名とURLは折り返しを許可する。日本語は句読点の禁則を尊重し、手動改行は意味の切れ目だけにする。見出し・ボタン・ナビの高さを固定して折り返しを切らない。日本語だけの見出し幅を英字の`ch`単位で管理しない。
 
 ## 5. Spacing & Grid（2-5）
 
@@ -253,15 +215,15 @@ Philosophyは次の4項目を順に示す。Improveの文章は方針であり�
 |---|---|---|---|---|
 | S | 320〜767px | 16 / 16px | 4列 | 本文・カードは全幅、Featured内も1列、CTAは折り返す |
 | M | 768〜1199px | 32 / 24px | 8列 | Featuredは番号1＋本文7列、Studiesは2列、Domainsは縦並び |
-| L | 1200px〜 | 最小48 / 32px、最大内容幅1200px | 12列 | Featuredは番号1＋概要7＋見どころ・CTA4列、Studies・Domainsは3列 |
+| L | 1200px〜 | 32 / 32px、最大内容幅1240px | 12列 | Featuredは番号1＋概要7＋見どころ・CTA4列、Studies・Domainsは3列 |
 
-Lでは幅から外側余白96pxを引いた領域と1200pxの小さい方を使い、全体を中央に置く。詳細の本文はグリッド内でも最大42remを守る。Lの詳細節ナビは本文の横、S／Mでは概要直後の「このページの内容」という縦リストへ移す。
+768px以上では幅から外側余白64pxを引いた領域と1240pxの小さい方を使い、全体を中央に置く。4詳細の本文はグリッドのカラム幅を使う。Lの詳細節ナビは本文の横、S／Mでは概要直後の「このページの内容」という縦リストへ移す。
 
 Homeのセクション間隔はS＝64px、M＝96px、L＝128px。Heroの上下はS＝64px、M＝96px、L＝128px／96px。Heroの高さを100vhに固定しない。狭い画面ほど空白だけの領域を減らす。
 
-ナビは通常フローに置き、初期版は固定しない。Sでは表示名とGitHubを1行目、制作・学習・考え方を2行目に折り返す。追加される連絡先も自然に折り返す。メニューを閉じたまま隠す方式は採用しない。
+ヘッダーはsticky。Sでは表示名・テーマ切り替え・ネイティブdetailsのメニューを表示し、制作・学習・考え方はメニュー内へ配置。詳細のヘッダーではGitHubを表示しない。
 
-Featured・Studiesの読み順とフォーカス順はDOM順と視覚順を一致させる。モバイルで横カルーセルに変えない。320px幅、200%文字拡大でも本文・CTAが切れず、ページ全体の横スクロールが出ないことを後続Phaseの確認条件とする。長いコードは専用領域内でスクロール可とし、図には文章の説明を併設する。
+Featured・Studiesの読み順とフォーカス順はDOM順と視覚順を一致させる。Homeの制作・学習一覧をモバイルで横カルーセルに変えない。詳細の画像だけは水平ギャラリーを使用する。320px幅、200%文字拡大でも本文・CTAが切れず、ページ全体の横スクロールが出ないことを後続Phaseの確認条件とする。長いコードは専用領域内でスクロール可とし、図には文章の説明を併設する。
 
 ## 6. Component System（2-6）
 
@@ -271,7 +233,7 @@ Featured・Studiesの読み順とフォーカス順はDOM順と視覚順を一�
 
 | 状態 | 表現・挙動 |
 |---|---|
-| Default | 本文リンクに下線。主CTAはaccent＋白文字、補助CTAは透明背景＋text＋control-border |
+| Default | 本文リンクに下線。ライトの主CTAはチャコール＋白文字、ダークはaccent＋on-accent、補助CTAは透明背景＋text＋control-border |
 | Hover | 主CTA・リンクはaccent-hover。補助CTAはsurface-subtle。カード自体を浮かせず、操作対象の状態だけ変える |
 | Focus-visible | §3の外側リング。Tab／Shift+Tabで所在が分かり、枠のoverflowで切れない |
 | Active | 主CTA・リンクはaccent-active。押下でサイズや位置を動かさない |
@@ -279,13 +241,13 @@ Featured・Studiesの読み順とフォーカス順はDOM順と視覚順を一�
 | Disabled / unavailable | 実行先のないCTAは省略。必要なdisabled操作は理由を隣接表示。初期版の通常導線には使わない |
 | Reduced motion | 動きの低減設定時は遷移アニメーションを止め、移動・展開を即時にする |
 
-通常の色の変化は120ms、背景の変化は160msを上限の目安とする。スクロールは既定で即時。コンテンツを透明な状態で待機させない。展開に高さのアニメーションを使わない。
+通常の色の変化は120ms、背景の変化は160msを上限の目安とする。通常アンカーはsmooth、履歴復元・ページ切替・reduced-motion時はinstant。コンテンツを透明な状態で待機させない。展開に高さのアニメーションを使わない。
 
 ### 6.2 採用コンポーネント
 
 | Component | 内容 / Variant | 操作・セマンティクス | S / M / Lでの扱い |
 |---|---|---|---|
-| Navigation | 表示名、3つのHomeリンク、GitHub。連絡先は条件付き | nav、先頭に「本文へ移動」リンク。詳細でもHomeアンカーへ遷移 | §5.2の折り返し。ハンバーガーメニューは不要 |
+| Navigation | 表示名、3つのHomeリンク、全画面テーマ切り替え。HomeのみGitHub | nav、先頭に「本文へ移動」リンク。詳細でもHomeアンカーへ遷移 | stickyヘッダー。モバイルはdetailsメニュー |
 | Button / ActionLink | primary・secondary・text。移動と開閉の意味で要素を選ぶ | 独立操作は最小44px高、左右16px以上。アクセシブル名に対象制作名を含める | 固定幅なし。狭い幅で折り返し、必要ならCTAを縦積み |
 | Badge | 技術名・「学習テーマ」等の非操作ラベル | span等の通常テキスト。状態の成功・保証を表さない。Tab対象にしない | 横に並べて自然に折り返す |
 | ProjectCard | featured＝横長行、secondary＝簡潔な行。用途、Repository名、説明、見どころ、CTA | articleと見出し。タイトルのリンクとGitHubを分離し、カード全体をリンクにしない | §5.2のFeatured構成。secondaryは全幅の一覧 |
@@ -293,7 +255,9 @@ Featured・Studiesの読み順とフォーカス順はDOM順と視覚順を一�
 | DomainCard | BUILD / STUDY / ENGINEER、日英補足、領域リンク | 見出しとリンクのリスト。カード全体のクリックを要求しない | S／Mは1列、Lは3列 |
 | SectionHeader | 日本語見出し、英語補助、任意の導入1文 | Homeの節はH2、カードはH3。英語ラベルを別の見出しとして重複させない | 日本語を優先し自然改行 |
 | Disclosure | 学習の追加3件、各カードの任意補足 | ネイティブの開閉要素またはbutton＋aria-expanded＋aria-controls。リンクと操作を入れ子にしない | 展開するとページの流れの中で高さが増える |
-| EvidenceLink | 「注文作成のコード」「検査設定」等、確認日・コミット | 通常のリンク。確認日とプロジェクトの更新日を混同しない | 長いパス・SHAを折り返す |
+| EvidenceLink | Homeの補足・監査データ用。4詳細では表示しない | 固定SHAの内部証拠を維持 | Homeの長いパスは折り返す |
+| ThemeToggle | ライト／ダーク、動的aria-label・現在モードのtitle | button。localStorage保存・OS追従・タブ同期 | 最小44pxの操作領域 |
+| ProjectSlideshow | 全4詳細の実画面ギャラリー | 前後・停止／再生、5秒自動送り、loop、alt | 前後の端が見える水平移動、reduced-motion時は静止 |
 | DetailContents | 詳細節のアンカー一覧 | ラベル付きnav。現在節を示す場合は色だけに依存しない | Lは横、S／Mは概要の下 |
 | Footer | 表示名、制作・学習、ページ先頭 | footer。GitHub末尾区画は直前の独立section | 1列から横並びへ。長い表示名でも切らない |
 
@@ -314,7 +278,6 @@ FeaturedのCTA可視ラベルは「実装と構成を見る」、読み上げ名
 | FilterBar | Featured4件・学習6件は掲載順と見出しで把握できる。初期版に検索・フィルタ状態・0件表示を追加しない |
 | Drawer | 短い補足は同じ文脈で展開する。別領域とフォーカス管理を追加する必要がない |
 | Modal | 作品の説明・GitHub導線に不要。背景を操作できない閲覧構造を追加しない |
-| ThemeToggle | ライトのみのため不要 |
 | ContactForm | 連絡先・送信先・運用要件が未提供。架空の送信完了表示を作らない |
 
 ## 7. 完了確認と後続Phaseへの引き継ぎ
@@ -330,8 +293,8 @@ FeaturedのCTA可視ラベルは「実装と構成を見る」、読み上げ名
 
 このチェックは仕様作成の完了を示す。理解時間、実画面のレスポンシブ・文字組み・アクセシビリティ・操作性はまだ実測していない。Phase 4／5で320・768・1200・1440px程度の幅、文字拡大、キーボード、長いRepository名、フォント未読込、共有アンカー、戻る操作、動きの低減設定を確認する。
 
-本書の静的確認では、ローカル文書リンク50件の参照先、うち証拠アンカー44件の存在と `REPOSITORY_VERIFIED / VERIFIED` 分類、対象13件の記載、2-1〜2-6の網羅、ローカル絶対パスの不在を機械照合した。証拠アンカー数は重複参照を含む。配色比率は指定値から計算した。アプリのテスト・build、GitHubの再取得、画面の動作検証は行っていない。
+初期作成時の静的確認では、ローカル文書リンク50件の参照先、うち証拠アンカー44件の存在と `REPOSITORY_VERIFIED / VERIFIED` 分類、対象13件の記載、2-1〜2-6の網羅、ローカル絶対パスの不在を機械照合した。証拠アンカー数は重複参照を含む。配色比率は指定値から計算した。アプリのテスト・build、GitHubの再取得、画面の動作検証は行っていない。
 
 Phase 3へ引き継ぐのは、掲載内容と証拠の対応、トークン値、コンポーネントの責務、条件付き表示、開閉・復元の要件、フォント配信の検討事項。ライブラリ・データ型・取得方式の選定は本書では確定しない。
 
-**Phase 2の提案作成は完了。Phase 2成果物の承認は未取得。** 承認対象は公開文案、明るい記事型のデザイン方向、配色・文字・余白の値、コンポーネントと操作仕様。[prompt.md](../prompt.md) のPhase進行制御に従い、ここで停止し、Phase 3 — Technical Architectureは承認後に開始する。
+**以下は初期Phase 2の承認待ち記録。2026-10-02の現行デザイン・操作はユーザー依頼に基づき実装済みです。** 承認対象は公開文案、明るい記事型のデザイン方向、配色・文字・余白の値、コンポーネントと操作仕様。[prompt.md](../prompt.md) のPhase進行制御に従い、ここで停止し、Phase 3 — Technical Architectureは承認後に開始する。
