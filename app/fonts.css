@@ -302,7 +302,7 @@
   font-display: swap;
   font-weight: 400;
   src: url(/fonts/noto-sans-jp-99-400-normal.woff2) format('woff2');
-  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+990A;
+  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+96A0,U+990A;
 }
 
 @font-face {
@@ -797,7 +797,7 @@
   font-display: swap;
   font-weight: 500;
   src: url(/fonts/noto-sans-jp-99-500-normal.woff2) format('woff2');
-  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+990A;
+  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+96A0,U+990A;
 }
 
 @font-face {
@@ -1292,7 +1292,7 @@
   font-display: swap;
   font-weight: 600;
   src: url(/fonts/noto-sans-jp-99-600-normal.woff2) format('woff2');
-  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+990A;
+  unicode-range: U+2191,U+505C,U+5305,U+5C90,U+5DF1,U+6804,U+6CCA,U+7559,U+75DB,U+7B4B,U+7D99,U+8131,U+9045,U+96A0,U+990A;
 }
 
 @font-face {
