@@ -78,7 +78,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 - `components/projects/documented-project-detail.tsx`・`multi-vendor-detail.tsx`: Markdown本文・表・生成済みMermaid SVGをサーバー描画。旧`project-details.ts`・`feature-guides.ts`は現在の4詳細本文の編集先ではありません。
 - `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
 - `lib/theme.ts`・`components/layout/theme-toggle.tsx`: OS追従・保存・タブ同期を持つ全画面共通テーマ切り替え。
-- `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。Homeの導線は維持。
+- `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
 - `public/images/`: 原本PNG、Home用WebP、詳細用Mermaid SVG。Home画像は`data/screens.ts`、ギャラリーは対応するスライド配列を更新。生成物も管理。

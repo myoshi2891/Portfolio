@@ -31,7 +31,7 @@ Homeの説明・技術タグ・掲載順は既存のTypeScriptデータと証拠
 | 表示先 | 現行仕様 |
 |---|---|
 | 代表作4詳細 | GitHubへのリンクをすべて非表示。概要CTA、本文のコード参照・行番号リンク、対象コミット欄、末尾プロフィール導線を削除 |
-| `/projects/`配下の共通ヘッダー | `HeaderGithubLink`がpathnameを判定しGitHubリンクを描画しない。未知projectの404でも同じ |
+| `/projects/`配下の共通ヘッダー | `HeaderGithubLink`がpathnameを判定しGitHubリンクを描画しない。未知projectの404でも同じ（共有の`404.html`との hydration 不一致を避けるため、hydration 後に隠す） |
 | Home | ヘッダー、Hero、制作・学習カード、末尾のGitHub導線を維持 |
 | 証拠データ・内部監査文書 | 固定SHAと証拠リンクを保持。削除したのは詳細画面上の導線 |
 
