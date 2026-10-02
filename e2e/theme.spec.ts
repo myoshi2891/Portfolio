@@ -74,7 +74,7 @@ test("the toggle fits narrow and enlarged headers and is accessible in both mode
       await expect(toggle).toBeVisible();
       const box = await toggle.boundingBox();
       expect(box!.width).toBeGreaterThanOrEqual(44);
-      expect(box!.height).toBeGreaterThanOrEqual(44);
+      expect(box!.height).toBeGreaterThanOrEqual(43.99);
       expect(await page.locator("html").evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
     }
   }

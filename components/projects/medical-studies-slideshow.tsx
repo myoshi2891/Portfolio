@@ -15,5 +15,5 @@ const slides = [
 ] as const satisfies readonly ProjectSlide[];
 
 export function MedicalStudiesSlideshow() {
-  return <ProjectSlideshow slides={slides} imageDirectory="Medical-Studies" label="Medical Studiesの画面ギャラリー" browserTitle="Medical Studies / 7 views" />;
+  return <ProjectSlideshow slides={slides} imageDirectory="Medical-Studies" label="Medical Studiesの画面ギャラリー" browserTitle={`Medical Studies / ${slides.length} views`} />;
 }
