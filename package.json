@@ -17,12 +17,16 @@
     "preview": "bun scripts/preview.ts",
     "test:e2e": "playwright test",
     "fonts:generate": "bun scripts/prepare-fonts.ts",
-    "images:generate": "bun scripts/prepare-images.ts"
+    "images:generate": "bun scripts/prepare-images.ts",
+    "diagrams:commerce": "bun scripts/prepare-commerce-diagrams.ts multi-vendor-e-commerce",
+    "diagrams:generate": "bun scripts/prepare-commerce-diagrams.ts"
   },
   "dependencies": {
     "next": "16.3.5",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
@@ -35,6 +39,7 @@
     "@types/react-dom": "19.3.0",
     "eslint": "9",
     "eslint-config-next": "16.3.5",
+    "mermaid": "^12.1.0",
     "sharp": "0.35.4",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
