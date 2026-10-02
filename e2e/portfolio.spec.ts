@@ -15,6 +15,15 @@ test("all pages load directly and unknown routes return real 404s", async ({ pag
   }
 });
 
+test("unknown project 404 hydrates cleanly and hides the header GitHub link", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/projects/unknown/");
+  await expect(page.getByRole("heading", { level: 1, name: "ページが見つかりません" })).toBeVisible();
+  await expect(page.locator(".github-nav")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("all content is accessible without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
