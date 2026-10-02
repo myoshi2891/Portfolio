@@ -57,10 +57,12 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   // 実行中の emulateMedia 切替は Firefox で change イベントが安定しないため、リロードで初期判定を検証する
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
+  await expect(gallery.getByRole('button', { name: 'スライドショーを一時停止' })).toBeVisible();
   await page.clock.fastForward(5100);
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.reload();
+  await expect(gallery.getByRole('button', { name: 'スライドショーを一時停止' })).toBeVisible();
   await page.clock.fastForward(5100);
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
 });
@@ -109,7 +111,7 @@ test("wrapped masthead height offsets anchors and sticky contents", async ({ pag
 test("LLM Studies copy uses the available detail width before wrapping", async ({ page }) => {
   await page.goto('/projects/comparison-of-llms/');
   const heroLead = await page.locator('.detail-header .hero-lead').boundingBox();
-  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
   expect(heroLead!.width).toBeGreaterThan(900);
   expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
@@ -154,15 +156,15 @@ test('Medical Studies gallery and case study remain usable across display modes'
   const gallery = page.getByRole('figure', { name: 'Medical Studiesの画面ギャラリー' });
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
   await gallery.getByRole('button', { name: '次のスライド' }).click();
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /anatomy-cervical-spine-viewer\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-headache-diary\.png$/);
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
-  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
   expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await expect(page.locator('.medical-role-grid article').first()).toBeVisible();
+  await expect(page.locator('#features .reading-table').first()).toBeVisible();
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
@@ -171,28 +173,42 @@ test('Medical Studies gallery and case study remain usable across display modes'
 });
 
 test('Medical Studies keeps its core content and first image without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL: test.info().project.use.baseURL ?? 'http://127.0.0.1:4173' });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/projects/medical-studies/');
+  await page.goto('/projects/medical-studies/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('頭痛医療教育・記録プラットフォーム');
   await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
   await expect(page.getByRole('heading', { name: '学ぶ・理解する・記録するを、1つのWebアプリへ' })).toBeVisible();
   await context.close();
 });
 
-test('Multi-Vendor E-Commerce case study stays readable without a project image', async ({ page }) => {
+test('Multi-Vendor E-Commerce gallery shows all supplied screens and keeps its case study readable', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/projects/multi-vendor-e-commerce/');
   await expect(page.getByRole('heading', { name: '顧客・販売者・管理者を、1つの市場でつなぐ' })).toBeVisible();
-  await expect(page.locator('main > .screen-preview, main > .project-slideshow')).toHaveCount(0);
-  const intro = await page.locator('#features > .section-intro').boundingBox();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const gallery = page.getByRole('figure', { name: 'Multi-Vendor E-Commerceの画面ギャラリー' });
+  const files = ['storefront-home-hero', 'storefront-fortune-section', 'storefront-happiness-section', 'storefront-newsletter-footer', 'product-collection', 'account-wishlist', 'product-comparison', 'frequently-asked-questions', 'order-tracking', 'returns-and-exchange'];
+  for (const [index, file] of files.entries()) {
+    const image = gallery.locator('.slideshow-slide.is-active img');
+    await expect(image).toHaveAttribute('src', `/images/multi-vendor-e-commerce/${file}.png`);
+    await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+    await expect(gallery.locator('figcaption')).toContainText(`${index + 1} / 10`);
+    await gallery.getByRole('button', { name: '次のスライド' }).click();
+  }
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /storefront-home-hero\.png$/);
+  await expect(page.locator('main a[href*="github.com/myoshi2891/Multi-Vendor-E-Commerce"]')).toHaveCount(0);
+  for (const image of await page.locator('.commerce-mermaid img').all()) {
+    await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  }
+  const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
   expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await expect(page.locator('.commerce-role-grid article').first()).toBeVisible();
+  await expect(page.locator('#features .reading-table').first()).toBeVisible();
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
@@ -201,12 +217,19 @@ test('Multi-Vendor E-Commerce case study stays readable without a project image'
 });
 
 test('Multi-Vendor E-Commerce keeps its case study in no-JavaScript HTML', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL: test.info().project.use.baseURL ?? 'http://127.0.0.1:4173' });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/projects/multi-vendor-e-commerce/');
+  await page.goto('/projects/multi-vendor-e-commerce/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('複数店舗の商品・注文管理');
   await expect(page.getByRole('heading', { name: '顧客・販売者・管理者を、1つの市場でつなぐ' })).toBeVisible();
-  await expect(page.locator('main > .screen-preview, main > .project-slideshow')).toHaveCount(0);
+  await expect(page.locator('main > .project-slideshow')).toHaveCount(1);
+  const firstImage = page.locator('.slideshow-slide.is-active img');
+  await expect(firstImage).toHaveAttribute('src', /storefront-home-hero\.png$/);
+  await expect.poll(() => firstImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  await expect(page.locator('.commerce-mermaid img')).toHaveCount(3);
+  for (const image of await page.locator('.commerce-mermaid img').all()) {
+    await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  }
   await context.close();
 });
 
@@ -217,14 +240,14 @@ test('The Wild Oasis gallery and case study remain usable across display modes',
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
   await gallery.getByRole('button', { name: '次のスライド' }).click();
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /bookings-management\.png$/);
-  const intro = await page.locator('#features > .section-intro').boundingBox();
+  const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
   expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await expect(page.locator('.wild-role-grid article').first()).toBeVisible();
+  await expect(page.locator('#features .reading-table').first()).toBeVisible();
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 
@@ -233,11 +256,58 @@ test('The Wild Oasis gallery and case study remain usable across display modes',
 });
 
 test('The Wild Oasis keeps core content and the first image without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL: test.info().project.use.baseURL ?? 'http://127.0.0.1:4173' });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/projects/the-wild-oasis-for-admin/');
+  await page.goto('/projects/the-wild-oasis-for-admin/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('宿泊施設の管理アプリ');
   await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
   await expect(page.getByRole('heading', { name: 'ホテルの日次業務を、1つの管理画面へ' })).toBeVisible();
   await context.close();
 });
+
+for (const slug of ['comparison-of-llms', 'medical-studies', 'the-wild-oasis-for-admin']) {
+  test(`${slug} removes GitHub links and preserves 1rem diagram text across display sizes`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(`/projects/${slug}/`);
+    await expect(page.locator('a[href*="github.com"]')).toHaveCount(0);
+    await expect(page.locator('#documentation')).toContainText('docs/PROJECT-DETAILS/');
+    const images = page.locator('.detail-mermaid img');
+    await expect(images).toHaveCount(3);
+    const sources = await images.evaluateAll(elements => elements.map(element => (element as HTMLImageElement).src));
+    const viewBoxWidths = [];
+    for (const source of sources) {
+      const svg = await (await page.request.get(source)).text();
+      viewBoxWidths.push(Number(svg.match(/viewBox="([^"]+)"/)![1]!.split(/\s+/)[2]));
+    }
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ colorScheme: width === 390 ? 'dark' : 'light', reducedMotion: 'reduce' });
+      for (const fontSize of ['100%', '200%']) {
+        await page.evaluate(value => { document.documentElement.style.fontSize = value; }, fontSize);
+        const rootSize = await page.locator('html').evaluate(element => parseFloat(getComputedStyle(element).fontSize));
+        for (let index = 0; index < viewBoxWidths.length; index++) {
+          const image = images.nth(index);
+          await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
+          const displayedWidth = await image.evaluate(element => element.getBoundingClientRect().width);
+          expect(displayedWidth / viewBoxWidths[index]! * 16).toBeCloseTo(rootSize, 1);
+        }
+        expect(await page.locator('html').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+      }
+    }
+    await page.evaluate(() => { document.documentElement.style.fontSize = '100%'; });
+    await page.screenshot({ path: test.info().outputPath('detail-mobile.png'), fullPage: true });
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  });
+
+  test(`${slug} keeps its documentation and Mermaid diagrams without JavaScript`, async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false, baseURL: test.info().project.use.baseURL ?? 'http://127.0.0.1:4173' });
+    const page = await context.newPage();
+    await page.goto(`/projects/${slug}/`);
+    await expect(page.locator('a[href*="github.com"]')).toHaveCount(0);
+    await expect(page.locator('#features h2')).toBeVisible();
+    for (const image of await page.locator('.detail-mermaid img').all()) {
+      await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0)).toBe(true);
+    }
+    await context.close();
+  });
+}

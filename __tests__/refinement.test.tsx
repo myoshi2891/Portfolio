@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import Home from '../app/page';
 import Detail from '../app/projects/[slug]/page';
 import NotFound from '../app/not-found';
+import { existsSync } from 'node:fs';
 
 it('shows supplied study screenshots with descriptive alternatives in the initial HTML', () => {
   const html = renderToStaticMarkup(<Home />);
@@ -28,23 +29,33 @@ it('adds breadcrumb context and a meaningful preview of the next project', async
   expect(html).toContain('aria-current="page"');
   expect(html).toContain('Pythonによる料金データ');
 });
-it('renders the Multi-Vendor E-Commerce case study without an image section', async () => {
+it('renders the Multi-Vendor E-Commerce gallery and documented case study', async () => {
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'multi-vendor-e-commerce' }) }));
   expect(html).toContain('class="container detail-page multi-vendor-detail-page"');
   expect(html).toContain('顧客・販売者・管理者を、1つの市場でつなぐ');
   expect(html).toContain('2026年9月18日');
-  expect(html).toContain('2026年9月24日');
+  expect(html).toContain('2026年10月2日');
   const caseStudy = html.split('<nav class="detail-next"')[0] ?? '';
   expect(caseStudy).not.toContain('class="screen-preview"');
-  expect(caseStudy).not.toContain('class="project-slideshow"');
-  for (const section of ['features', 'architecture', 'decisions', 'quality', 'evidence']) {
-    const markup = html.split(`id="${section}"`)[1]?.split('</section>')[0] ?? '';
-    expect(markup.match(/class="reference-heading"/g)?.length).toBeLessThanOrEqual(3);
+  expect(caseStudy).toContain('class="project-slideshow"');
+  expect(caseStudy).toContain('storefront-home-hero.png');
+  expect(caseStudy.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(10);
+  const screenshots = [...caseStudy.matchAll(/src="(\/images\/multi-vendor-e-commerce\/[^"/]+\.png)"/g)].map(match => match[1]);
+  expect(new Set(screenshots).size).toBe(10);
+  for (const path of screenshots) expect(existsSync(`public${path}`)).toBe(true);
+  expect(html).not.toContain('Multi-Vendor-E-Commerce/blob/');
+  expect(html).not.toContain('GitHubでコードを見る');
+  expect(html).not.toContain('参照コード');
+  expect(html).toContain('id="orders"');
+  expect(html).toContain('id="documentation"');
+  expect(html.match(/class="commerce-mermaid"/g)).toHaveLength(3);
+  for (const match of html.matchAll(/src="(\/images\/multi-vendor-e-commerce\/diagram-[^"]+\.svg)"/g)) {
+    expect(existsSync(`public${match[1]}`)).toBe(true);
   }
 });
 it('renders the LLM Studies gallery and its full-width detail layout', async () => {
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'comparison-of-llms' }) }));
-  expect(html).toContain('class="container detail-page llm-detail-page"');
+  expect(html).toContain('class="container detail-page llm-detail-page documented-detail-page"');
   expect(html).toContain('aria-roledescription="カルーセル"');
   expect(html).toContain('cost-calculator-overview.png');
   expect(html.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(9);
@@ -68,35 +79,32 @@ it('places additional captures on the matching featured, study and secondary ent
   expect(medical.includes('Medical-Studies/prom-checker-dashboard.png')).toBe(true);
 });
 
-it('renders the Medical Studies case study with all supplied views and bounded references', async () => {
+it('renders the Medical Studies documented case study and its supplied views', async () => {
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'medical-studies' }) }));
-  expect(html).toContain('class="container detail-page medical-detail-page"');
+  expect(html).toContain('class="container detail-page medical-detail-page documented-detail-page"');
   expect(html).toContain('Medical Studiesの画面ギャラリー');
   for (const file of [
-    'prom-checker-dashboard.png', 'anatomy-cervical-spine-viewer.png', 'headaches-tension-type-guide.png',
-    'treatment-migraine-prevention-guide.png', 'blocks-superior-cervical-ganglion-guide.png',
-    'therapies-headache-acupoints-guide.png', 'prom-hit6-reference-guide.png',
+    'prom-checker-dashboard.png', 'prom-checker-headache-diary.png', 'prom-checker-evaluation-report.png',
+    'anatomy-atlas-top.png', 'anatomy-head-neck-interactive-model.png', 'anatomy-cervical-spine-structure-explorer.png',
+    'headaches-migraine-guide.png', 'treatment-acute-headache-guide.png', 'blocks-occipital-nerve-guide.png',
+    'therapies-physical-therapy-guide.png', 'prom-headache-diary-guide.png',
   ]) expect(html).toContain(file);
   expect(html).toContain('2026年9月18日');
-  expect(html).toContain('2026年9月24日');
-  for (const section of ['features', 'architecture', 'decisions', 'quality', 'evidence']) {
-    const markup = html.split(`id="${section}"`)[1]?.split('</section>')[0] ?? '';
-    expect(markup.match(/class="reference-heading"/g)?.length).toBeLessThanOrEqual(3);
-  }
+  expect(html).toContain('2026年10月2日');
+  expect(html).not.toContain('github.com');
+  expect(html).toContain('localStorage');
 });
 
-it('renders the Wild Oasis case study with all supplied admin views and bounded references', async () => {
+it('renders the Wild Oasis documented case study and its supplied admin views', async () => {
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'the-wild-oasis-for-admin' }) }));
-  expect(html).toContain('class="container detail-page wild-oasis-detail-page"');
+  expect(html).toContain('class="container detail-page wild-oasis-detail-page documented-detail-page"');
   expect(html).toContain('The Wild Oasis管理画面ギャラリー');
   for (const file of ['dashboard-overview.png', 'bookings-management.png', 'dashboard-analytics-charts.png', 'cabins-management.png']) {
     expect(html).toContain(file);
   }
   expect(html).toContain('2026年9月18日');
-  expect(html).toContain('2026年9月24日');
+  expect(html).toContain('2026年10月2日');
   expect(html).toContain('71');
-  for (const section of ['features', 'architecture', 'decisions', 'quality', 'evidence']) {
-    const markup = html.split(`id="${section}"`)[1]?.split('</section>')[0] ?? '';
-    expect(markup.match(/class="reference-heading"/g)?.length).toBeLessThanOrEqual(3);
-  }
+  expect(html).not.toContain('github.com');
+  expect(html).toContain('キャッシュを無効化');
 });

@@ -23,7 +23,7 @@ test("all content is accessible without JavaScript", async ({ browser }) => {
   await expect(page.locator("#study-r10")).toBeVisible();
   await expect(page.locator("[data-repository]")).toHaveCount(13);
   await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().click();
-  await expect(page.locator("#evidence")).toBeVisible();
+  await expect(page.locator("#documentation")).toBeVisible();
   await page.goto("http://127.0.0.1:4173/projects/comparison-of-llms/");
   // Firefox は読み込み直後にトラックの transform トランジションが走るため、収束を待って判定する
   await expect.poll(async () => {
