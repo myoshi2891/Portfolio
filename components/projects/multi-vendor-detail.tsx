@@ -21,6 +21,9 @@ const diagramDescriptions = [
   "認証した画面からServer Actions、Prisma、PostgreSQLへ進み、決済通知はRoute Handlersで受信します。",
 ];
 const diagrams = [...content.matchAll(/```mermaid\n([\s\S]*?)```/g)].map(match => match[1]!.trim());
+if (sections.length !== multiVendorDetailSections.length - 1 || diagrams.length !== diagramDescriptions.length) {
+  throw new Error(`Documentation structure does not match its navigation or diagrams: multi-vendor-e-commerce (sections ${sections.length}/${multiVendorDetailSections.length - 1}, diagrams ${diagrams.length}/${diagramDescriptions.length})`);
+}
 
 // Source hashes prevent changed Markdown diagrams from displaying stale SVGs.
 function diagramPath(source: string) {
