@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { extractMermaidSources } from "../../lib/mermaid-sources";
 
 export const multiVendorDetailSections = [
   { id: "overview", label: "概要" },
@@ -20,7 +21,7 @@ const diagramDescriptions = [
   "顧客の注文作成後に決済を行い、署名検証したWebhookで支払いと注文の状態を更新します。",
   "認証した画面からServer Actions、Prisma、PostgreSQLへ進み、決済通知はRoute Handlersで受信します。",
 ];
-const diagrams = [...content.matchAll(/```mermaid\n([\s\S]*?)```/g)].map(match => match[1]!.trim());
+const diagrams = extractMermaidSources(content);
 if (sections.length !== multiVendorDetailSections.length - 1 || diagrams.length !== diagramDescriptions.length) {
   throw new Error(`Documentation structure does not match its navigation or diagrams: multi-vendor-e-commerce (sections ${sections.length}/${multiVendorDetailSections.length - 1}, diagrams ${diagrams.length}/${diagramDescriptions.length})`);
 }
