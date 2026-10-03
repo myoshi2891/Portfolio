@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 import { projectDocumentation } from "../data/project-documentation";
+import { extractMermaidSources } from "../lib/mermaid-sources";
 
 const documents = [
   { slug: "multi-vendor-e-commerce", contentPath: "data/multi-vendor-detail.md", imageDirectory: "multi-vendor-e-commerce" },
@@ -16,7 +17,7 @@ try {
   await page.addScriptTag({ path: resolve("node_modules/mermaid/dist/mermaid.js") });
   for (const document of documents.filter(document => !requested.length || requested.includes(document.slug))) {
     const markdown = await readFile(document.contentPath, "utf8");
-    const sources = [...markdown.matchAll(/```mermaid\n([\s\S]*?)```/g)].map(match => match[1]!.trim());
+    const sources = extractMermaidSources(markdown);
     const directory = `public/images/${document.imageDirectory}`;
     await mkdir(directory, { recursive: true });
     for (const source of sources) {

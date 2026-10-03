@@ -3,12 +3,13 @@ import { readFileSync } from "node:fs";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { documentedDetailSections, projectDocumentation, type DocumentedProjectSlug } from "../../data/project-documentation";
+import { extractMermaidSources } from "../../lib/mermaid-sources";
 
 export function DocumentedProjectDetail({ slug }: { slug: DocumentedProjectSlug }) {
   const document = projectDocumentation[slug];
   const content = readFileSync(document.contentPath, "utf8");
   const sections = content.split(/(?=^## )/m).filter(section => section.trim());
-  const diagrams = [...content.matchAll(/```mermaid\n([\s\S]*?)```/g)].map(match => match[1]!.trim());
+  const diagrams = extractMermaidSources(content);
   if (sections.length !== documentedDetailSections.length - 1 || diagrams.length !== document.diagrams.length) {
     throw new Error(`Documentation structure does not match its navigation or diagrams: ${slug}`);
   }

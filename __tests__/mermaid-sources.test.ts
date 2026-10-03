@@ -31,7 +31,7 @@ it('collects mermaid code nodes the way the CommonMark renderer parses them', ()
   // Assert
   expect(sources).toEqual([
     'graph TD; A-->B',
-    'graph LR; C-->D\n```\nstill inside',
+    'graph LR; C-->D\r\n```\r\nstill inside',
     'sequenceDiagram',
   ]);
 });
