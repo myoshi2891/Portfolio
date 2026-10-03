@@ -1,4 +1,15 @@
-> 現在地（2026-09-17）: ユーザー依頼によりPhase 4の残作業とブラッシュアップを実施。提供画面の掲載、ポートフォリオの構造を表すCSS 3Dヒーロー、内部リンクのSPA遷移、スムーズスクロール、OS連動ダークテーマ、モバイル・目次・履歴復元の改善を含む。現在の仕様と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)と[デザイン更新記録](docs/design-refresh.md)を参照。
+> 現在地（2026-10-02）: ユーザー依頼による4詳細の資料ベース化・GitHubリンク削除・画像ギャラリー・全画面テーマ切り替え・ライトデザインの再調整を実装済み。[現行仕様](docs/current-specification.md)を現在の表示／編集契約、[引き継ぎ](docs/phase-4-handoff.md)を検証範囲の基準とします。以下のPhase進行案は初期設計時の履歴を含み、実装済みの変更を未承認・未実装へ戻す指示ではありません。
+
+## 2026-10-02に確定した追加要件
+
+- Home＋Featured 4詳細を維持。詳細本文は`docs/PROJECT-DETAILS/`の各基準資料から編集した`data/*-detail.md`で管理し、資料の調査日・品質統計日・画面更新日を分ける。
+- 4詳細は共通ヘッダーを含めGitHubへのリンクをすべて表示しない。コード行参照・コミット欄・末尾プロフィール導線も再導入しない。HomeのGitHub導線と内部の証拠データは維持する。
+- ASCII図解は禁止。表はMarkdown、処理図はMermaid。Mermaidは生成済みSVGとして表示し、すべての図中文字を1remに統一。縮小せず図専用領域で横スクロールする。
+- 全4詳細に同じ水平スライド方式のギャラリー。Multi Vendor 10枚、LLM 9枚、Medical 11枚、Wild Oasis管理4枚。Multi VendorのHomeプレビューも表示。
+- Home・4詳細・404のヘッダーにライト／ダーク切り替え。localStorageの選択がOSより優先し、SPA・reload・別タブでも反映。未選択時はOS追従、保存拒否でも操作できる。
+- 最終ライト案は白・チャコール・シルバー＋ブルー一点のアクセント。制作別の多色パレットは廃止。トップのブルーの立体パネル、シルバーの軌道、穏やかな光の反射を特別な見せ場とする。reduced-motion・画面外停止を維持。
+- 詳細編集後は必要なMermaid SVGとフォントCSSを再生成。Home画像はWebP生成、ギャラリーはスライド配列を更新。手順・保存先は現行仕様に従う。
+- このセッションのエージェント検証は開発サーバーのChromiumを中心に実施。ユーザーがbuildを行うという指示を尊重し、過去の静的build／全3ブラウザ成功を今回の再検証として扱わない。
 
 # AI Engineering Portfolio — Master Prompt
 
@@ -964,29 +975,16 @@ Evidenceがない場合は、より中立的な表現にしてください。
 
 必ず以下の順番で進めてください。
 
-```text
-PHASE 0
-Repository Evidence Audit
-        ↓
-USER APPROVAL
-        ↓
-PHASE 1
-Portfolio Strategy & Information Architecture
-        ↓
-USER APPROVAL
-        ↓
-PHASE 2
-Content & Design System
-        ↓
-USER APPROVAL
-        ↓
-PHASE 3
-Technical Architecture
-        ↓
-USER APPROVAL
-        ↓
-PHASE 4
-Implementation
-        ↓
-PHASE 5
-Quality Audit
+```mermaid
+%%{init: {"themeVariables": {"fontSize": "1rem"}}}%%
+flowchart TD
+  P0["PHASE 0 — Repository Evidence Audit"] --> A0["USER APPROVAL"]
+  A0 --> P1["PHASE 1 — Portfolio Strategy & Information Architecture"]
+  P1 --> A1["USER APPROVAL"]
+  A1 --> P2["PHASE 2 — Content & Design System"]
+  P2 --> A2["USER APPROVAL"]
+  A2 --> P3["PHASE 3 — Technical Architecture"]
+  P3 --> A3["USER APPROVAL"]
+  A3 --> P4["PHASE 4 — Implementation"]
+  P4 --> P5["PHASE 5 — Quality Audit"]
+```

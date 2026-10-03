@@ -1,4 +1,4 @@
-> 2026-09-17更新: 現在のClient ComponentはHomeの履歴制御、モバイルメニュー、詳細目次。提供画像12件・公開URL7件と静的WebP配信を追加済み。アンカー移動はスムーズスクロール、フォントは`fonts:generate`によるサブセット生成を導入済み。以下§6.2・7.2の「即時」「サブセット生成は追加しない」等はPhase 3時点の設計記述であり、現行実装ではない。実装の詳細は[デザイン更新記録](design-refresh.md)を優先してください。
+> 2026-10-02仕様同期: 詳細本文のMarkdown化、静的Mermaid SVG、共通ギャラリー、全画面テーマ切り替えを追加。Homeのプレビューは13件、詳細ギャラリーは10／9／11／4枚。現在のファイルと動作契約は[現行仕様](current-specification.md)を優先します。下記の型抜粋・初期実装順・当時の未実装状態は設計履歴です。
 
 # PHASE 3 — Technical Architecture
 
@@ -6,7 +6,7 @@
 
 ## 0. 結論・対象・開始条件
 
-**Next.js App Router・TypeScript・Tailwind CSSで、HomeとFeatured詳細4ページを静的生成する。掲載内容は手動編集するTypeScriptデータを正とし、GitHub APIを表示やビルドの必須条件にしない。** JavaScriptは学習一覧のアンカー移動と閲覧状態の復元に絞る。初期版ではshadcn/uiを導入せず、Phase 2で必要としたリンク・ラベル・開閉を小さな共通部品で実装する。
+**Next.js App Router・TypeScript・Tailwind CSSで、HomeとFeatured詳細4ページを静的生成する。Home掲載内容は手動編集するTypeScriptデータ、詳細本文は基準資料から編集したMarkdownを正とし、GitHub APIを表示やビルドの必須条件にしない。** Client Componentsはアンカーと履歴、モバイルメニュー、詳細目次、ギャラリー、Heroの表示中判定、テーマ切り替えと詳細のヘッダーGitHub非表示に限定する。初期版ではshadcn/uiを導入せず、Phase 2で必要としたリンク・ラベル・開閉を小さな共通部品で実装する。
 
 - 要件: [prompt.md](../prompt.md) のPHASE 3（3-1〜3-3）。今回の「PHASE 3の対応を進めて」を、Phase 2案に基づく開始承認として扱う。
 - 継承: [Phase 1](phase-1-portfolio-strategy-and-information-architecture.md) の分類・詳細URLと、[Phase 2](phase-2-content-and-design-system.md) の文案・トークン・操作仕様。
@@ -23,7 +23,8 @@
 | Tailwind CSS | v4系を採用候補としPhase 4で互換性を確定 | Phase 2のトークンとレスポンシブ配置を共通化する。CSSの`@theme`に色・書体・寸法を対応付ける |
 | shadcn/ui | 初期版は不採用 | Phase 2にDialog・Drawer・複雑なフォームがない。既定の見た目と依存を追加する必要がなく、ネイティブHTMLで必要な操作を表現できる |
 | Bun / Node.js | Bun 1.3.12・Node.js 22.23.2 | Bunで依存管理・スクリプト実行、Node.jsはツール実行用。`bun.lock`を管理し、CIは`bun install --frozen-lockfile`を使う |
-| CMS / MDX / DB | 初期版は不採用 | 編集対象は13件と4詳細。構造化された静的データと共通記事テンプレートで足りる |
+| CMS / MDX / DB | 不採用 | 詳細はローカルMarkdownをreact-markdown＋remark-gfmでサーバー描画。CMS・MDXの任意コード実行は導入しない |
+| Mermaid | 開発依存 | Playwright ChromiumでMarkdownの図をSVG生成。表示時のMermaidランタイムは不要 |
 | 状態管理・取得ライブラリ | 初期版は不採用 | 検索・フィルタ・ログインがなく、開閉と閲覧状態だけをローカルに扱う |
 | Zod | 初期版は不採用 | 静的データは型検査、任意の外部JSONは小さな型ガードで必要項目だけ検証する |
 | テスト | Vitest・Playwrightを開発依存として計画 | データの整合条件と実ブラウザでのアンカー・戻る操作を分担する。React全体を単体テストに置き換えない |
@@ -73,15 +74,18 @@ flowchart TD
 
 | 対象 | 実装境界 | 補足 |
 |---|---|---|
-| Layout、Navigation、Footer、Home各節 | Server Components | 本文・ナビ・GitHubリンクを最初のHTMLに含める |
+| Layout、Navigation、Footer、Home各節 | Server Components | 本文・ナビを初期HTMLに含める。GitHub導線はHomeに限定 |
 | ProjectCard、StudyCard、DomainCard、Badge | Server Components | 公開用データだけを受け、監査全体をブラウザのpropsへ渡さない |
-| Featured詳細と節ナビ | Server Components | 目次は描画する節から生成。現在節の追従ハイライトは初期版では実装しない |
+| Featured詳細本文 | Server Components | Markdown読み込み・表・静的SVG。共通レンダラーと注文節を持つMulti Vendor専用レンダラー |
+| 詳細目次・ギャラリー | Client Components | 現在節ハイライト、前後・停止／再生・水平loop。初期本文と先頭画像はSSR |
+| ThemeToggle・HeaderGithubLink | Client Components | テーマ保存・OS追従、pathnameで詳細のGitHubヘッダーを非表示 |
+| HeroScene | Client Component | CSS 3DをSSRし、IntersectionObserverとvisibilitychangeで演出を停止／再開 |
 | 開閉内容 | Serverで`details` / `summary`を出力 | JavaScriptなしでも手動で開閉できる |
 | Home閲覧状態の制御 | 小さなClient Component | アンカー、開閉イベント、履歴復元だけを担当。カード本文はClient側からimportしない |
 
 Client Componentには必要なIDだけを渡す。`window`、history、storageの読み書きはブラウザ側のeffect／イベント内に限定し、SSR時の初期値と初回描画を一致させる。Server Componentsを既定とし、ブラウザAPIが必要な部分に境界を置く方式に従う。[Next.js Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 
-初期版のページ遷移は通常の`a`要素による文書ナビゲーションを基本とする。5ページの閲覧では、先読みやSPAの状態維持よりも、アンカー・ブラウザ履歴の挙動を明示できることを優先する。ルート全体を`use client`にしない。
+内部ページ遷移は`SiteLink`のNext.js LinkでSPA化し、外部URLは通常のアンカー。通常アンカーはsmooth、履歴復元・ページ切替・共有hash初回はinstant。ルート全体を`use client`にしない。
 
 ## 3. Data Architecture（3-1）
 
@@ -92,13 +96,18 @@ Client Componentには必要なIDだけを渡す。`window`、history、storage�
 | `data/site.ts` | 表示名、Hero、GitHubプロフィール、Philosophy、任意の連絡先 | Phase 2の文案を移す。実名・役職・メールを補わない |
 | `data/projects.ts` | Featured4件とSecondary3件 | 技術・説明・見どころを証拠へ対応付ける |
 | `data/studies.ts` | 学習6件 | 学習テーマと資料サイトの実装を分離する |
-| `data/project-details.ts` | Featured4件のFeatures・Architecture・構成と制約・Quality | OverviewはProjectと共通化し、本文の重複更新を避ける |
+| `docs/PROJECT-DETAILS/` | アプリ説明の基準資料 | 資料の調査日・品質統計日を保持 |
+| `data/*-detail.md` | 現在の4詳細の表示用本文・Markdown表・Mermaidソース | 資料から編集。章数・目次・図の説明を同期 |
+| `data/project-documentation.ts` | 共通3詳細の本文パス・SVG保存先・図の説明・節ナビ | 専用Multi Vendorは別コンポーネントで管理 |
+| `data/project-details.ts`・`data/feature-guides.ts` | 旧詳細・機能説明データ | 現在の4詳細本文の編集先ではない。既存参照の整合性検査は維持 |
+| `data/screens.ts` | 全13件のHome代表画像・alt・タイトル | WebP生成とScreenPreviewで共用 |
+| `components/projects/*-slideshow.tsx` | 4詳細の画像順・タイトル・alt・保存先 | 共通ProjectSlideshowへ渡す |
 | `data/domains.ts` | BUILD / STUDY / ENGINEER、領域リンク | 既存IDへの参照を持ち、カード本体を複製しない |
 | `data/evidence.ts` | 公開する主張の根拠、情報源分類、確認日、固定SHA・ファイルURL | Phase 0の必要な証拠を明示的に移す。全監査を自動公開しない |
 | `data/limitations.ts` | 掲載内容に関係する未検証範囲と監査状態 | 肯定的な技術事実の集合から分離する |
 | `data/github.snapshot.json` | 任意のAPI補足 | 初期版には不要。導入時も編集データを上書きしない |
 
-公開用テキストはReactが通常の文字列として描画する。リポジトリのREADME HTMLをそのまま取り込まず、任意のHTMLを許す汎用CMS・`dangerouslySetInnerHTML`も作らない。
+Homeの公開用テキストはReactが通常の文字列として描画し、詳細はreact-markdown＋remark-gfmで描画する。リポジトリのREADME HTMLをそのまま取り込まず、任意のHTMLを許す汎用CMS・`dangerouslySetInnerHTML`も作らない。
 
 ### 3.2 全13件の所属・順序・アンカー
 
@@ -126,7 +135,7 @@ R06・R12は元リストの「Studies」という分類からページ種別を�
 
 | 情報 | 保存・公開の扱い |
 |---|---|
-| `REPOSITORY_VERIFIED / VERIFIED` | repoId、Phase 0の証拠ID、確認日、完全SHA、固定ファイルURLを記録。公開時は文章の近くに意味のあるソースリンク |
+| `REPOSITORY_VERIFIED / VERIFIED` | repoId、Phase 0の証拠ID、確認日、完全SHA、固定ファイルURLを記録。Home補足と内部証拠用に保持。4詳細にはソースリンクを表示しない |
 | `USER_PROVIDED / VERIFIED` | 提供内容と文書内の出典位置を記録。Philosophy等に使用。privateな提供情報をそのまま公開しない |
 | `INFERRED / UNVERIFIED` | 公開用Claimの参照先へ入れない。推測をVerifiedへ変換しない |
 | `NOT_FOUND` | 調査範囲では見つからなかったと記録。「存在しない」と断定しない |
@@ -140,8 +149,8 @@ Missing Informationは`limitations`として保持する。詳細ではPhase 2�
 
 ### 3.4 編集フロー
 
-1. Phase 0の証拠ID・対象SHA・制約を確認し、公開する文をPhase 2と照合する。
-2. 必要な証拠を登録し、Project／Study／詳細本文から参照する。
+1. Homeの文案はPhase 0の証拠・制約、詳細はdocs/PROJECT-DETAILSの基準資料・調査時点と照合する。
+2. HomeのProject／Studyには証拠IDを登録。詳細はdata/*-detail.mdを更新し、節数・目次・図の説明を揃える。Mermaid変更時はSVG生成、本文追加後はフォント生成を実行する。
 3. 型検査とデータの整合性検査を行い、プレビューで文意・順序・リンク先を確認する。
 4. 変更したデータと対応する証拠をレビュー可能な差分にする。更新内容を静的ビルドへ反映する。
 
@@ -248,7 +257,7 @@ type ProjectDetail<E extends string, L extends string> = {
 | `topics` / `implementationNotes` | Study専用。題材と実装技術を分離 |
 | `demoUrl` / `image` / `metrics` | 初期モデルから省略。提供・検証後に必要なものだけ追加 |
 
-Overviewは共通のProject、`#evidence`は参照された証拠の集合から作る。`#scope`は値がある場合だけ節と目次に追加する。`#decisions`の公開見出しは「構成と制約」。本人の採用理由を生成するフィールドは用意しない。
+Overviewは共通のProject。現行詳細は`#documentation`で基準資料名・時点を示し、`#evidence`のソース参照節は表示しない。`#scope`は値がある場合だけ節と目次に追加する。`#decisions`の公開見出しは「構成と制約」。本人の採用理由を生成するフィールドは用意しない。
 
 ### 4.3 型で検査する範囲と実行時境界
 
@@ -310,7 +319,7 @@ Home用の小さな制御部品で、既知のHomeアンカーだけを処理す
 | 不明なhash | エラーにせず通常のページを表示 |
 | JSなし | 手動展開で全6件とGitHubリンクへ到達可能。閉じた内容への自動展開はブラウザ差に依存するため合格条件にしない |
 
-通常クリックだけを補助し、修飾キー・別タブ操作を妨げない。展開とスクロールは即時とし、フォーカスには`preventScroll`を使って二重の移動を防ぐ。
+通常クリックだけを補助し、修飾キー・別タブ操作を妨げない。通常アンカーはsmooth、履歴復元・共有hash初回・ページ切替・reduced-motion時はinstantとし、フォーカスには`preventScroll`を使って二重の移動を防ぐ。
 
 ### 6.3 履歴と状態の復元
 
@@ -333,21 +342,29 @@ storage拒否・壊れた保存値は読み取り境界で無視し、同一タ�
 
 Phase 2の色・書体・余白・角丸を`app/globals.css`に一度だけ定義し、Tailwindのutilityへ対応付ける。S／M／Lは768px・1200pxを境界にする。Tailwind既定の`lg`を1200pxと読み替えず、使用するブレークポイントを明示的に定義する。
 
-最大内容幅1200px、本文42rem、ナビは通常フロー、独立操作の領域は44px以上を継承する。Disclosure・ActionLink・SectionHeader等を小さく共通化し、全てを扱える汎用カードやvariant生成ライブラリは導入しない。
+最大内容幅1240px、Home説明は42rem・詳細説明はカラム幅、ナビはsticky、独立操作の領域は44px以上を継承する。Disclosure・ActionLink・SectionHeader等を小さく共通化し、全てを扱える汎用カードやvariant生成ライブラリは導入しない。
 
 ### 7.2 フォント
 
 Inter＋Noto Sans JP、400／500／600を継承し、Phase 4でライセンスと配布元を確認したWOFF2をローカル管理する。ビルド時・閲覧時のGoogle Fontsへの問い合わせを必須にしない。
 
-Interは`next/font/local`でCSS変数へ接続する案とする。Noto Sans JPは日本語グリフを多数含むため、正規配布の分割WOFF2と`unicode-range`を持つローカル`@font-face`を基本案とし、全分割ファイルのpreloadを避ける。独自の文字抜き出しによるサブセット生成は初期版では追加しない。取得元・ライセンス・使うファイル一覧を資産と一緒に記録する。
+Interは`next/font/local`でCSS変数へ接続する案とする。Noto Sans JPは日本語グリフを多数含むため、正規配布の分割WOFF2と`unicode-range`を持つローカル`@font-face`を基本案とし、全分割ファイルのpreloadを避ける。現在はprepare-fonts.tsがapp・components・data内のTS／TSX／CSS／Markdownから文字を収集し、必要なunicode-rangeのCSS定義だけを生成する。WOFF2本体は変更しない。取得元・ライセンス・使うファイル一覧を資産と一緒に記録する。
 
 `font-display: swap`とPhase 2のフォールバックを用い、ロード失敗でも文字を表示する。フォント配信量とレイアウト変化は実測し、容量が大きい場合はファイル構成を見直す。ローカルフォントの読み込み機構はNext.js公式に沿う。[Next.js Font Optimization](https://nextjs.org/docs/app/getting-started/fonts)
 
 ### 7.3 画像・図
 
-初期本文は画像なしで成立させる。必要な矢印等は小さなSVGまたはCSSで作り、アイコンライブラリを追加しない。実装構成図を置く場合は確認済み経路だけを静的SVG／HTMLとして表し、説明文を添える。ブラウザでMermaidを動かす依存は不要とする。
+全13件のHomeプレビューは`data/screens.ts`を共通定義とし、原本PNGから事前生成したWebPをsrcsetで選択します。4詳細は`ProjectSlideshow`でPNGを表示し、先頭画像・説明をSSR、前後・停止／再生の操作はhydration後に提供します。画像順・alt・保存先は各スライドショーの配列で管理します。
 
-将来スクリーンショットを追加する場合は出典・利用可否を確認し、ビルド前に適切なサイズへ変換した画像にwidth・height・altを付ける。static exportで標準の画像最適化サーバーを使う設定は選ばない。OG画像は別用途として、Phase 4で文字中心の静的画像を作る。
+処理図はMarkdownのMermaidソースから開発時に静的SVGへ変換します。`scripts/prepare-commerce-diagrams.ts`がstrict／neutral、HTMLラベルなし、文字1remで生成し、ソースのSHA-256先頭12桁をファイル名に使います。表示時はviewBox幅÷16のrem幅にし、縮小せず専用領域で横スクロールします。ブラウザではMermaidを実行しません。図のaltと説明を付け、JavaScript無効でも表示します。ASCII図解は禁止です。
+
+生成コマンド・プロジェクト別保存先・画像の枚数は[現行仕様](current-specification.md)を参照。Mermaidソース変更時の生成はbuildへ自動組み込みされていません。生成済みSVG、Home用WebP、フォントCSSを本文と同期して管理します。static exportの画像はunoptimizedで配信し、標準画像最適化サーバーは使いません。
+
+### 7.4 テーマの適用と保存
+
+`lib/theme.ts`がlocalStorageのportfolio-theme、OS設定、storageイベントを扱います。headの初期スクリプトで保存値を初回描画前にhtml[data-theme]へ適用し、CSSのcolor-scheme・変数・light-dark()が全画面の配色を切り替えます。ThemeToggleはuseSyncExternalStoreを使い、SSR時は幅を予約した非表示要素、hydration後は切り替えボタンを描画します。
+
+保存値がlight／darkならOSより優先、未選択ならOS追従。保存拒否でも現在ページでの操作は維持します。タブ間同期、reload・SPA保持に対応。JS無効時はOS配色になり、保存値の初期適用と手動切り替えは使えません。CSP追加時はこのインラインスクリプトも検証対象です。
 
 ## 8. SEO・配信設定・空状態
 
@@ -368,57 +385,23 @@ Interは`next/font/local`でCSS変数へ接続する案とする。Noto Sans JP�
 
 ## 9. Phase 4のディレクトリ案
 
-以下は**作成予定**。本Phaseではアプリファイルや依存を作成しない。
+以下は2026-10-02の実装ディレクトリ。個別ファイルの対応は現行仕様を参照。
 
-```text
-app/
-  layout.tsx
-  page.tsx
-  globals.css
-  not-found.tsx
-  projects/[slug]/page.tsx
-  sitemap.ts
-  robots.ts
-components/
-  layout/                  Navigation、Footer
-  home/                    各節、Homeの状態制御
-  projects/                ProjectCard、詳細記事、DetailContents
-  studies/                 StudyCard
-  ui/                      ActionLink、Badge、SectionHeader、Disclosure
-data/
-  site.ts
-  projects.ts
-  studies.ts
-  project-details.ts
-  domains.ts
-  evidence.ts
-  limitations.ts
-types/
-  portfolio.ts
-lib/
-  portfolio.ts             取得・並べ替え・公開用データへの変換
-  routes.ts                URL・アンカー生成
-  validate-content.ts      データ整合性検査
-  navigation-state.ts      閲覧状態の検証・保存
-public/
-  fonts/                   日本語フォントとライセンス
-  og/                      静的OG画像
-assets/fonts/              next/font/local用フォントとライセンス
-__tests__/
-  content.test.ts
-  navigation-state.test.ts
-e2e/
-  portfolio.spec.ts
-docs/
-  phase-0-repository-evidence-audit.md
-  phase-1-portfolio-strategy-and-information-architecture.md
-  phase-2-content-and-design-system.md
-  phase-3-technical-architecture.md
-next.config.ts
-tsconfig.json
-package.json
-bun.lock
-```
+| ディレクトリ／ファイル | 現在の責務 |
+|---|---|
+| `app/` | Home・4詳細・404・layout・CSS・Metadata |
+| `components/layout/` | 共通ヘッダー・フッター・モバイルメニュー・テーマ・GitHub表示制御 |
+| `components/home/` | Home本文・CSS 3D・ナビゲーション制御 |
+| `components/projects/` | 制作カード・Markdown詳細・ギャラリー・目次・プレビュー |
+| `data/` | 掲載データ・証拠・4詳細Markdown・共通文書対応表・画像／公開URL対応 |
+| `docs/PROJECT-DETAILS/` | 詳細説明の基準資料 |
+| `lib/`・`types/` | 型、検査、URL、履歴、テーマ、フォント収集 |
+| `scripts/` | 整合性検査、画像・フォント・Mermaid生成、静的preview |
+| `public/images/` | 原本PNG、Home用WebP、Mermaid SVG |
+| `public/fonts/`・`assets/fonts/` | ローカルフォントとライセンス |
+| `__tests__/`・`e2e/` | 内容・描画・境界、実ブラウザ操作・テーマ・アクセシビリティ |
+| `package.json`・`bun.lock` | Bunコマンドと依存管理 |
+
 
 型定義はデータをruntime importしない。データ → 純粋な取得・変換 → ページの一方向を保ち、コンポーネントからデータを書き換えない。Optional Enrichmentのスクリプト・snapshotは導入を決めた時点でだけ追加する。
 
@@ -481,6 +464,6 @@ CIは`bun install --frozen-lockfile` → 型・lint・単体検査 → build →
 
 本Phaseは設計文書の作成と整合性確認であり、アプリの型検査・build・テストやブラウザ検証を実施したことを意味しない。
 
-文書の静的確認では、ローカル参照8件のリンク先、証拠アンカーの存在、対象13件と4/6/3分類、群内順序、Phase 2のRepository名・Homeアンカー・4詳細slugとの一致、3-1〜3-3の記載、コードフェンスの対応、ローカル絶対パスの不在を機械照合した。
+初期作成時の文書の静的確認では、ローカル参照8件のリンク先、証拠アンカーの存在、対象13件と4/6/3分類、群内順序、Phase 2のRepository名・Homeアンカー・4詳細slugとの一致、3-1〜3-3の記載、コードフェンスの対応、ローカル絶対パスの不在を機械照合した。
 
 **PHASE 3の設計案作成は完了。** レビュー対象は技術選定、データと証拠の型契約、APIを初期版に含めない方針、静的配信と閲覧状態の復元方針。[prompt.md](../prompt.md) のPHASE 4開始条件「Phase 3承認後に開始してください」に従い、実装は本設計の承認後に開始する。

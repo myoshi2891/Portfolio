@@ -15,6 +15,15 @@ test("all pages load directly and unknown routes return real 404s", async ({ pag
   }
 });
 
+test("unknown project 404 hydrates cleanly and hides the header GitHub link", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/projects/unknown/");
+  await expect(page.getByRole("heading", { level: 1, name: "ページが見つかりません" })).toBeVisible();
+  await expect(page.locator(".github-nav")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("all content is accessible without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
@@ -23,7 +32,7 @@ test("all content is accessible without JavaScript", async ({ browser }) => {
   await expect(page.locator("#study-r10")).toBeVisible();
   await expect(page.locator("[data-repository]")).toHaveCount(13);
   await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().click();
-  await expect(page.locator("#evidence")).toBeVisible();
+  await expect(page.locator("#documentation")).toBeVisible();
   await page.goto("http://127.0.0.1:4173/projects/comparison-of-llms/");
   // Firefox は読み込み直後にトラックの transform トランジションが走るため、収束を待って判定する
   await expect.poll(async () => {

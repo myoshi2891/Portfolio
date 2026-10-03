@@ -2,7 +2,8 @@ import type { RepositoryId } from "../types/portfolio";
 
 // Owner-provided captures. Originals stay intact; display and generation share this map.
 export const screenWidths = [640, 1280, 1854] as const;
-export const screens: Partial<Record<RepositoryId, { file: string; alt: string; title: string }>> = {
+export const screens: Partial<Record<RepositoryId, { file: string; alt: string; title: string; revision?: string }>> = {
+  R01: { file: "multi-vendor-e-commerce/storefront-home-hero.png", alt: "Multi-Vendor E-Commerce。深いグリーンとゴールドを基調に、立体的な宝石とブランドメッセージを表示するストアのトップ画面", title: "Multi-Vendor E-Commerce", revision: "20261002-2" },
   R02: { file: "The Wild Oasis Admin/dashboard-overview.png", alt: "The Wild Oasis管理アプリ。客室登録と予約のチェックインを扱うダッシュボード画面", title: "The Wild Oasis · Admin" },
   R03: { file: "The Wild Oasis.png", alt: "The Wild Oasis宿泊者向けサイト。山と客室の写真から宿泊施設を探すトップ画面", title: "The Wild Oasis · Guest" },
   R04: { file: "AirbnbCloneApp.png", alt: "AirbnbCloneApp。物件の検索と予約、お気に入りを扱うトップ画面", title: "AirbnbCloneApp" },

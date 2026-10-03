@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import Home from "../app/page";
 import Detail, { generateStaticParams } from "../app/projects/[slug]/page";
+import { readFileSync } from "node:fs";
 
 describe("server-rendered pages", () => {
   it("provides all work and studies in initial HTML, including closed disclosures", () => {
@@ -12,19 +13,25 @@ describe("server-rendered pages", () => {
     expect(html).toContain("すべての学習を見る（残り3件）");
     expect(html).not.toMatch(/mailto:|Live Demo|Production-ready/);
   });
-  it("generates only the four Featured routes with evidence and no unsupported scope", async () => {
+  it("renders the four documented projects without GitHub links or stale diagrams", async () => {
     const routes = generateStaticParams();
     expect(routes.map(r => r.slug)).toEqual(["multi-vendor-e-commerce", "comparison-of-llms", "medical-studies", "the-wild-oasis-for-admin"]);
     for (const params of routes) {
       const html = renderToStaticMarkup(await Detail({ params: Promise.resolve(params) }));
-      for (const id of ["overview", "features", "architecture", "decisions", "quality", "evidence"]) expect(html).toContain(`id="${id}"`);
-      expect(html).toMatch(/github\.com\/myoshi2891\/.+\/blob\/[a-f0-9]{40}\//);
-      expect(html).toMatch(/2026-09-(16|18)/);
-      expect(html).toMatch(/この機能を取り上げる理由|選定理由/);
-      expect(html).toMatch(/リンク先で確認できること|具体的に確認できること/);
-      expect(html).toMatch(/処理の流れ|class="system-flow"/);
+      for (const id of ["overview", "features", "architecture", "decisions", "quality"]) expect(html).toContain(`id="${id}"`);
+      expect(html).not.toMatch(/href="[^"]*github\.com/);
+      expect(html).not.toContain('参照コード');
+      expect(html).toContain('id="documentation"');
+      expect(html).toContain('2026年9月18日');
       expect(html).toContain("<table");
       expect(html).not.toContain('id="scope"');
+      const diagrams = [...html.matchAll(/src="(\/images\/[^" ]+\/diagram-[a-f0-9]+\.svg)"/g)];
+      expect(diagrams).toHaveLength(3);
+      for (const diagram of diagrams) {
+        const svg = readFileSync(`public${diagram[1]}`, 'utf8');
+        const sizes = [...svg.matchAll(/font-size\s*:\s*([^;}"<]+)/g)].map(match => match[1]);
+        expect(new Set(sizes)).toEqual(new Set(['1rem']));
+      }
     }
   });
 });

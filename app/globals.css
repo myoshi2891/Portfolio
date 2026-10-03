@@ -1,23 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f5f6fa;
+  --color-canvas: #f7f8fa;
   --color-surface: #ffffff;
-  --color-surface-subtle: #ebeff7;
-  --color-ink: #202c42;
-  --color-muted: #53617a;
-  --color-line: #d5ddea;
-  --color-accent: #2457c5;
-  --color-accent-hover: #183f99;
+  --color-surface-subtle: #eef0f3;
+  --color-ink: #20242c;
+  --color-muted: #606873;
+  --color-line: #dce0e6;
+  --color-accent: #234bdb;
+  --color-accent-hover: #1638b0;
   --breakpoint-*: initial;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1200px;
   --spacing: .25rem;
 }
-:root { color-scheme: light; --on-accent: #fff; --focus: #174cac; --hero-tint: #e8eefb; --masthead-min-height: 75px; --masthead-rendered-height: var(--masthead-min-height); }
+:root { color-scheme: light; --on-accent: #fff; --focus: #234bdb; --hero-tint: #edf1f7; --masthead-min-height: 75px; --masthead-rendered-height: var(--masthead-min-height); }
 @media (prefers-color-scheme: dark) {
-  :root { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
+  :root:not([data-theme="light"]) { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
 }
+:root[data-theme="dark"] { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-inter), "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.9; overflow-wrap: anywhere; }
@@ -51,6 +52,10 @@ a:hover { color: var(--color-accent-hover); }
 .desktop-nav a { padding: .4rem 1rem; text-decoration: none; border-radius: 99px; color: var(--color-ink); font-size: .9rem; }
 .desktop-nav a:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
 .github-nav { margin-left: auto; font-size: .875rem; text-decoration: none; }
+.theme-toggle { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: .4rem; width: 6rem; min-height: 44px; padding: .4rem .65rem; border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: .85rem; cursor: pointer; }
+.theme-toggle:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
+.theme-toggle-placeholder { visibility: hidden; }
+
 .mobile-menu { display: none; }
 .hero { padding-block: 3.5rem 2rem; }
 .hero-grid { display: grid; align-items: center; gap: 2.5rem; }
@@ -316,6 +321,23 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
 .commerce-flow strong { font-size: .82rem; }
 .commerce-flow small { color: var(--color-muted); font-size: .72rem; overflow-wrap: anywhere; }
 .multi-vendor-detail-page .limitation code, .multi-vendor-detail-page .section-intro code { overflow-wrap: anywhere; color: var(--color-ink); }
+.multi-vendor-detail-page h3 { margin-block: 2rem .75rem; }
+.multi-vendor-detail-page .section-intro + .section-intro { margin-top: 1rem; }
+.multi-vendor-detail-page .reading-table-wrap { margin-block: 1.5rem; }
+.commerce-mermaid { min-width: 0; margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.commerce-diagram-scroll { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: 8px; background: #fff; }
+.commerce-diagram-scroll img { display: block; max-width: none; height: auto; margin-inline: auto; }
+.commerce-mermaid figcaption { margin-top: .75rem; color: var(--color-muted); font-size: 1rem; }
+.documented-detail-page h3 { margin-block: 2rem .75rem; }
+.documented-detail-page .section-intro + .section-intro { margin-top: 1rem; }
+.documented-detail-page .section-intro { overflow-wrap: anywhere; }
+.documented-detail-page .reading-table-wrap { margin-block: 1.5rem; }
+.documented-detail-page .reading-table td { overflow-wrap: anywhere; }
+.detail-mermaid { min-width: 0; margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
+.detail-diagram-scroll { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: 8px; background: #fff; }
+.detail-diagram-scroll img { display: block; max-width: none; height: auto; margin-inline: auto; }
+.detail-mermaid figcaption { margin-top: .75rem; color: var(--color-muted); font-size: 1rem; }
+.multi-vendor-detail-page .reading-table td { overflow-wrap: anywhere; }
 .wild-role-grid { display: grid; gap: 1rem; margin-top: 2rem; }
 .wild-role-grid article { display: grid; align-content: start; min-width: 0; padding: 1.35rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
 .wild-role-grid h3 { margin-block: .75rem; font-size: 1.1rem; }
@@ -479,3 +501,57 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .page-entry-line { display: none; }
   .action:hover { transform: none; }
 }
+
+/* A restrained light palette: paper, graphite, brushed silver and one blue
+   accent. light-dark() respects both saved preferences and the OS theme. */
+body { background-image: none; }
+.masthead { box-shadow: 0 1px 0 light-dark(#ffffff, transparent); }
+.brand-mark { background: var(--color-ink); color: var(--color-canvas); box-shadow: 0 3px 8px light-dark(#20242c12, transparent); }
+.brand-mark span { color: light-dark(#a9bcff, var(--color-canvas)); }
+.theme-toggle { background: var(--color-surface); }
+.hero-eyebrow .edition { color: var(--color-muted); }
+.hero h1 > span { color: light-dark(var(--color-ink), var(--color-accent)); }
+.blue-dot { box-shadow: 0 0 0 4px light-dark(#234bdb0c, transparent); }
+.action-primary { background: light-dark(#20242c, var(--color-accent)); border-color: light-dark(#20242c, var(--color-accent)); box-shadow: 0 4px 12px light-dark(#20242c12, transparent); }
+.action-primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+.hero-index strong { color: var(--color-ink); }
+.section-header > .eyebrow > span, .detail-section-lead span { border-color: var(--color-line); background: light-dark(#ffffff, transparent); border-radius: 50%; }
+
+.project-row, .secondary-row { background: var(--color-surface); box-shadow: 0 4px 20px light-dark(#20242c04, transparent); transition: border-color .25s, box-shadow .25s; }
+.project-row:hover { border-color: light-dark(#a9b5ca, var(--color-line)); box-shadow: 0 12px 32px light-dark(#20242c0b, transparent); }
+.project-number { color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.project-aside { background: light-dark(#f5f6f8, var(--color-surface-subtle)); }
+.project-row .badges li { background: light-dark(#fff, var(--color-surface-subtle)); }
+.domain-card, .study-card { background: var(--color-surface); box-shadow: 0 4px 20px light-dark(#20242c04, transparent); }
+.domain-label { color: var(--color-accent); }
+.study-index { color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.philosophy-grid article { border-top-color: var(--color-line); }
+.contact { background: linear-gradient(120deg, light-dark(#f0f2f6, var(--hero-tint)), light-dark(#fff, var(--hero-tint))); box-shadow: 0 8px 32px light-dark(#20242c06, transparent); }
+
+.detail-header { background: linear-gradient(135deg, light-dark(#fff, var(--hero-tint)), light-dark(#f0f2f6, var(--hero-tint))); box-shadow: 0 8px 32px light-dark(#20242c06, transparent); }
+.detail-header .badges li { background: light-dark(#fff, var(--color-surface-subtle)); }
+.detail-contents a[aria-current] { background: light-dark(#eef2fd, var(--color-surface-subtle)); color: var(--color-accent); box-shadow: inset 2px 0 var(--color-accent); }
+.reading-table-wrap { padding: .5rem 1rem; border: 1px solid light-dark(var(--color-line), transparent); border-radius: 12px; background: light-dark(var(--color-surface), transparent); }
+.reading-table thead th { background: var(--color-surface-subtle); color: var(--color-ink); }
+.reading-table tbody tr:nth-child(even) { background: light-dark(#f7f8fa, transparent); }
+.reading-table tbody td:first-child { color: var(--color-ink); font-weight: 500; }
+.commerce-mermaid, .detail-mermaid { background: var(--color-surface); }
+
+/* The moving sculpture is the visual signature: a blue enamel core suspended
+   inside silver orbits. Its existing visibility and reduced-motion controls
+   also govern the light reflection. */
+.hero-scene { background: radial-gradient(ellipse at 50% 43%, light-dark(#ffffff, transparent), transparent 65%), linear-gradient(145deg, light-dark(#eef0f4, var(--hero-tint)), var(--color-surface)); box-shadow: 0 20px 50px light-dark(#20242c0c, transparent), inset 0 1px light-dark(#fff, transparent); }
+.hero-scene::before { opacity: .2; }
+.hero-scene-aura { background: light-dark(#8fa7ef40, color-mix(in srgb, var(--color-accent) 12%, transparent)); }
+.hero-scene-ring { border-color: light-dark(#a0aabc, color-mix(in srgb, var(--color-accent) 38%, var(--color-line))); }
+.ring-one { border-width: 2px; box-shadow: inset 0 1px 0 light-dark(#fff, transparent), 0 2px 0 light-dark(#fff, transparent); }
+.hero-scene-core { overflow: hidden; border-color: light-dark(#4065de, color-mix(in srgb, var(--color-accent) 60%, var(--color-line))); background: linear-gradient(145deg, light-dark(#5176ed, color-mix(in srgb, var(--color-surface) 88%, transparent)), light-dark(#1737a8, color-mix(in srgb, var(--color-surface) 88%, transparent))); box-shadow: 0 1.5rem 3rem light-dark(#193b9630, #10234a20), inset 0 1px light-dark(#b7c9ff, transparent); }
+.hero-scene-core::before { content: ""; position: absolute; inset: -100%; background: linear-gradient(115deg, transparent 42%, light-dark(#ffffff20, transparent) 49%, transparent 56%); pointer-events: none; animation: scene-reflection 10s ease-in-out infinite paused; }
+.hero-scene[data-active="true"] .hero-scene-core::before { animation-play-state: running; }
+.hero-scene-core > span { color: light-dark(#fff, var(--color-ink)); }
+.hero-scene-core > span span, .hero-scene-core > b { color: light-dark(#fff, var(--color-accent)); }
+.hero-scene-core small { color: light-dark(#dce5ff, var(--color-muted)); }
+.hero-scene-node { border-color: light-dark(#c8ced9, color-mix(in srgb, var(--color-accent) 28%, var(--color-line))); background: linear-gradient(145deg, light-dark(#ffffffed, color-mix(in srgb, var(--color-surface) 91%, transparent)), light-dark(#edf0f5ed, color-mix(in srgb, var(--color-surface) 91%, transparent))); box-shadow: 0 .9rem 2rem light-dark(#20242c10, #10234a18), inset 0 1px light-dark(#fff, transparent); }
+.hero-scene-node strong { color: var(--color-ink); }
+.node-improve { right: 12%; }
+@keyframes scene-reflection { 0%, 20% { transform: translateX(-30%); } 70%, 100% { transform: translateX(30%); } }

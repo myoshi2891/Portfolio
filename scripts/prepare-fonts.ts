@@ -8,7 +8,7 @@ async function sources(directory: string): Promise<string[]> {
   for (const entry of entries) {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) result.push(...await sources(path));
-    else if (/\.(tsx?|css)$/.test(entry.name) && entry.name !== 'fonts.css') result.push(await readFile(path, 'utf8'));
+    else if (/\.(tsx?|css|md)$/.test(entry.name) && entry.name !== 'fonts.css') result.push(await readFile(path, 'utf8'));
   }
   return result;
 }

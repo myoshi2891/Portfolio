@@ -1,3 +1,5 @@
+> 2026-10-02仕様同期: 分類・掲載順・Home＋4詳細の情報階層を維持し、詳細の情報源と導線を更新しました。現在は資料に基づく説明・Markdown表・Mermaid図・画像ギャラリーで理解を深め、詳細内のGitHubリンクは表示しません。HomeからRepositoryへ進む導線は維持します。本書の採点・証拠は初期監査時点の編集判断です。[現行仕様](current-specification.md)を優先してください。
+
 # PHASE 1 — Portfolio Strategy & Information Architecture
 
 > 本書は2026-09-16 JST時点の計画スナップショット。現行の実装・検証状況は[README.md](../README.md)および[phase-4-handoff.md](phase-4-handoff.md)を参照。
@@ -135,27 +137,19 @@ HomeのSelected Studiesで先にR08・R07・R11を示し、同セクションの
 
 ### 3.1 サイトマップと経路
 
-HomeとFeatured4ページを基本とする。Studies、Secondary、Contactの独立ページは設けない。以下は計画するURLであり、現在実装済みのルートではない。
+HomeとFeatured4ページを基本とする。Studies、Secondary、Contactの独立ページは設けない。以下は現在実装済みのURLです。
 
-```text
-/  Home
-├─ #top                   Hero / Identity
-├─ #selected-work         Featured 4件
-├─ #domains               Engineering Domains + Build / Study / Engineer
-├─ #studies               Selected Studies + 残りの学習を展開
-├─ #more-work             Secondary 3件
-├─ #philosophy            Learn → Build → Engineer → Improve
-└─ #contact               Contact / GitHub
+| ページ | 構成・行き先 |
+|---|---|
+| `/` | `#top`、`#selected-work`、`#domains`、`#studies`、`#more-work`、`#philosophy`、`#contact` |
+| `/projects/multi-vendor-e-commerce/` | R01詳細・10画像・資料の説明 |
+| `/projects/comparison-of-llms/` | R06詳細・9画像・資料の説明 |
+| `/projects/medical-studies/` | R12詳細・11画像・資料の説明 |
+| `/projects/the-wild-oasis-for-admin/` | R02詳細・4画像・資料の説明 |
+| 外部 | Homeの各GitHub Repository・提供済み公開URL |
 
-/projects/multi-vendor-e-commerce
-/projects/comparison-of-llms
-/projects/medical-studies
-/projects/the-wild-oasis-for-admin
 
-外部: 各GitHub Repository / SHA固定のソース・設定・テスト
-```
-
-主ナビゲーションは「制作」「学習」「考え方」「連絡先」、外部GitHubリンクとする。領域はHome内の見出しとして置き、同じ情報へのナビ項目を増やさない。詳細ページからも各Homeアンカーへ直接戻れるようにする。
+主ナビゲーションは「制作」「学習」「考え方」と全画面共通テーマ切り替え。外部GitHubリンクはHomeに表示し、`/projects/`配下では非表示。連絡先は未提供のため表示しない。領域はHome内の見出しとして置き、同じ情報へのナビ項目を増やさない。詳細ページからも各Homeアンカーへ直接戻れるようにする。
 
 ### 3.2 Homeの情報の順序
 
@@ -184,16 +178,16 @@ HomeとFeatured4ページを基本とする。Studies、Secondary、Contactの�
 
 ## 4. User Flow（1-4）
 
-5段階は情報の深さを表す。全員に順番通りのクリックを強制せず、どの段階からもGitHub／Contactへ進める。
+5段階は情報の深さを表す。全員に順番通りのクリックを強制せず、詳細で説明を読み、Repositoryを確認する場合はHomeの制作カードから進める。Contactは情報提供後の導線とする。
 
 | 閲覧者 | Landing | Understanding | Evidence | Deep Dive | GitHub / Contact |
 |---|---|---|---|---|---|
 | Recruiter | Hero | Webアプリ実装と領域の広がりを把握 | Selected Workで用途と実装内容を確認 | 興味のある1件の概要。技術節は任意 | 制作のGitHub、連絡先へ |
 | Hiring Manager | Hero → Selected Work | EC・データ収集・記録・管理操作の違いを比較 | R01／R02の機能と検査設定を確認 | 構成・未検証範囲・担当範囲の記載有無を読む | 実装を確認し、公開連絡先があれば連絡へ |
-| Engineer | Homeの制作リンク、または詳細への直リンク | 冒頭の目的と確認済み構成を把握 | 主要データフローとソース参照 | 認可・トランザクション・検証・テスト等の該当コード | SHA固定の証拠、Repository全体へ |
+| Engineer | Homeの制作リンク、または詳細への直リンク | 冒頭の目的と確認済み構成を把握 | 主要データフローと基準資料の説明 | 認可・トランザクション・検証・テスト等の該当コード | HomeからRepository全体へ |
 | CTO | Hero → Featuredを比較 | 実装領域と学習領域、紹介できる範囲を把握 | R01／R06／R12の境界・制約を確認 | 設計の選択と未確認事項。判断理由は根拠がある場合のみ | コード確認から、担当範囲・制作背景の会話へ |
 
-HomeからFeatured詳細までは1回のリンク操作、詳細冒頭または技術節から証拠までさらに1回を基本にする。Studies・SecondaryはHomeのカードからGitHubへ直接進める。展開操作は補足を読みたい場合だけ必要とする。
+HomeからFeatured詳細までは1回のリンク操作、詳細は説明・表・図・画像で完結する。GitHubへ進む場合はHomeのカードへ戻る。Studies・SecondaryはHomeのカードからGitHubへ直接進める。展開操作は補足を読みたい場合だけ必要とする。
 
 詳細ページはHome未読でも理解できる概要、Homeへの戻り先、他のFeaturedへのリンクを持つ。ブラウザの戻る操作で元の位置・展開状態を失わないことを後続PhaseのUX要件とする。
 
@@ -205,13 +199,13 @@ HomeからFeatured詳細までは1回のリンク操作、詳細冒頭または�
 
 | 詳細内の順序 | 掲載方針 |
 |---|---|
-| 1. Overview | 対象ユーザー・用途・確認できた主要経路。GitHubと、確認済みの場合だけDemoへの入口。肩書きや業務成果を補わない |
+| 1. Overview | 対象ユーザー・用途・基準資料にある主要経路。提供済みDemoのみ入口を表示。GitHubは置かない。肩書きや業務成果を補わない |
 | 2. Scope | 制作背景・担当範囲は本人の提供または明確な証拠がある場合のみ。未提供なら内部ではNOT_VERIFIEDとして保持し、公開欄を無理に作らない |
 | 3. Verified Features | 実装経路を数点に絞り、機能ごとにソースへ進める。コードの存在と動作の検証結果を読み分けられる表現にする |
 | 4. Architecture | 画面・処理・データ・外部サービスの関係。図を作る場合は証拠で追える矢印に限定し、稼働構成を推定しない |
 | 5. Technical Decisions | 確認済みの構造・制約を説明。なぜ採用したか、検討した代替案、トレードオフの判断履歴は本人の説明・ADR等がある場合のみ |
 | 6. Quality & Limitations | テスト／CIの配置と実行結果を分ける。データ鮮度、公開時制限、外部接続等、機能の理解に必要な未検証範囲を近接表示 |
-| 7. Evidence & Next | 確認時点・参照コミットと関連ソース、Repository、他の制作、Contact |
+| 7. Documentation & Next | 基準資料名・調査時点・品質統計日・画面更新日。他の制作とHomeへ案内し、GitHubリンクは置かない |
 
 詳細ではR01の権限・注文処理、R06のJSON境界とfallback、R12のStorageAdapter／exporterと公開時制限、R02の画面／hook／serviceを軸にする。コードにある分割を「保守性のために採用した」と本人の意図に変換しない。改善案を載せる場合も、未実施の提案であることを明示する。
 
@@ -238,7 +232,7 @@ HomeからFeatured詳細までは1回のリンク操作、詳細冒頭または�
 | Documentation Qualityの詳細 | UNVERIFIED / NOT_VERIFIED | READMEの存在以上の品質を断定しない。導入・設計・制約の記載と再現性を確認したら再評価 |
 | Live Demo・公開稼働 | URLの記載があるものも稼働はNOT_VERIFIED | 現段階の主CTAは詳細とGitHub。対象版・公開範囲・動作を確認したものだけLive Demoを追加。URLがない場合はNOT_FOUNDの範囲を維持 |
 | 画面キャプチャ・デモ素材 | 本Phaseで利用可能性を確認していない | 実画面を取得して確認するまで実物に見える架空画面を掲載しない。カードはテキストだけでも成立させる |
-| テスト成功・coverage・性能・利用実績 | UNVERIFIED / NOT_VERIFIED | 数値・成功バッジを掲載しない。対象SHA・測定条件・実行結果を得てから追加 |
+| テスト成功・coverage・性能・利用実績 | UNVERIFIED / NOT_VERIFIED | Homeで未確認の成果を追加しない。詳細の品質節は基準資料に記録された数値を日付・測定範囲付きで紹介し、ポートフォリオの再実行結果とは分ける |
 | R06の価格鮮度 | NOT_VERIFIED | 収集・計算コードの紹介に限定。「最新価格保証」や料金の推奨を加えない |
 | R12の臨床的妥当性 | NOT_APPLICABLE（Phase 0技術監査の対象外） | 診断・治療効果や臨床利用実績を訴求しない。公開時制限は機能説明に必要な範囲で示す |
 | R05のhomepage記述の不整合 | Phase 0のD01にURL記載、M03にhomepageが空との記述が併存 | URLの有無について一方を採用せず、必要時に証拠を再確認。今回の分類・評価はソースに基づき、Demoには利用しない |
@@ -257,6 +251,6 @@ HomeからFeatured詳細までは1回のリンク操作、詳細冒頭または�
 - [x] 1-5: Featuredだけを詳細対象とし、残り9件についてCard／展開／Drawer／Modalを比較した。
 - [x] 実装の事実と編集判断、未検証の実績・制作背景を区別した。
 
-**Phase 1の提案作成は完了。ユーザー承認は未取得。** 承認対象は、Webアプリ実装を中心にする位置付け、Featured4件と掲載順、Home＋4詳細ページの構成、その他9件をカードと展開で扱う方針。採点のうちOriginality・文書品質の詳細は保留のまま引き継ぐ。
+**以下は初期Phase 1の承認待ち記録。2026-10-02の現行表示・導線はユーザー依頼に基づき実装済みです。** 承認対象は、Webアプリ実装を中心にする位置付け、Featured4件と掲載順、Home＋4詳細ページの構成、その他9件をカードと展開で扱う方針。採点のうちOriginality・文書品質の詳細は保留のまま引き継ぐ。
 
 [prompt.md](../prompt.md) の「Phase 1承認後に開始してください」に従い、Phase 2 — Content & Design Systemは承認後に開始する。
