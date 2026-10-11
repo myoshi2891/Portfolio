@@ -22,7 +22,7 @@ export type Project<E extends string = string> = Entry<E> & {
   technologies: readonly Claim<E>[]; highlights: readonly Claim<E>[];
 } & ({ type: 'featured'; slug: string } | { type: 'secondary'; slug?: never });
 export type Study<E extends string = string> = Entry<E> & {
-  type: 'study'; topics: NonEmpty<string>; implementationNotes: readonly Claim<E>[];
+  type: 'study'; topics: NonEmpty<string>;
 };
 export type DetailSectionId = 'features' | 'architecture' | 'decisions' | 'quality';
 export type ProjectDetail<E extends string = string, L extends string = string> = {
@@ -33,4 +33,10 @@ export type Portfolio = {
   projects: Project[]; studies: Study[];
   details: Record<string, ProjectDetail>;
   evidence: Record<string, VerifiedEvidence>; limitations: Record<string, Limitation>;
+};
+
+export type MarkdownDocument = {
+  contentPath: string;
+  imageDirectory: string;
+  diagrams: readonly string[];
 };
