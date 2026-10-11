@@ -18,15 +18,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "ソフトウェア設計とアーキテクチャ"
-    ],
-    "implementationNotes": [
-      {
-        "text": "資料とWebアプリを併置し、公開済み・準備中をカタログで管理。",
-        "evidenceIds": [
-          "R08-A01",
-          "R08-F01"
-        ]
-      }
     ]
   },
   {
@@ -45,15 +36,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "テストと品質保証"
-    ],
-    "implementationNotes": [
-      {
-        "text": "入力クエリによるガイド絞り込みとカテゴリ表示。",
-        "evidenceIds": [
-          "R07-A01",
-          "R07-F01"
-        ]
-      }
     ]
   },
   {
@@ -72,15 +54,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "セキュリティ"
-    ],
-    "implementationNotes": [
-      {
-        "text": "MDX文書から索引を生成し、静的JSONを使って検索。",
-        "evidenceIds": [
-          "R11-A01",
-          "R11-F01"
-        ]
-      }
     ]
   },
   {
@@ -99,15 +72,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "クラウドとネットワーク"
-    ],
-    "implementationNotes": [
-      {
-        "text": "提供元別のカタログ表示と閲覧履歴の保存。",
-        "evidenceIds": [
-          "R10-A01",
-          "R10-F01"
-        ]
-      }
     ]
   },
   {
@@ -126,15 +90,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "アルゴリズム・データ構造・数学・SQL"
-    ],
-    "implementationNotes": [
-      {
-        "text": "Pythonによる静的索引生成、検索、GCD／LCMのコード例。",
-        "evidenceIds": [
-          "R13-A01",
-          "R13-F01"
-        ]
-      }
     ]
   },
   {
@@ -142,10 +97,9 @@ export const studies = [
     "name": "Management-Team-Building-Studies",
     "title": "マネジメントとチームビルディング",
     "description": {
-      "text": "マネジメントの学習ガイドを、カタログと検索から参照できます。",
+      "text": "マネジメントとチームビルディングの資格・書籍学習ガイドを、カタログやサイト内検索から探せるWebサイトです。",
       "evidenceIds": [
-        "R09-A01",
-        "R09-F01"
+        "R09-OVERVIEW"
       ]
     },
     "githubUrl": "https://github.com/myoshi2891/Management-Team-Building-Studies",
@@ -153,15 +107,6 @@ export const studies = [
     "type": "study",
     "topics": [
       "マネジメントとチームビルディング"
-    ],
-    "implementationNotes": [
-      {
-        "text": "ガイドのカタログと検索を分離し、複数語の検索を実装。",
-        "evidenceIds": [
-          "R09-A01",
-          "R09-F01"
-        ]
-      }
     ]
   }
 ] as const satisfies readonly Study<EvidenceId>[];

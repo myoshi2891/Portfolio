@@ -11,6 +11,13 @@ describe("server-rendered pages", () => {
     for (const id of ["selected-work", "domains", "studies", "more-work", "philosophy", "contact", "study-r10"]) expect(html).toContain(`id="${id}"`);
     expect(html.match(/data-repository=/g)).toHaveLength(13);
     expect(html).toContain("すべての学習を見る（残り3件）");
+    expect(html).not.toContain("実装の補足");
+    for (const id of ["r04", "r03", "r05"]) {
+      expect(html).toContain(`id="work-${id}"`);
+      expect(html).toContain(`id="github-${id}"`);
+      expect(html).not.toContain(`id="note-${id}"`);
+    }
+    expect(html.match(/class="secondary-summary"/g)).toHaveLength(3);
     expect(html).not.toMatch(/mailto:|Live Demo|Production-ready/);
   });
   it("renders the four documented projects without GitHub links or stale diagrams", async () => {

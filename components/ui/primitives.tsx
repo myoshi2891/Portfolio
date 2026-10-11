@@ -18,6 +18,6 @@ export function EvidenceLinks({ ids }: { ids: readonly string[] }) {
   }).filter((s, i, all) => all.findIndex(other => other.url === s.url) === i);
   return <ul className="source-links" aria-label="参照コード">{sources.map(s => <li key={s.url}><SiteLink href={s.url}>{s.label}<span aria-hidden="true"> ↗</span></SiteLink></li>)}</ul>;
 }
-export function Disclosure({ id, children, label = "資料サイトの実装" }: { id: string; children: ReactNode; label?: string }) {
+export function Disclosure({ id, children, label }: { id: string; children: ReactNode; label: string }) {
   return <details id={id} className="disclosure"><summary id={`${id}-toggle`}>{label}</summary><div className="disclosure-content">{children}</div></details>;
 }
