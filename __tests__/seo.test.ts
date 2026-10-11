@@ -42,10 +42,10 @@ describe("page metadata and discovery", () => {
     expect(meta.openGraph).toMatchObject({ locale: "ja_JP", url: "https://example.com/projects/comparison-of-llms/", images: [{ url: "https://example.com/og/portfolio.png", width: 1200, height: 630 }] });
     expect(meta.robots).toEqual({ index: true, follow: true });
   });
-  it("lists only Home and the four published details without invented dates", () => {
+  it("lists Home, Profile and the four published details without invented dates", () => {
     vi.stubEnv("SITE_URL", "https://example.com"); vi.stubEnv("DEPLOYMENT_ENV", "production");
     expect(sitemap().map(entry => entry.url)).toEqual([
-      "https://example.com/", "https://example.com/projects/multi-vendor-e-commerce/", "https://example.com/projects/comparison-of-llms/", "https://example.com/projects/medical-studies/", "https://example.com/projects/the-wild-oasis-for-admin/",
+      "https://example.com/", "https://example.com/profile/", "https://example.com/projects/multi-vendor-e-commerce/", "https://example.com/projects/comparison-of-llms/", "https://example.com/projects/medical-studies/", "https://example.com/projects/the-wild-oasis-for-admin/",
     ]);
     expect(sitemap().every(entry => !("lastModified" in entry))).toBe(true);
     expect(robots()).toEqual({ rules: { userAgent: "*", allow: "/" }, sitemap: "https://example.com/sitemap.xml" });
