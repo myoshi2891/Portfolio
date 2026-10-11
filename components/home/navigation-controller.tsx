@@ -87,6 +87,7 @@ export function NavigationController() {
       });
     }
     function restore(state: NavigationState) {
+      stopSmoothScroll();
       entryId = state.id;
       restoring = true;
       for (const el of disclosures) {
@@ -105,7 +106,8 @@ export function NavigationController() {
       try { id = decodeURIComponent(hash.slice(1)); } catch { return null; }
       return allowed.has(id) ? document.getElementById(id) : null;
     }
-    function reveal(target: HTMLElement, focus: boolean, smooth = false) {
+    function reveal(target: HTMLElement, focus: boolean, smooth = true) {
+      stopSmoothScroll();
       restoring = true;
       for (let parent = target.parentElement; parent; parent = parent.parentElement) {
         if (parent instanceof HTMLDetailsElement) parent.open = true;
@@ -117,7 +119,13 @@ export function NavigationController() {
       const behavior = smooth && !matchMedia("(prefers-reduced-motion: reduce)").matches ? "smooth" : "instant";
       // A smooth move must start once. Repeating it on font readiness or the next
       // frame cancels/restarts the browser animation and saves intermediate positions.
-      afterLayout(() => { smoothScrolling = behavior === "smooth"; target.scrollIntoView({ block: "start", behavior }); if (focus) heading.focus({ preventScroll: true }); }, !smooth);
+      afterLayout(() => {
+        // Focusing after scrollIntoView can interrupt the browser's smooth move,
+        // even with preventScroll. Focus first, then start exactly one scroll.
+        if (focus) heading.focus({ preventScroll: true });
+        smoothScrolling = behavior === "smooth";
+        target.scrollIntoView({ block: "start", inline: "nearest", behavior });
+      }, behavior === "instant");
     }
     function click(event: MouseEvent) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -134,7 +142,7 @@ export function NavigationController() {
         try { history.pushState(withNavigationState(history.state, snapshot()), "", url); }
         catch { location.assign(url); return; }
       }
-      reveal(target, true, true);
+      reveal(target, true);
     }
     function pop() {
       // Next commits the destination DOM before the new route effect restores it.
@@ -143,7 +151,7 @@ export function NavigationController() {
       scrollTimer = undefined;
       const state = read();
       if (state) restore(state);
-      else { entryId = crypto.randomUUID(); const target = hashTarget(location.hash); if (target) reveal(target, false); else save(); }
+      else { entryId = crypto.randomUUID(); const target = hashTarget(location.hash); if (target) reveal(target, false, false); else save(); }
     }
     function pageshow(event: PageTransitionEvent) {
       if (!event.persisted) return;
@@ -183,7 +191,7 @@ export function NavigationController() {
     if (state) restore(state);
     else {
       const target = hashTarget(location.hash);
-      if (target) reveal(target, routeChanged);
+      if (target) reveal(target, routeChanged, routeChanged);
       else if (routeChanged) afterLayout(() => { window.scrollTo({ top: 0, behavior: "instant" }); title?.focus({ preventScroll: true }); });
       else save();
     }
@@ -191,6 +199,7 @@ export function NavigationController() {
     return () => {
       // The URL may already belong to the destination: never save old DOM here.
       active = false; generation++;
+      stopSmoothScroll();
       mastheadObserver.disconnect();
       clearTimeout(scrollTimer); cancelAnimationFrame(frame); cancelAnimationFrame(settleFrame);
       history.scrollRestoration = oldRestoration;

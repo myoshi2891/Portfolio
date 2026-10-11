@@ -53,10 +53,9 @@ test("anchor history restores closed state, scroll and focus independently of th
   await expect(page.locator("#work-r01")).toBeFocused();
 });
 
-test("detail round trip and reload restore expanded notes and a return focus", async ({ page }) => {
+test("detail round trip and reload restore additional studies and a return focus", async ({ page }) => {
   await page.goto("/"); await ready(page);
   await page.locator("#more-studies-toggle").click();
-  await page.locator("#note-r10-toggle").click();
   await page.locator("#github-r10").focus();
   // Read the actual departure position in the same task as activation. Lazy
   // content and scroll anchoring can otherwise move between two round trips.
@@ -68,11 +67,10 @@ test("detail round trip and reload restore expanded notes and a return focus", a
   await expect(page).toHaveURL(/projects\/multi-vendor-e-commerce\/$/);
   await page.goBack(); await ready(page);
   await expect(page.locator("#more-studies")).toHaveAttribute("open", "");
-  await expect(page.locator("#note-r10")).toHaveAttribute("open", "");
   await expect(page.locator("#github-r10")).toBeFocused();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(y, -1);
   await page.reload(); await ready(page);
-  await expect(page.locator("#note-r10")).toHaveAttribute("open", "");
+  await expect(page.locator("#more-studies")).toHaveAttribute("open", "");
   await expect(page.locator("#github-r10")).toBeFocused();
 });
 
@@ -111,7 +109,6 @@ test("actual Chromium BFCache restores the document and its disclosures", async 
     });
     await page.goto("http://127.0.0.1:4173/"); await ready(page);
     await page.locator("#more-studies-toggle").click();
-    await page.locator("#note-r10-toggle").click();
     await page.locator("#github-r10").focus();
     // Internal links now use SPA transitions; explicitly leave the document to
     // continue testing real BFCache restoration as a separate browser behavior.
@@ -120,7 +117,6 @@ test("actual Chromium BFCache restores the document and its disclosures", async 
     await page.goBack();
     await expect(page.locator("html")).toHaveAttribute("data-persisted", "true");
     await expect(page.locator("#more-studies")).toHaveAttribute("open", "");
-    await expect(page.locator("#note-r10")).toHaveAttribute("open", "");
     await expect(page.locator("#github-r10")).toBeFocused();
     testInfo.annotations.push({ type: "BFCache", description: "Actual pageshow.persisted=true confirmed" });
   } finally { await browser.close(); }

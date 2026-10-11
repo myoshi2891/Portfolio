@@ -1,6 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
-declare global { interface Window { __scrollIntoViewCalls: ScrollIntoViewOptions[]; } }
+declare global { interface Window {
+  __scrollIntoViewCalls: ScrollIntoViewOptions[];
+  __anchorActions: string[];
+  __anchorPositions: number[];
+} }
 
 async function markDocument(page: Page) {
   await expect.poll(() => page.evaluate(() => Boolean(history.state?.portfolioNavigation))).toBe(true);
@@ -49,8 +53,17 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
 test('home anchor moves through intermediate positions and reduced motion is immediate', async ({ page }) => {
   await page.addInitScript(() => {
     window.__scrollIntoViewCalls = [];
+    window.__anchorActions = [];
+    window.__anchorPositions = [];
+    window.addEventListener('scroll', () => window.__anchorPositions.push(window.scrollY));
+    const originalFocus = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function (options?: FocusOptions) {
+      window.__anchorActions.push(`focus:${this.id}`);
+      return originalFocus.call(this, options);
+    };
     const original = Element.prototype.scrollIntoView;
     Element.prototype.scrollIntoView = function (this: Element, options?: boolean | ScrollIntoViewOptions) {
+      window.__anchorActions.push(`scroll:${this.id}`);
       window.__scrollIntoViewCalls.push(options as ScrollIntoViewOptions);
       return original.call(this, options as ScrollIntoViewOptions);
     };
@@ -61,6 +74,14 @@ test('home anchor moves through intermediate positions and reduced motion is imm
   await expect(page.locator('#selected-work h2')).toBeInViewport();
   const normalCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
   expect(normalCall).toMatchObject({ behavior: 'smooth', block: 'start' });
+  await expect(page.locator('#selected-work-heading')).toBeFocused();
+  const actions = await page.evaluate(() => window.__anchorActions);
+  expect(actions.indexOf('focus:selected-work-heading')).toBeLessThan(actions.indexOf('scroll:selected-work'));
+  await expect.poll(() => page.evaluate(() => {
+    const destination = document.getElementById('selected-work')!;
+    const finalY = window.scrollY + destination.getBoundingClientRect().top - parseFloat(getComputedStyle(destination).scrollMarginTop);
+    return window.__anchorPositions.some(position => position > 0 && position < finalY - 2);
+  })).toBe(true);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });
