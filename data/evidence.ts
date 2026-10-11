@@ -1023,6 +1023,12 @@ export const evidence = {
       }
     ]
   },
+  "R09-OVERVIEW": {
+    "sourceType": "USER_PROVIDED",
+    "status": "VERIFIED",
+    "sourceLocation": "docs/PROJECT-DETAILS/OVERVIEW-Management-Studies.md",
+    "checkedAt": "2026-10-11"
+  },
   "PHILOSOPHY": {
     "sourceType": "USER_PROVIDED",
     "status": "VERIFIED",

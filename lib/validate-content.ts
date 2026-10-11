@@ -33,7 +33,7 @@ export function validateContent(data: Portfolio): string[] {
     if (entry.name !== name || entry.githubUrl !== `https://github.com/myoshi2891/${name}`) errors.push(`github identity: ${entry.id}`);
     if (!entry.title.trim() || !entry.name.trim()) errors.push(`empty title: ${entry.id}`);
     checkClaim(entry.description, entry.id);
-    const claims = entry.type === "study" ? entry.implementationNotes : [...entry.technologies, ...entry.highlights];
+    const claims = entry.type === "study" ? [] : [...entry.technologies, ...entry.highlights];
     claims.forEach(c => checkClaim(c, entry.id));
   }
   for (const [id, source] of Object.entries(data.evidence)) {
