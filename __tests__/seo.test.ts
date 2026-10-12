@@ -20,6 +20,17 @@ describe("publication configuration", () => {
     expect(() => readSiteConfig({ DEPLOYMENT_ENV: "prod" })).toThrow();
     expect(readSiteConfig({ DEPLOYMENT_ENV: "production", SITE_URL: "https://example.com/" })).toEqual({ production: true, siteUrl: "https://example.com" });
   });
+  it("maps Vercel environments so only the production deployment is indexable", () => {
+    expect(readSiteConfig({ VERCEL_ENV: "preview", VERCEL_PROJECT_PRODUCTION_URL: "portfolio.vercel.app" })).toEqual({ production: false, siteUrl: null });
+    expect(readSiteConfig({ VERCEL_ENV: "development" })).toEqual({ production: false, siteUrl: null });
+    expect(readSiteConfig({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "portfolio.vercel.app" })).toEqual({ production: true, siteUrl: "https://portfolio.vercel.app" });
+    expect(() => readSiteConfig({ VERCEL_ENV: "production" })).toThrow();
+  });
+  it("lets explicit settings override the Vercel defaults", () => {
+    expect(readSiteConfig({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "portfolio.vercel.app", SITE_URL: "https://example.com" })).toEqual({ production: true, siteUrl: "https://example.com" });
+    expect(readSiteConfig({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "portfolio.vercel.app", DEPLOYMENT_ENV: "preview" })).toEqual({ production: false, siteUrl: null });
+    expect(() => readSiteConfig({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "evil.example/path" })).toThrow();
+  });
 });
 
 describe("page metadata and discovery", () => {
