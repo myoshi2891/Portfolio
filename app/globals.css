@@ -210,12 +210,6 @@ a:hover { color: var(--color-accent-hover); }
 .secondary-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block: 1.5rem 1rem; }
 .secondary-copy > .repo-name { padding-top: 1rem; border-top: 1px solid var(--color-line); font-size: .8rem; }
 summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight: 500; }
-.disclosure { border-top: 1px solid var(--color-line); font-size: .875rem; }
-.disclosure-content { padding-block: .5rem 1rem; }
-.source-links { list-style: none; padding: 0; margin-top: 1rem; display: grid; gap: .5rem; }
-.source-links a { display: flex; justify-content: space-between; gap: .75rem; min-height: 44px; border: 1px solid var(--color-line); border-radius: 8px; padding: .65rem .85rem; background: var(--color-surface); text-decoration: none; font-size: .875rem; }
-.source-links a:hover { background: var(--color-surface-subtle); }
-.source-links a > span { flex-shrink: 0; }
 .more-studies { margin-top: 2rem; }
 .more-studies > summary { color: var(--color-accent); text-decoration: underline; text-underline-offset: .25em; }
 .more-studies > .study-grid { margin-top: 1.5rem; }
