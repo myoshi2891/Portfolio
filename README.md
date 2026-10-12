@@ -74,7 +74,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 3. 環境変数は不要です。Vercelの`VERCEL_ENV`が`production`のときだけインデックスを許可し、`SITE_URL`の既定値は`VERCEL_PROJECT_PRODUCTION_URL`（独自ドメイン設定時はそのドメイン）です。Preview・Developmentは常にnoindexで、canonicalとsitemapを出力しません。
 4. 独自ドメインを明示する場合は、Production環境にのみ`SITE_URL=https://example.com`を設定します。`DEPLOYMENT_ENV`・`SITE_URL`を明示した値はVercelの既定より優先します。
 
-`vercel.json`は全パスにCSP・HSTS・`X-Content-Type-Options`・`X-Frame-Options`・`Referrer-Policy`・`Permissions-Policy`・COOPを付与します。静的出力ではnonceを使えないため、Next.jsのインラインスクリプトとテーマ初期化に限り`script-src 'unsafe-inline'`を許可し、外部オリジン・`eval`は許可しません。`bun run preview`も同じヘッダーを返し、E2EでCSP違反がないことを確認します。外部オリジンを追加する場合はCSPも更新してください。Preview環境のVercel Toolbarは外部スクリプトのためCSPで読み込まれません。
+`vercel.json`は全パスにCSP・HSTS・`X-Content-Type-Options`・`X-Frame-Options`・`Referrer-Policy`・`Permissions-Policy`・COOPを付与します。静的出力ではnonceを使えないため、Next.jsのインラインスクリプト、テーマ初期化、到着時スクロール初期化に限り`script-src 'unsafe-inline'`を許可し、外部オリジン・`eval`は許可しません。`bun run preview`も同じヘッダーを返し、E2EでCSP違反がないことを確認します。E2EのFirefoxはCOOPによるブラウジングコンテキスト切替でPlaywrightが初回遷移を見失うため、`playwright.config.ts`でCOOPの適用のみ無効化しています（ヘッダー値は検証対象のまま）。外部オリジンを追加する場合はCSPも更新してください。Preview環境のVercel Toolbarは外部スクリプトのためCSPで読み込まれません。
 
 HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメインの全サブドメインがHTTPS対応であることを確認してから追加します。
 
@@ -102,7 +102,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 図のソースを変更した場合は、build前に`bun run diagrams:generate`を実行して生成SVGを更新します。図中文字は1remを維持し、狭い画面では図の領域内で横スクロールできます。ASCII図解は使用しません。
 
-本文はServer Componentsで生成し、追加の学習・補足も初期HTMLに含めます。JavaScriptが無効でも`details`で手動展開できます。通常のアンカー移動はsmooth、履歴復元とページ切替はinstantです。OSのreduced-motion設定時は移動・3D演出を抑制します。
+本文はServer Componentsで生成し、追加の学習・補足も初期HTMLに含めます。JavaScriptが無効でも`details`で手動展開できます。通常のアンカー移動はsmooth、履歴復元・ページ切替・URLハッシュ付きの直接到着はinstantです（読み込み完了まで`html[data-arrival]`でCSSのsmoothを止めます）。OSのreduced-motion設定時は移動・3D演出を抑制します。
 
 テーマはlocalStorageの`portfolio-theme`へ保存し、未選択時はOSへ追従します。JavaScript無効時はOS配色とギャラリーの先頭画像を表示し、テーマ切り替え・ギャラリー操作は提供しません。
 
