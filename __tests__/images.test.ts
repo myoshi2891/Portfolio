@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { screens } from "../data/screens";
+import { captureOutput, staleCaptures } from "../lib/capture-images";
 
 function files(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -23,7 +24,24 @@ describe("published images", () => {
     for (const screen of Object.values(screens)) expect(existsSync(join("assets/screens", screen.file)), screen.file).toBe(true);
     for (const path of files("assets/screens")) {
       expect(path).toMatch(/\.png$/);
-      expect(published, path).toContain(path.replace(/^assets\/screens/, "public/images").replace(/\.png$/, ".webp"));
+      expect(published, path).toContain(captureOutput(path));
     }
+  });
+
+  it("leaves no capture WebP without a source PNG", () => {
+    expect(staleCaptures(published, files("assets/screens"))).toEqual([]);
+  });
+});
+
+describe("capture image cleanup", () => {
+  it("flags only generated capture WebPs whose source PNG is gone", () => {
+    const published = [
+      "public/images/app/kept.webp",
+      "public/images/app/removed.webp",
+      "public/images/app/diagram-1.svg",
+      "public/images/optimized/r01-640.webp",
+    ];
+    expect(captureOutput("assets/screens/app/kept.png")).toBe("public/images/app/kept.webp");
+    expect(staleCaptures(published, ["assets/screens/app/kept.png"])).toEqual(["public/images/app/removed.webp"]);
   });
 });
