@@ -1,23 +1,30 @@
-import { mkdir, readdir } from 'node:fs/promises';
-import { dirname, join, relative } from 'node:path';
+import { mkdir, readdir, rm } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import { screens, screenWidths } from '../data/screens';
+import { captureOutput, captureSource as source, staleCaptures } from '../lib/capture-images';
 
 // Originals stay in assets/screens; only compressed WebP derivatives are published.
-const source = 'assets/screens';
-async function originals(directory: string): Promise<string[]> {
+async function files(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   return (await Promise.all(entries.map(entry => {
     const path = join(directory, entry.name);
-    return entry.isDirectory() ? originals(path) : Promise.resolve(path.endsWith('.png') ? [path] : []);
+    return entry.isDirectory() ? files(path) : Promise.resolve([path]);
   }))).flat();
 }
 
-for (const path of await originals(source)) {
-  const output = join('public/images', relative(source, path)).replace(/\.png$/, '.webp');
+const sources = await files(source);
+for (const path of sources.filter(path => path.endsWith('.png'))) {
+  const output = captureOutput(path);
   await mkdir(dirname(output), { recursive: true });
   const info = await sharp(path).webp({ quality: 82 }).toFile(output);
   console.log(`${output}: ${info.size.toLocaleString()} bytes`);
+}
+
+// Remove capture WebPs whose source PNG was renamed or deleted.
+for (const path of staleCaptures(await files('public/images'), sources)) {
+  await rm(path);
+  console.log(`${path}: removed`);
 }
 
 await mkdir('public/images/optimized', { recursive: true });
