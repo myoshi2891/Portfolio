@@ -41,7 +41,8 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
   await markDocument(page);
   await page.locator('.mobile-menu summary').click();
   await page.getByRole('navigation', { name: 'モバイルナビゲーション' }).getByRole('link', { name: 'プロフィール' }).click();
-  await expect(page.locator('#about h2')).toBeInViewport();
+  await expect(page).toHaveURL(/\/profile\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'プロフィール', exact: true })).toBeInViewport();
   await expect(page.locator('.mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.locator('html')).toHaveAttribute('data-spa-document', 'retained');
   await page.goto('/missing-page/');
