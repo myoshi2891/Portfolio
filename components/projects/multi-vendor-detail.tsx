@@ -1,3 +1,4 @@
+import { SiteLink } from "../ui/site-link";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import Markdown from "react-markdown";
@@ -43,6 +44,7 @@ export function MultiVendorDetail() {
   return <>{sections.map((section, index) => <section key={multiVendorDetailSections[index + 1]!.id} id={multiVendorDetailSections[index + 1]!.id}>
     <p className="detail-section-lead"><span>{String(index + 1).padStart(2, "0")}</span>{multiVendorDetailSections[index + 1]!.label}</p>
     <Markdown remarkPlugins={[remarkGfm]} components={{
+    a: ({ href, children, title }) => <SiteLink href={href ?? ""} title={title}>{children}</SiteLink>,
       p: ({ children }) => <p className="section-intro">{children}</p>,
       table: ({ children }) => <div className="reading-table-wrap"><table className="reading-table">{children}</table></div>,
       th: ({ children }) => <th scope="col">{children}</th>,

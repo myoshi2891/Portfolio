@@ -6,7 +6,7 @@ import { site } from "../../data/site";
 import { pageMetadata } from "../../lib/metadata";
 
 export function generateMetadata() {
-  return pageMetadata("/profile/", `プロフィール — ${site.name}`, "myoshi2891のプロフィール。資格、GitHubの制作・学習資料、X、LeetCode、AWS認定バッジを紹介します。");
+  return pageMetadata("/profile/", `プロフィール — ${site.name}`, "myoshi2891のプロフィール。保有資格・スコア、GitHubの制作・学習資料、X、LeetCode、AWS認定バッジを紹介します。");
 }
 
 export default function Profile() {
@@ -41,7 +41,7 @@ export default function Profile() {
     </section>
     <section id="certifications" className="section" aria-labelledby="certifications-title">
       <div className="profile-section-heading">
-        <div><p className="eyebrow">Skills &amp; Certifications</p><h2 id="certifications-title">資格</h2><p className="profile-section-description">技術から語学・サービスまで、学びを通じて身につけた知識。</p></div>
+        <div><p className="eyebrow">Certifications &amp; Scores</p><h2 id="certifications-title">保有資格・スコア</h2><p className="profile-section-description">取得済みの資格とTOEICスコアを紹介します。各項目には、認定分野や知識・技能の概要を添えています。</p></div>
         <ActionLink href={profileLinks.aws}>認定バッジを見る</ActionLink>
       </div>
       <ol className="profile-certifications">

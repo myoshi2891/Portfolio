@@ -10,7 +10,9 @@ export default defineConfig({
   webServer: { command: "bun run preview", url: "http://127.0.0.1:4173", reuseExistingServer: !process.env.CI },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    // COOP による about:blank からのブラウジングコンテキスト切替で Playwright が初回 goto の load を見失うため、
+    // E2E の Firefox に限り COOP の適用を止める（配信ヘッダー自体は security-headers.spec で検証する）
+    { name: "firefox", use: { ...devices["Desktop Firefox"], launchOptions: { firefoxUserPrefs: { "browser.tabs.remote.useCrossOriginOpenerPolicy": false } } } },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
 });

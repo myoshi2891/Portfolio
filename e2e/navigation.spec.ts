@@ -27,6 +27,22 @@ test("shared hidden anchors open without stealing focus; same hash can be select
   await expect(page.locator("#study-r10")).toBeInViewport();
 });
 
+test("arriving at a hash jumps without animating the native fragment scroll", async ({ page }) => {
+  await page.addInitScript(() => {
+    const positions: number[] = [];
+    (window as unknown as { __positions: number[] }).__positions = positions;
+    addEventListener("scroll", () => positions.push(window.scrollY), { passive: true });
+  });
+  await page.goto("/#study-r10");
+  await ready(page);
+  await expect(page.locator("#study-r10")).toBeInViewport();
+  const finalY = await page.evaluate(() => window.scrollY);
+  // A smooth native move from the top passes through intermediate positions
+  // before the application's instant reveal; arrival must not show that motion.
+  const positions = await page.evaluate(() => (window as unknown as { __positions: number[] }).__positions);
+  expect(positions.filter(y => y > 0 && y < finalY / 2)).toEqual([]);
+});
+
 test("anchor history restores closed state, scroll and focus independently of the hash", async ({ page }) => {
   await page.goto("/"); await ready(page);
   await page.getByRole("link", { name: "Cloud", exact: false }).click();
@@ -55,6 +71,9 @@ test("anchor history restores closed state, scroll and focus independently of th
 
 test("detail round trip and reload restore additional studies and a return focus", async ({ page }) => {
   await page.goto("/"); await ready(page);
+  // html uses smooth scrolling, so focus() would still be animating when the
+  // departure position is read. Restoration, not motion, is under test here.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("#more-studies-toggle").click();
   await page.locator("#github-r10").focus();
   // Read the actual departure position in the same task as activation. Lazy

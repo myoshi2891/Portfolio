@@ -17,6 +17,7 @@
     "preview": "bun scripts/preview.ts",
     "test:e2e": "playwright test",
     "fonts:generate": "bun scripts/prepare-fonts.ts",
+    "images:brand": "bun scripts/prepare-brand.ts",
     "images:generate": "bun scripts/prepare-images.ts",
     "diagrams:commerce": "bun scripts/prepare-commerce-diagrams.ts multi-vendor-e-commerce",
     "diagrams:generate": "bun scripts/prepare-commerce-diagrams.ts"

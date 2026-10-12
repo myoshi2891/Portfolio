@@ -1,3 +1,4 @@
+import { SiteLink } from "../ui/site-link";
 import type { Claim } from "../../types/portfolio";
 import { featureGuides } from "../../data/feature-guides";
 import { evidence, type EvidenceId } from "../../data/evidence";
@@ -19,7 +20,7 @@ export function FeatureStory({ claim, index }: { claim: Claim; index: number }) 
       <caption>リンク先で確認できること</caption>
       <thead><tr><th scope="col">参照コード</th><th scope="col">読むポイント</th></tr></thead>
       <tbody>{source.sources.map(s => <tr key={s.url}>
-        <th scope="row"><a href={s.url}><span>{s.label.split("/").at(-1)} <span aria-hidden="true">↗</span></span><small>{s.label.split(":")[0]}</small></a></th>
+        <th scope="row"><SiteLink href={s.url}><span>{s.label.split("/").at(-1)} <span aria-hidden="true">↗</span></span><small>{s.label.split(":")[0]}</small></SiteLink></th>
         <td>{guide.readings[s.label]}</td>
       </tr>)}</tbody>
     </table></div>

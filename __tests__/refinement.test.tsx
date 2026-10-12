@@ -20,6 +20,9 @@ it('expresses the portfolio itself as the hero 3D scene without image controls',
   expect(hero).toContain('aria-label="学びを起点に、制作・設計・改善へ循環するポートフォリオ"');
   for (const label of ['BUILD', 'STUDY', 'ENGINEER', 'IMPROVE']) expect(hero).toContain(label);
   expect(hero).not.toContain('<img');
+  const contact = html.split('id="contact"')[1]!;
+  expect(contact).toContain('class="contact-copy"');
+  expect(contact).toContain('src="/images/optimized/myoshi-logo-720.webp"');
   expect(hero).not.toContain('<button');
   expect(hero).not.toContain('LLM Studies');
 });

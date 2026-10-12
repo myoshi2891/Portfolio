@@ -12,7 +12,8 @@ function files(directory: string): string[] {
 }
 
 describe("published images", () => {
-  const published = files("public/images");
+  // The supplied brand original is retained; displayed images use WebP derivatives.
+  const published = files("public/images").filter(path => path !== join("public/images", "myoshi.jpeg"));
 
   it("ships only compressed WebP captures and SVG diagrams", () => {
     expect(published.filter(path => !/\.(webp|svg)$/.test(path))).toEqual([]);

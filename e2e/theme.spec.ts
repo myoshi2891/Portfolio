@@ -6,8 +6,9 @@ const paths = ["/", "/projects/multi-vendor-e-commerce/", "/projects/comparison-
 test("a saved color choice overrides the OS and persists across all screens and reloads", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
-  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("/");
+  // Firefox は COOP による初回遷移で colorScheme のエミュレーションを失うため、遷移後に指定する
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(await page.evaluate(() => localStorage.getItem("portfolio-theme"))).toBe("light");
@@ -17,6 +18,8 @@ test("a saved color choice overrides the OS and persists across all screens and 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     expect(await page.locator("html").evaluate(element => getComputedStyle(element).colorScheme)).toBe("light");
     expect(await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor)).toBe("rgb(247, 248, 250)");
+    // WebKit reports prefetches aborted by the next document navigation as page errors.
+    await page.waitForLoadState("networkidle");
   }
   await page.getByRole("button", { name: "ダークモードに切り替える" }).press("Enter");
   await page.emulateMedia({ colorScheme: "light" });
@@ -27,8 +30,9 @@ test("a saved color choice overrides the OS and persists across all screens and 
 });
 
 test("a choice survives client navigation and browser back", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("/");
+  // Firefox は COOP による初回遷移で colorScheme のエミュレーションを失うため、遷移後に指定する
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
   await page.locator('a[href="/projects/comparison-of-llms/"]').first().click();
   await expect(page).toHaveURL(/\/projects\/comparison-of-llms\/?$/);
@@ -64,8 +68,9 @@ test("the theme control synchronizes an explicit choice between tabs", async ({ 
 });
 
 test("the toggle fits narrow and enlarged headers and is accessible in both modes", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("/projects/medical-studies/");
+  // Firefox は COOP による初回遷移で colorScheme のエミュレーションを失うため、遷移後に指定する
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const fontSize of ["100%", "200%"]) {

@@ -21,6 +21,7 @@
 :root[data-theme="dark"] { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html[data-arrival] { scroll-behavior: auto; }
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-inter), "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.9; overflow-wrap: anywhere; }
 h1, h2, h3, p, ul { margin: 0; }
 h1, h2, h3 { font-weight: 600; line-height: 1.5; text-wrap: pretty; }
@@ -634,4 +635,32 @@ body { background-image: none; }
   .study-summary .reading-table tbody tr { padding-block: .75rem; }
   .study-chapter-application { padding: 1rem; }
   .study-footer { align-items: flex-start; flex-direction: column; }
+}
+
+.brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
+/* Closing invitation: editorial copy paired with the supplied brand artwork. */
+.contact {
+  display: grid; align-items: center; gap: 2.5rem;
+  padding: clamp(1.5rem, 5vw, 4.5rem);
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--color-surface), var(--hero-tint));
+  box-shadow: 0 16px 48px light-dark(#20242c08, #00000020);
+}
+.contact-copy { min-width: 0; }
+.contact-eyebrow { display: flex; align-items: center; gap: .65rem; text-transform: uppercase; font-size: .75rem; letter-spacing: .12em; }
+.contact-eyebrow > span:first-child { width: 7px; height: 7px; margin: 0; border-radius: 50%; background: var(--color-accent); }
+.contact h2 { font-size: clamp(1.65rem, 3.2vw, 2.65rem); line-height: 1.5; margin-block: 1.25rem; letter-spacing: -.045em; }
+.contact h2 > span { color: var(--color-accent); }
+.contact-description { max-width: 33rem; color: var(--color-muted); font-size: .95rem; }
+.contact-topics { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
+.contact-topics span { padding: .3rem .75rem; border: 1px solid var(--color-line); border-radius: 6px; color: var(--color-muted); font-size: .75rem; background: var(--color-surface); }
+.contact .action { margin-top: 1.75rem; }
+.contact-identity { display: grid; justify-items: center; gap: 1.25rem; padding-top: 2rem; border-top: 1px solid var(--color-line); }
+.contact-logo { display: block; width: min(100%, 280px); height: auto; border-radius: 50%; border: 8px solid #faf9f5; box-shadow: 0 8px 28px #00000010; }
+.contact-handle { text-align: center; font-size: .9rem; font-weight: 600; letter-spacing: .02em; }
+.contact-handle span { display: block; margin-top: .25rem; color: var(--color-muted); font-size: .7rem; font-weight: 400; letter-spacing: .04em; }
+@media (min-width: 768px) {
+  .contact { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); }
+  .contact-identity { border-top: 0; border-left: 1px solid var(--color-line); padding-top: 0; padding-left: clamp(2rem, 4vw, 3rem); }
+  .contact-logo { width: min(100%, 360px); }
 }

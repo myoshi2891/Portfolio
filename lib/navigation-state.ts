@@ -4,6 +4,10 @@ export type NavigationState = {
 type StorageAccess = Pick<Storage, "getItem" | "setItem">;
 export const STORAGE_KEY = "portfolio.navigation.v1";
 export const HISTORY_KEY = "portfolioNavigation";
+// Native fragment/restoration scrolls during load must not inherit CSS smooth
+// scrolling; NavigationController removes the marker once the document loads.
+export const ARRIVAL_ATTRIBUTE = "data-arrival";
+export const arrivalInitScript = `document.documentElement.setAttribute("${ARRIVAL_ATTRIBUTE}", "");`;
 
 export function parseNavigationState(value: unknown, allowed: ReadonlySet<string>): NavigationState | null {
   if (!value || typeof value !== "object") return null;

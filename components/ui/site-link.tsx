@@ -5,5 +5,6 @@ import type { ComponentProps } from "react";
 // Next handles route loading, prefetching and native modifier-key behavior.
 export function SiteLink({ href, ...props }: Omit<ComponentProps<typeof Link>, "href" | "scroll"> & { href: string }) {
   const internal = href.startsWith("#") || (href.startsWith("/") && !href.startsWith("//"));
-  return internal ? <Link href={href} scroll={false} {...props} /> : <a href={href} {...props} />;
+  const external = /^(https?:)?\/\//i.test(href);
+  return internal ? <Link href={href} scroll={false} {...props} /> : <a href={href} {...props} target={external ? "_blank" : props.target} rel={external ? [props.rel, "noopener", "noreferrer"].filter(Boolean).join(" ") : props.rel} />;
 }
