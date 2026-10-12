@@ -121,7 +121,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 | 保存拒否 | 例外を処理し、そのページでの切り替えを維持。再読み込み後の永続保存は保証しない |
 | JavaScript無効 | OSの配色で表示。切り替え操作・保存値の初期適用は動作しない |
 
-実装は`lib/theme.ts`、`components/layout/theme-toggle.tsx`、`app/layout.tsx`、`app/globals.css`。テーマ選択を戻す専用の「自動」ボタンは現時点でありません。CSPをホストへ追加する際は保存値の初期適用に必要なインラインスクリプトも含めて検証します。
+実装は`lib/theme.ts`、`components/layout/theme-toggle.tsx`、`app/layout.tsx`、`app/globals.css`。テーマ選択を戻す専用の「自動」ボタンは現時点でありません。Vercel向けCSP（`vercel.json`）は保存値の初期適用に必要なインラインスクリプトを許可し、`e2e/security-headers.spec.ts`で保存値の適用とCSP違反がないことを検証します。
 
 ## ライトモードの最終デザイン
 

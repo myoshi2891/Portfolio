@@ -63,7 +63,20 @@ LinuxではブラウザのOS依存も必要です。CIと同じ`bunx playwright 
 | `DEPLOYMENT_ENV` | 省略時は`preview`。`production`のみインデックスを許可 |
 | `SITE_URL` | 公開先のHTTPSオリジン。認証情報・サブパス・query・hashは不可 |
 
-URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを拒否します。`production`で有効なURLがなければビルドが停止します。設定変更は再ビルドで反映します。公開先とURLは未決定です。
+URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを拒否します。`production`で有効なURLがなければビルドが停止します。設定変更は再ビルドで反映します。
+
+## Vercelへのデプロイ
+
+[`vercel.json`](vercel.json)でNext.jsプリセット、`bun install --frozen-lockfile`、`bun run build`を指定しています。`output: "export"`の静的出力をそのまま配信し、サーバー機能は使いません。
+
+1. VercelでGitHubリポジトリをImportします。Framework・Install・Buildは`vercel.json`の値が使われ、Root Directoryは既定のままにします。
+2. Node.jsは22.xを選択します（`package.json`の`engines`と一致）。
+3. 環境変数は不要です。Vercelの`VERCEL_ENV`が`production`のときだけインデックスを許可し、`SITE_URL`の既定値は`VERCEL_PROJECT_PRODUCTION_URL`（独自ドメイン設定時はそのドメイン）です。Preview・Developmentは常にnoindexで、canonicalとsitemapを出力しません。
+4. 独自ドメインを明示する場合は、Production環境にのみ`SITE_URL=https://example.com`を設定します。`DEPLOYMENT_ENV`・`SITE_URL`を明示した値はVercelの既定より優先します。
+
+`vercel.json`は全パスにCSP・HSTS・`X-Content-Type-Options`・`X-Frame-Options`・`Referrer-Policy`・`Permissions-Policy`・COOPを付与します。静的出力ではnonceを使えないため、Next.jsのインラインスクリプトとテーマ初期化に限り`script-src 'unsafe-inline'`を許可し、外部オリジン・`eval`は許可しません。`bun run preview`も同じヘッダーを返し、E2EでCSP違反がないことを確認します。外部オリジンを追加する場合はCSPも更新してください。Preview環境のVercel Toolbarは外部スクリプトのためCSPで読み込まれません。
+
+HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメインの全サブドメインがHTTPS対応であることを確認してから追加します。
 
 ## 編集と構成
 
@@ -82,7 +95,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
 - `public/images/`: 原本PNG、Home用WebP、詳細用Mermaid SVG。Home画像は`data/screens.ts`、ギャラリーは対応するスライド配列を更新。生成物も管理。
-- `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定。
+- `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定（`site-config.ts`）、配信ヘッダーの照合（`response-headers.ts`）。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
 
