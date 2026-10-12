@@ -2,12 +2,14 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
+import { projectSummaries } from "../data/project-summaries";
 import { projectDocumentation } from "../data/project-documentation";
 import { extractMermaidSources } from "../lib/mermaid-sources";
 
 const documents = [
   { slug: "multi-vendor-e-commerce", contentPath: "data/multi-vendor-detail.md", imageDirectory: "multi-vendor-e-commerce" },
   ...Object.entries(projectDocumentation).map(([slug, document]) => ({ slug, ...document })),
+  ...Object.entries(projectSummaries).map(([slug, document]) => ({ slug, ...document })),
 ];
 const requested = process.argv.slice(2);
 const browser = await chromium.launch();

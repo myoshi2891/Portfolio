@@ -8,7 +8,7 @@
 | [PROJECT_DETAILS-LLM-Studies.md](PROJECT_DETAILS-LLM-Studies.md) | LLM詳細 | `data/llm-studies-detail.md` |
 | [project-overview-medical-studies.md](project-overview-medical-studies.md) | Medical詳細 | `data/medical-studies-detail.md` |
 | [technical-documentation-The-Wild-Oasis.md](technical-documentation-The-Wild-Oasis.md) | Wild Oasis管理詳細 | `data/wild-oasis-detail.md` |
-| [OVERVIEW-Management-Studies.md](OVERVIEW-Management-Studies.md) | 学習資料。独立詳細はなし | Homeの学習データは既存方針を維持 |
+| [OVERVIEW-Management-Studies.md](OVERVIEW-Management-Studies.md) | HomeのManagement学習資料カード | `data/management-studies-summary.md` |
 
 4詳細はGitHubソース参照を表示せず、資料に基づく具体的な説明・Markdown表・Mermaid SVGで構成します。資料の調査日、品質統計日、画面更新日は区別し、テスト結果を現在の保証に変換しません。資料更新だけでは画面へ自動反映されないため、対応するMarkdownを見直してください。
 

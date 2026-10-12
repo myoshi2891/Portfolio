@@ -67,13 +67,13 @@ bun scripts/prepare-commerce-diagrams.ts medical-studies
 
 ## 実画面とギャラリー
 
-PNGの差し替えだけではHomeで優先表示するWebPは更新されません。差し替え後は`bun run images:generate`を実行し、同じファイル名を使う場合は`data/screens.ts`の任意の`revision`も更新します。ScreenPreviewはWebPとPNGのURLへ`?v=<revision>`を付け、古いブラウザーキャッシュの再利用を防ぎます。R01の今回の差し替えは`20261002-2`です。
+PNGの差し替えだけではHomeで配信するWebP（優先表示分とfallback）は更新されません。差し替え後は`bun run images:generate`を実行し、同じファイル名を使う場合は`data/screens.ts`の任意の`revision`も更新します。ScreenPreviewは`source`のWebP srcsetと`img`fallbackのWebPのURLへ`?v=<revision>`を付け、古いブラウザーキャッシュの再利用を防ぎます。R01の今回の差し替えは`20261002-2`です。
 
-Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジトリに対応します。原本PNGを保持し、640／1280／1854の指定幅から生成したWebPを`picture`のsrcsetで選択、PNGをfallbackにします。`withoutEnlargement`のため元画像が指定幅より小さい場合は拡大しません。R01には今回のトップ画像と`r01-*`のWebP3件を追加しました。次の制作でも同じプレビュー定義を使用します。
+Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジトリに対応します。原本PNGを保持し、640／1280／1854の指定幅から生成したWebPを`picture`のsrcsetで選択、`img`のfallbackにも原本PNGから生成した同名のWebPを使用し、PNGは配信しません。`withoutEnlargement`のため元画像が指定幅より小さい場合は拡大しません。R01には今回のトップ画像と`r01-*`のWebP3件を追加しました。次の制作でも同じプレビュー定義を使用します。
 
 4詳細は共通`ProjectSlideshow`を使用し、概要の後・目次と本文の前に配置します。
 
-| 詳細 | 枚数 | PNGディレクトリ（`public/images/`） | ギャラリーコンポーネント |
+| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | ギャラリーコンポーネント |
 |---|---|---|---|
 | Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-slideshow.tsx` |
 | LLM | 9 | `llm-studies` | `llm-studies-slideshow.tsx` |
@@ -103,7 +103,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 
 前後スライドの端が見える水平移動方式。先頭・末尾クローンでループし、5秒間隔で自動送りします。前へ・次へ・一時停止／再生の操作、タイトル・枚数表示・位置ドットを持ちます。hover・内部フォーカス・非表示タブでは自動送りを抑制し、reduced-motionでは自動送りと移動アニメーションを停止します。手動の前後移動は利用可能です。
 
-初期HTMLには先頭の実画像を含めます。操作ボタンはhydration後に表示し、JavaScript無効時は先頭画像と説明を表示します。全画像の手動閲覧はJavaScript有効時の機能です。現在画像だけに説明altを付け、他スライドとループクローンは読み上げ対象から外します。先頭画像は優先読み込み、他画像は遅延読み込み。ギャラリーは原本PNGを`next/image`の`unoptimized`で表示し、Home用のWebPとは配信方法を分けます。
+初期HTMLには先頭の実画像を含めます。操作ボタンはhydration後に表示し、JavaScript無効時は先頭画像と説明を表示します。全画像の手動閲覧はJavaScript有効時の機能です。現在画像だけに説明altを付け、他スライドとループクローンは読み上げ対象から外します。先頭画像は優先読み込み、他画像は遅延読み込み。ギャラリーは生成済みの公開WebPファイルを`next/image`の`unoptimized`で表示し、Homeの`picture`（WebP fallback）によるHome専用WebP配信とは配信方法を分けます。
 
 ## 全画面共通のテーマ
 
@@ -121,7 +121,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 | 保存拒否 | 例外を処理し、そのページでの切り替えを維持。再読み込み後の永続保存は保証しない |
 | JavaScript無効 | OSの配色で表示。切り替え操作・保存値の初期適用は動作しない |
 
-実装は`lib/theme.ts`、`components/layout/theme-toggle.tsx`、`app/layout.tsx`、`app/globals.css`。テーマ選択を戻す専用の「自動」ボタンは現時点でありません。CSPをホストへ追加する際は保存値の初期適用に必要なインラインスクリプトも含めて検証します。
+実装は`lib/theme.ts`、`components/layout/theme-toggle.tsx`、`app/layout.tsx`、`app/globals.css`。テーマ選択を戻す専用の「自動」ボタンは現時点でありません。Vercel向けCSP（`vercel.json`）は保存値の初期適用に必要なインラインスクリプトを許可し、`e2e/security-headers.spec.ts`で保存値の適用とCSP違反がないことを検証します。
 
 ## ライトモードの最終デザイン
 

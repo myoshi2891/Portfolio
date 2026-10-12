@@ -36,7 +36,7 @@ bun run preview
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
-| `bun run images:generate` | Homeの提供PNGから表示幅別のWebPを再生成 |
+| `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成。原本PNGがなくなった公開用WebPは削除 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
 | `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
 | `bun scripts/generate-og.ts` | 文字主体のOG画像を再生成 |
@@ -63,7 +63,20 @@ LinuxではブラウザのOS依存も必要です。CIと同じ`bunx playwright 
 | `DEPLOYMENT_ENV` | 省略時は`preview`。`production`のみインデックスを許可 |
 | `SITE_URL` | 公開先のHTTPSオリジン。認証情報・サブパス・query・hashは不可 |
 
-URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを拒否します。`production`で有効なURLがなければビルドが停止します。設定変更は再ビルドで反映します。公開先とURLは未決定です。
+URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを拒否します。`production`で有効なURLがなければビルドが停止します。設定変更は再ビルドで反映します。
+
+## Vercelへのデプロイ
+
+[`vercel.json`](vercel.json)でNext.jsプリセット、`bun install --frozen-lockfile`、`bun run build`を指定しています。`output: "export"`の静的出力をそのまま配信し、サーバー機能は使いません。
+
+1. VercelでGitHubリポジトリをImportします。Framework・Install・Buildは`vercel.json`の値が使われ、Root Directoryは既定のままにします。
+2. Node.jsは22.xを選択します（`package.json`の`engines`と一致）。
+3. 環境変数は不要です。Vercelの`VERCEL_ENV`が`production`のときだけインデックスを許可し、`SITE_URL`の既定値は`VERCEL_PROJECT_PRODUCTION_URL`（独自ドメイン設定時はそのドメイン）です。Preview・Developmentは常にnoindexで、canonicalとsitemapを出力しません。
+4. 独自ドメインを明示する場合は、Production環境にのみ`SITE_URL=https://example.com`を設定します。`DEPLOYMENT_ENV`・`SITE_URL`を明示した値はVercelの既定より優先します。
+
+`vercel.json`は全パスにCSP・HSTS・`X-Content-Type-Options`・`X-Frame-Options`・`Referrer-Policy`・`Permissions-Policy`・COOPを付与します。静的出力ではnonceを使えないため、Next.jsのインラインスクリプトとテーマ初期化に限り`script-src 'unsafe-inline'`を許可し、外部オリジン・`eval`は許可しません。`bun run preview`も同じヘッダーを返し、E2EでCSP違反がないことを確認します。外部オリジンを追加する場合はCSPも更新してください。Preview環境のVercel Toolbarは外部スクリプトのためCSPで読み込まれません。
+
+HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメインの全サブドメインがHTTPS対応であることを確認してから追加します。
 
 ## 編集と構成
 
@@ -81,8 +94,9 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 - `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
-- `public/images/`: 原本PNG、Home用WebP、詳細用Mermaid SVG。Home画像は`data/screens.ts`、ギャラリーは対応するスライド配列を更新。生成物も管理。
-- `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定。
+- `assets/screens/`: 表示する提供画像の原本PNG（公開しない）。`assets/unused-screens/`は提供済みで未掲載の原本。
+- `public/images/`: 公開用WebP（`images:generate`の生成物）、Home用の表示幅別WebP、詳細用Mermaid SVG。PNG・JPEGは置きません。Home画像は`data/screens.ts`（原本PNG名）、ギャラリーは対応するスライド配列（WebP名）を更新。生成物も管理。
+- `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定（`site-config.ts`）、配信ヘッダーの照合（`response-headers.ts`）。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
 

@@ -10,7 +10,7 @@
 - 全画面のヘッダーでライト／ダークを切り替え。選択保存をOSより優先し、未選択ならOS追従。SPA・reload・タブ同期・保存拒否に対応。
 - 最終ライトは白・チャコール・シルバーを基調にブルー一点。Heroのブルーの立体パネルとシルバーの軌道、10秒周期の反射が特徴。途中の制作別多色パレットは廃止。
 - Heroは学習・制作・設計・改善をCSS 3Dで表現し、作品画像と操作ボタンを置かない。画面外・非表示タブで停止、reduced-motionとJS無効時は静止。
-- モバイルはネイティブdetailsメニュー、詳細はパンくずと現在節の目次。内部ページ遷移はSPA、通常アンカーはsmooth、履歴・ページ切替・共有hash初回はinstant。
+- モバイルはネイティブdetailsメニュー、詳細はパンくずと現在節の目次。内部ページ遷移はSPA、画面内アンカーとページ移動後の指定アンカーはsmooth、履歴復元・hashなしのページ切替・共有hash初回はinstant。動きを減らす設定ではアンカーもinstant。
 - 肩書き・経歴・担当範囲・連絡先は未提供のため補わない。作品画像を架空のUIで代用しない。
 
 ## 詳細本文・図の編集
@@ -39,7 +39,7 @@ Homeの代表画像は`data/screens.ts`にfile・alt・titleを登録し、`Scre
 bun run images:generate
 ```
 
-生成先は`public/images/optimized`、指定幅640／1280／1854、原本を拡大しない設定です。pictureのsrcsetで選び、PNGをfallbackにします。今回のR01は`multi-vendor-e-commerce/storefront-home-hero.png`、WebPは`r01-640.webp`・`r01-1280.webp`・`r01-1854.webp`です。
+生成先は`public/images/optimized`、指定幅640／1280／1854、原本を拡大しない設定です。pictureのsrcsetで選び、原本と同じパスの全幅WebPをfallbackにします。原本PNGは`assets/screens/`に置き、公開しません。今回のR01は`multi-vendor-e-commerce/storefront-home-hero.png`、WebPは`r01-640.webp`・`r01-1280.webp`・`r01-1854.webp`です。
 
 詳細ギャラリーは各`components/projects/*-slideshow.tsx`の配列に画像・タイトル・altを登録します。Home用の対応表への登録だけではギャラリーに追加されません。保存先・枚数・Multi Vendor10枚の旧名と新名は[現行仕様の画像一覧](current-specification.md#実画面とギャラリー)を参照してください。
 

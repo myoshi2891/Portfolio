@@ -1,6 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
-declare global { interface Window { __scrollIntoViewCalls: ScrollIntoViewOptions[]; } }
+declare global { interface Window {
+  __scrollIntoViewCalls: ScrollIntoViewOptions[];
+  __anchorActions: string[];
+  __anchorScrollY: number[];
+  __instantScrolls: number;
+} }
 
 async function markDocument(page: Page) {
   await expect.poll(() => page.evaluate(() => Boolean(history.state?.portfolioNavigation))).toBe(true);
@@ -36,7 +41,8 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
   await markDocument(page);
   await page.locator('.mobile-menu summary').click();
   await page.getByRole('navigation', { name: 'モバイルナビゲーション' }).getByRole('link', { name: 'プロフィール' }).click();
-  await expect(page.locator('#about h2')).toBeInViewport();
+  await expect(page).toHaveURL(/\/profile\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'プロフィール', exact: true })).toBeInViewport();
   await expect(page.locator('.mobile-menu')).not.toHaveAttribute('open', '');
   await expect(page.locator('html')).toHaveAttribute('data-spa-document', 'retained');
   await page.goto('/missing-page/');
@@ -46,21 +52,50 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
   await expect(page.locator('html')).toHaveAttribute('data-spa-document', 'retained');
 });
 
-test('home anchor moves through intermediate positions and reduced motion is immediate', async ({ page }) => {
+test('home anchor starts one uninterrupted smooth move and reduced motion is immediate', async ({ page }) => {
   await page.addInitScript(() => {
     window.__scrollIntoViewCalls = [];
+    window.__anchorActions = [];
+    window.__anchorScrollY = [];
+    window.__instantScrolls = 0;
+    const originalScrollTo = window.scrollTo.bind(window);
+    window.scrollTo = ((...args: [ScrollToOptions?]) => {
+      if (args[0]?.behavior === 'instant') window.__instantScrolls++;
+      return originalScrollTo(...args);
+    }) as typeof window.scrollTo;
+    const originalFocus = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function (options?: FocusOptions) {
+      window.__anchorActions.push(`focus:${this.id}`);
+      return originalFocus.call(this, options);
+    };
     const original = Element.prototype.scrollIntoView;
     Element.prototype.scrollIntoView = function (this: Element, options?: boolean | ScrollIntoViewOptions) {
+      window.__anchorActions.push(`scroll:${this.id}`);
       window.__scrollIntoViewCalls.push(options as ScrollIntoViewOptions);
-      return original.call(this, options as ScrollIntoViewOptions);
+      original.call(this, options as ScrollIntoViewOptions);
+      window.__anchorScrollY.push(window.scrollY);
     };
   });
   await page.goto('/');
   await markDocument(page);
   await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.hero-actions a')!.click());
-  await expect(page.locator('#selected-work h2')).toBeInViewport();
+  // Linux WebKit dispatches scroll events only on throttled rendering updates,
+  // so sampled intermediate positions are unreliable. Assert the move instead:
+  // it does not jump synchronously and nothing cancels it before it arrives.
+  await expect(page.locator('#selected-work h2')).toBeInViewport({ timeout: 10_000 });
   const normalCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
   expect(normalCall).toMatchObject({ behavior: 'smooth', block: 'start' });
+  await expect(page.locator('#selected-work-heading')).toBeFocused();
+  const actions = await page.evaluate(() => window.__anchorActions);
+  expect(actions.indexOf('focus:selected-work-heading')).toBeLessThan(actions.indexOf('scroll:selected-work'));
+  const smoothMove = await page.evaluate(() => {
+    const destination = document.getElementById('selected-work')!;
+    const finalY = window.scrollY + destination.getBoundingClientRect().top - parseFloat(getComputedStyle(destination).scrollMarginTop);
+    return { startY: window.__anchorScrollY[0], finalY, instantScrolls: window.__instantScrolls };
+  });
+  expect(smoothMove.startY).toBeLessThan(smoothMove.finalY - 2);
+  expect(smoothMove.instantScrolls).toBe(0);
+  expect(await page.evaluate(() => window.__scrollIntoViewCalls)).toHaveLength(1);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });

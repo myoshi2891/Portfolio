@@ -7,8 +7,8 @@ import { existsSync } from 'node:fs';
 
 it('shows supplied study screenshots with descriptive alternatives in the initial HTML', () => {
   const html = renderToStaticMarkup(<Home />);
-  expect(html).toContain('QA_STUDIES.png');
-  expect(html).toContain('Cloud%20Infrastructure%20Studies.png');
+  expect(html).toContain('QA_STUDIES.webp');
+  expect(html).toContain('Cloud%20Infrastructure%20Studies.webp');
   expect(html).toMatch(/alt="[^"]*品質[^"]*"/);
   expect(html).toContain('id="about"');
   expect(html).not.toContain('layer-stack');
@@ -38,9 +38,9 @@ it('renders the Multi-Vendor E-Commerce gallery and documented case study', asyn
   const caseStudy = html.split('<nav class="detail-next"')[0] ?? '';
   expect(caseStudy).not.toContain('class="screen-preview"');
   expect(caseStudy).toContain('class="project-slideshow"');
-  expect(caseStudy).toContain('storefront-home-hero.png');
+  expect(caseStudy).toContain('storefront-home-hero.webp');
   expect(caseStudy.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(10);
-  const screenshots = [...caseStudy.matchAll(/src="(\/images\/multi-vendor-e-commerce\/[^"/]+\.png)"/g)].map(match => match[1]);
+  const screenshots = [...caseStudy.matchAll(/src="(\/images\/multi-vendor-e-commerce\/[^"/]+\.webp)"/g)].map(match => match[1]);
   expect(new Set(screenshots).size).toBe(10);
   for (const path of screenshots) expect(existsSync(`public${path}`)).toBe(true);
   expect(html).not.toContain('Multi-Vendor-E-Commerce/blob/');
@@ -57,7 +57,7 @@ it('renders the LLM Studies gallery and its full-width detail layout', async () 
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'comparison-of-llms' }) }));
   expect(html).toContain('class="container detail-page llm-detail-page documented-detail-page"');
   expect(html).toContain('aria-roledescription="カルーセル"');
-  expect(html).toContain('cost-calculator-overview.png');
+  expect(html).toContain('cost-calculator-overview.webp');
   expect(html.match(/class="slideshow-dots"[\s\S]*?<\/div>/)?.[0].match(/<span/g)).toHaveLength(9);
   // 操作ボタンはハイドレーション完了まで出力しない（JS なしで無反応なボタンを残さない）
   expect(html.match(/class="project-slideshow"[\s\S]*?<\/figure>/)?.[0]).not.toContain('<button');
@@ -71,12 +71,12 @@ it('provides a prominent home recovery action on the 404 page', () => {
 
 it('places additional captures on the matching featured, study and secondary entries', async () => {
   const html = renderToStaticMarkup(<Home />);
-  for (const [id, file] of [['R03', 'The%20Wild%20Oasis.png'], ['R05', 'Next-Store.png'], ['R09', 'Management%20Studies.png'], ['R12', 'Medical-Studies/prom-checker-dashboard.png']]) {
+  for (const [id, file] of [['R03', 'The%20Wild%20Oasis.webp'], ['R05', 'Next-Store.webp'], ['R09', 'Management%20Studies.webp'], ['R12', 'Medical-Studies/prom-checker-dashboard.webp']]) {
     const article = html.split(`data-repository="${id}"`)[1]?.split('</article>')[0];
     expect(article?.includes(file!), id).toBe(true);
   }
   const medical = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'medical-studies' }) }));
-  expect(medical.includes('Medical-Studies/prom-checker-dashboard.png')).toBe(true);
+  expect(medical.includes('Medical-Studies/prom-checker-dashboard.webp')).toBe(true);
 });
 
 it('renders the Medical Studies documented case study and its supplied views', async () => {
@@ -84,10 +84,10 @@ it('renders the Medical Studies documented case study and its supplied views', a
   expect(html).toContain('class="container detail-page medical-detail-page documented-detail-page"');
   expect(html).toContain('Medical Studiesの画面ギャラリー');
   for (const file of [
-    'prom-checker-dashboard.png', 'prom-checker-headache-diary.png', 'prom-checker-evaluation-report.png',
-    'anatomy-atlas-top.png', 'anatomy-head-neck-interactive-model.png', 'anatomy-cervical-spine-structure-explorer.png',
-    'headaches-migraine-guide.png', 'treatment-acute-headache-guide.png', 'blocks-occipital-nerve-guide.png',
-    'therapies-physical-therapy-guide.png', 'prom-headache-diary-guide.png',
+    'prom-checker-dashboard.webp', 'prom-checker-headache-diary.webp', 'prom-checker-evaluation-report.webp',
+    'anatomy-atlas-top.webp', 'anatomy-head-neck-interactive-model.webp', 'anatomy-cervical-spine-structure-explorer.webp',
+    'headaches-migraine-guide.webp', 'treatment-acute-headache-guide.webp', 'blocks-occipital-nerve-guide.webp',
+    'therapies-physical-therapy-guide.webp', 'prom-headache-diary-guide.webp',
   ]) expect(html).toContain(file);
   expect(html).toContain('Medical Studies / 11 views');
   expect(html).toContain('2026年9月18日');
@@ -100,7 +100,7 @@ it('renders the Wild Oasis documented case study and its supplied admin views', 
   const html = renderToStaticMarkup(await Detail({ params: Promise.resolve({ slug: 'the-wild-oasis-for-admin' }) }));
   expect(html).toContain('class="container detail-page wild-oasis-detail-page documented-detail-page"');
   expect(html).toContain('The Wild Oasis管理画面ギャラリー');
-  for (const file of ['dashboard-overview.png', 'bookings-management.png', 'dashboard-analytics-charts.png', 'cabins-management.png']) {
+  for (const file of ['dashboard-overview.webp', 'bookings-management.webp', 'dashboard-analytics-charts.webp', 'cabins-management.webp']) {
     expect(html).toContain(file);
   }
   expect(html).toContain('2026年9月18日');

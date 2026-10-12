@@ -5,7 +5,8 @@ import { screens, screenWidths } from "../../data/screens";
 export function ScreenPreview({ id, priority = false, sizes = "(min-width: 768px) 50vw, 100vw" }: { id: RepositoryId; priority?: boolean; sizes?: string }) {
   const screen = screens[id];
   if (!screen) return null;
-  const imagePath = screen.file.split("/").map(encodeURIComponent).join("/");
+  // data/screens.ts names the PNG original; the deployed fallback is its WebP derivative.
+  const imagePath = screen.file.replace(/\.png$/, ".webp").split("/").map(encodeURIComponent).join("/");
   const revision = screen.revision ? `?v=${encodeURIComponent(screen.revision)}` : "";
   return <figure className="screen-preview">
     <div className="browser-bar" aria-hidden="true"><span>● ● ●</span><span>{screen.title}</span><span>↗</span></div>

@@ -232,23 +232,14 @@ export const projects = [
     "order": 1,
     "type": "secondary",
     "technologies": [],
-    "highlights": [
-      {
-        "text": "予約作成のトランザクションと決済連携コード。",
-        "evidenceIds": [
-          "R04-A01",
-          "R04-F01",
-          "R04-F02"
-        ]
-      }
-    ]
+    "highlights": []
   },
   {
     "id": "R03",
     "name": "The-Wild-Oasis-For-User",
     "title": "ゲスト向け宿泊予約",
     "description": {
-      "text": "客室の予約作成・変更・削除を扱うWebアプリ。予約操作時の所有者確認を実装しています。",
+      "text": "客室の予約作成・変更・キャンセルを扱う、宿泊者向けのWebアプリです。",
       "evidenceIds": [
         "R03-A01",
         "R03-F01"
@@ -258,15 +249,7 @@ export const projects = [
     "order": 2,
     "type": "secondary",
     "technologies": [],
-    "highlights": [
-      {
-        "text": "ページ・Server Actions・データ処理の分割。",
-        "evidenceIds": [
-          "R03-A01",
-          "R03-F01"
-        ]
-      }
-    ]
+    "highlights": []
   },
   {
     "id": "R05",
@@ -283,15 +266,7 @@ export const projects = [
     "order": 3,
     "type": "secondary",
     "technologies": [],
-    "highlights": [
-      {
-        "text": "Server ActionsとDB処理。",
-        "evidenceIds": [
-          "R05-A01",
-          "R05-F01"
-        ]
-      }
-    ]
+    "highlights": []
   }
 ] as const satisfies readonly Project<EvidenceId>[];
 

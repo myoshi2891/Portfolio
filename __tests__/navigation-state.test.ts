@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseNavigationState, readBackup, writeBackup, withNavigationState, STORAGE_KEY } from "../lib/navigation-state";
 
-const allowed = new Set(["more-studies", "note-r10", "study-r10", "more-studies-toggle"]);
+const allowed = new Set(["more-studies", "study-r10", "more-studies-toggle"]);
 const state = { version: 1 as const, id: "entry-1", openIds: ["more-studies"], scrollY: 1200, focusId: "study-r10" };
 const memory = () => {
   const values = new Map<string, string>();
