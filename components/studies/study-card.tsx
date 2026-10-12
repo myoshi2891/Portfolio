@@ -1,3 +1,4 @@
+import { SiteLink } from "../ui/site-link";
 import { demoUrls } from "../../data/presentation";
 import { ScreenPreview } from "../projects/screen-preview";
 import type { Study } from "../../types/portfolio";
@@ -23,7 +24,7 @@ export function StudyCard({ study }: { study: Study }) {
     {summary && <StudySummary document={summary} />}
     <footer className="study-footer">
       <p className="repo-name">{study.name}</p>
-      <a className="text-link" id={`github-${study.id.toLowerCase()}`} href={study.githubUrl} aria-label={`${study.name} GitHubで資料を見る`}>GitHubで資料を見る <span aria-hidden="true">↗</span></a>
+      <SiteLink className="text-link" id={`github-${study.id.toLowerCase()}`} href={study.githubUrl} aria-label={`${study.name} GitHubで資料を見る`}>GitHubで資料を見る <span aria-hidden="true">↗</span></SiteLink>
     </footer>
   </article>;
 }
