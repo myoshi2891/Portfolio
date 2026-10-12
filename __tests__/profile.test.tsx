@@ -7,7 +7,7 @@ import Profile, { generateMetadata } from "../app/profile/page";
 afterEach(() => vi.unstubAllEnvs());
 
 describe("profile page", () => {
-  it("renders the portrait, qualifications in newest-first order, and all activity links", async () => {
+  it("renders the portrait, qualifications with skill descriptions, and all activity links", async () => {
     const html = renderToStaticMarkup(<Profile />);
     // The portrait is displayed at most 360 CSS px wide; ship a 2x WebP only.
     expect(html).toContain('src="/images/optimized/profile-720.webp"');
@@ -17,11 +17,9 @@ describe("profile page", () => {
     expect(await sharp("public/images/optimized/profile-720.webp").metadata()).toMatchObject({ format: "webp", width: 720, height: 964 });
     expect(statSync("public/images/optimized/profile-720.webp").size).toBeLessThan(150_000);
     expect(existsSync("public/images/profile.jpeg")).toBe(false);
-    expect([...html.matchAll(/datetime="([^"]+)"/gi)].map(match => match[1])).toEqual([
-      "2026-10", "2026-08", "2026-03", "2025-12", "2025-11", "2021-09", "2019-01", "2017-11",
-    ]);
+    expect(html).not.toMatch(/<time|datetime=|\d{4}年\d{1,2}月/);
     for (const name of ["JSTQB Foundation Level試験 V2023 V4.0", "Associate Cloud Engineer Certification (ENG)", "Generative AI Leader Certification (ENG)", "AWS Certified AI Practitioner (ENG)", "AWS Certified Cloud Practitioner (ENG)", "TOEIC 955", "H.B.A. 認定 シニアバーテンダー", "J.S.A. 認定 ソムリエ"]) expect(html).toContain(name);
-    for (const date of ["2026年10月", "2026年8月", "2026年3月", "2025年12月", "2025年11月", "2021年9月", "2019年1月", "2017年11月"]) expect(html).toContain(date);
+    for (const description of ["テスト設計、レビュー、欠陥管理", "Google Cloud環境の構築・運用", "生成AIの仕組み", "責任あるAIの基礎", "料金・コスト管理", "英語のリスニング・リーディング", "カクテルや酒類の専門知識", "料理に合わせたワインの提案"]) expect(html).toContain(description);
     for (const url of ["https://github.com/myoshi2891", "https://x.com/myoshi2891", "https://leetcode.com/u/myoshizumi/", "https://skillsprofile.skillbuilder.aws/user/myoshi2891/certification-badges"]) expect(html).toContain(`href="${url}"`);
     expect(html).toContain("GitHubでフォロー");
     expect(html).toContain("Xでフォロー");

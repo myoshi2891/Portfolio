@@ -13,6 +13,8 @@ for (const mobile of [false, true]) {
       await page.evaluate(theme => { document.documentElement.dataset.theme = theme; }, theme);
       await expect(page.getByRole("heading", { name: "プロフィール", exact: true })).toBeVisible();
       await expect(page.locator(".profile-certifications li")).toHaveCount(8);
+      await expect(page.locator(".profile-certification-description")).toHaveCount(8);
+      await expect(page.locator(".profile-certifications time")).toHaveCount(0);
       await expect.poll(() => page.locator(".profile-portrait img").evaluate(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
