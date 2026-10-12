@@ -635,3 +635,31 @@ body { background-image: none; }
   .study-chapter-application { padding: 1rem; }
   .study-footer { align-items: flex-start; flex-direction: column; }
 }
+
+.brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
+/* Closing invitation: editorial copy paired with the supplied brand artwork. */
+.contact {
+  display: grid; align-items: center; gap: 2.5rem;
+  padding: clamp(1.5rem, 5vw, 4.5rem);
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--color-surface), var(--hero-tint));
+  box-shadow: 0 16px 48px light-dark(#20242c08, #00000020);
+}
+.contact-copy { min-width: 0; }
+.contact-eyebrow { display: flex; align-items: center; gap: .65rem; text-transform: uppercase; font-size: .75rem; letter-spacing: .12em; }
+.contact-eyebrow > span:first-child { width: 7px; height: 7px; margin: 0; border-radius: 50%; background: var(--color-accent); }
+.contact h2 { font-size: clamp(1.65rem, 3.2vw, 2.65rem); line-height: 1.5; margin-block: 1.25rem; letter-spacing: -.045em; }
+.contact h2 > span { color: var(--color-accent); }
+.contact-description { max-width: 33rem; color: var(--color-muted); font-size: .95rem; }
+.contact-topics { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
+.contact-topics span { padding: .3rem .75rem; border: 1px solid var(--color-line); border-radius: 6px; color: var(--color-muted); font-size: .75rem; background: var(--color-surface); }
+.contact .action { margin-top: 1.75rem; }
+.contact-identity { display: grid; justify-items: center; gap: 1.25rem; padding-top: 2rem; border-top: 1px solid var(--color-line); }
+.contact-logo { display: block; width: min(100%, 280px); height: auto; border-radius: 50%; border: 8px solid #faf9f5; box-shadow: 0 8px 28px #00000010; }
+.contact-handle { text-align: center; font-size: .9rem; font-weight: 600; letter-spacing: .02em; }
+.contact-handle span { display: block; margin-top: .25rem; color: var(--color-muted); font-size: .7rem; font-weight: 400; letter-spacing: .04em; }
+@media (min-width: 768px) {
+  .contact { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); }
+  .contact-identity { border-top: 0; border-left: 1px solid var(--color-line); padding-top: 0; padding-left: clamp(2rem, 4vw, 3rem); }
+  .contact-logo { width: min(100%, 360px); }
+}

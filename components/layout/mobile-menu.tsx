@@ -11,7 +11,7 @@ export function MobileMenu() {
     if (event.key === 'Escape') { close(); ref.current?.querySelector('summary')?.focus(); }
   }}><summary aria-label="メニュー">メニュー <span aria-hidden="true">☰</span></summary>
     <nav aria-label="モバイルナビゲーション" onClick={event => { if ((event.target as Element).closest('a')) close(); }}>
-      <SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/profile/">プロフィール</SiteLink><SiteLink href="/#philosophy">考え方</SiteLink>
+      <SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/#philosophy">考え方</SiteLink><SiteLink href="/profile/">プロフィール</SiteLink>
     </nav>
   </details>;
 }

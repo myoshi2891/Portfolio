@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SiteLink } from "../ui/site-link";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderGithubLink } from "./header-github-link";
@@ -9,7 +10,7 @@ import { projectPath } from "../../lib/routes";
 // 404.html を任意のURLで配信しても hydration が一致するよう、実在する詳細ページだけを対象にする
 const projectDetailPaths = featuredProjects.map(({ slug }) => projectPath(slug));
 export function Navigation() {
-  return <><SiteLink className="skip-link" href="#main">本文へ移動</SiteLink><header className="masthead"><div className="container masthead-inner"><SiteLink className="wordmark" href="/#top" aria-label="myoshi2891 ホーム"><span className="brand-mark" aria-hidden="true">m<span>.</span></span><span>{site.name}</span></SiteLink><nav className="desktop-nav" aria-label="メインナビゲーション"><SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/profile/">プロフィール</SiteLink><SiteLink href="/#philosophy">考え方</SiteLink></nav><HeaderGithubLink href={site.githubUrl} hiddenPaths={projectDetailPaths} /><ThemeToggle /><MobileMenu /></div></header></>;
+  return <><SiteLink className="skip-link" href="#main">本文へ移動</SiteLink><header className="masthead"><div className="container masthead-inner"><SiteLink className="wordmark" href="/#top" aria-label="myoshi2891 ホーム"><Image className="brand-logo" src="/images/optimized/myoshi-logo-96.webp" alt="" width={40} height={40} unoptimized /><span>{site.name}</span></SiteLink><nav className="desktop-nav" aria-label="メインナビゲーション"><SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/#philosophy">考え方</SiteLink><SiteLink href="/profile/">プロフィール</SiteLink></nav><HeaderGithubLink href={site.githubUrl} hiddenPaths={projectDetailPaths} /><ThemeToggle /><MobileMenu /></div></header></>;
 }
 export function Footer() {
   return <footer className="container footer"><SiteLink className="wordmark" href="/#top">{site.name}<span className="muted">Engineering Portfolio</span></SiteLink><nav aria-label="フッターナビゲーション"><SiteLink href="/#selected-work">制作</SiteLink><SiteLink href="/#studies">学習</SiteLink><SiteLink href="/profile/">プロフィール</SiteLink><SiteLink href="/#top">ページ先頭へ ↑</SiteLink></nav></footer>;
