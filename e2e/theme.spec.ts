@@ -18,6 +18,8 @@ test("a saved color choice overrides the OS and persists across all screens and 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     expect(await page.locator("html").evaluate(element => getComputedStyle(element).colorScheme)).toBe("light");
     expect(await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor)).toBe("rgb(247, 248, 250)");
+    // WebKit reports prefetches aborted by the next document navigation as page errors.
+    await page.waitForLoadState("networkidle");
   }
   await page.getByRole("button", { name: "ダークモードに切り替える" }).press("Enter");
   await page.emulateMedia({ colorScheme: "light" });
