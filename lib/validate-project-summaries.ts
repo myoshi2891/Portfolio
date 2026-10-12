@@ -12,6 +12,7 @@ export function validateProjectSummaries(data: Portfolio, summaries = projectSum
       const evidence = data.evidence[evidenceId];
       if (!evidence || evidence.status !== "VERIFIED") errors.push(`Invalid summary evidence: ${evidenceId}`);
       else if (evidence.sourceType === "USER_PROVIDED") {
+        if (!evidenceId.startsWith(`${id}-`)) errors.push(`Summary evidence repo mismatch: ${evidenceId}`);
         if (!existsSync(evidence.sourceLocation)) errors.push(`Missing summary source: ${evidence.sourceLocation}`);
       } else if (evidence.repoId !== id) errors.push(`Summary evidence repo mismatch: ${evidenceId}`);
     }
