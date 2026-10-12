@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 declare global { interface Window { __cspViolations: string[]; } }
 
 test("pages run under the deployed security headers without CSP violations", async ({ page }) => {
+  // Sequentially loads every page type, so it needs more than the default budget.
+  test.setTimeout(60_000);
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.addInitScript(() => {

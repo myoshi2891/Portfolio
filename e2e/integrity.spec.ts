@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 test("all internal links resolve and initial rendering requires no third-party requests", async ({ page, request }) => {
+  // Sequentially loads every page and waits for fonts, so it needs more than the default budget.
+  test.setTimeout(60_000);
   const externalRequests: string[] = [];
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
@@ -10,7 +12,7 @@ test("all internal links resolve and initial rendering requires no third-party r
     }
     return route.continue();
   });
-  const paths = ["/", "/projects/multi-vendor-e-commerce/", "/projects/comparison-of-llms/", "/projects/medical-studies/", "/projects/the-wild-oasis-for-admin/"];
+  const paths = ["/", "/profile/", "/projects/multi-vendor-e-commerce/", "/projects/comparison-of-llms/", "/projects/medical-studies/", "/projects/the-wild-oasis-for-admin/"];
   const idsByPath = new Map<string, Set<string>>();
   const links: string[] = [];
   for (const path of paths) {
