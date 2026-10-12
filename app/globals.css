@@ -21,6 +21,7 @@
 :root[data-theme="dark"] { color-scheme: dark; --color-canvas: #0d1420; --color-surface: #151f30; --color-surface-subtle: #1d2b40; --color-ink: #eaf0fa; --color-muted: #b0bfd5; --color-line: #384963; --color-accent: #9abbff; --color-accent-hover: #c4d7ff; --on-accent: #101d35; --focus: #b1cdff; --hero-tint: #182841; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html[data-arrival] { scroll-behavior: auto; }
 body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-inter), "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.9; overflow-wrap: anywhere; }
 h1, h2, h3, p, ul { margin: 0; }
 h1, h2, h3 { font-weight: 600; line-height: 1.5; text-wrap: pretty; }

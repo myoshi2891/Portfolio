@@ -8,6 +8,7 @@ import { site } from "../data/site";
 import { pageMetadata } from "../lib/metadata";
 import { readSiteConfig } from "../lib/site-config";
 import { themeInitScript } from "../lib/theme";
+import { arrivalInitScript } from "../lib/navigation-state";
 
 export function generateMetadata() {
   const metadata = pageMetadata("/", site.title, site.description);
@@ -30,6 +31,7 @@ const inter = localFont({
 export default function RootLayout({ children }: { children: ReactNode }) {
   return <html lang="ja" data-scroll-behavior="smooth" className={inter.variable} suppressHydrationWarning><head>
     <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+    <script dangerouslySetInnerHTML={{ __html: arrivalInitScript }} />
     {!readSiteConfig().siteUrl && <>
       <meta property="og:image" content="/og/portfolio.png" />
       <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />

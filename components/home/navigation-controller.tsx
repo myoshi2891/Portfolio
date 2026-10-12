@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { HISTORY_KEY, parseNavigationState, readBackup, withNavigationState, writeBackup, type NavigationState } from "../../lib/navigation-state";
+import { ARRIVAL_ATTRIBUTE, HISTORY_KEY, parseNavigationState, readBackup, withNavigationState, writeBackup, type NavigationState } from "../../lib/navigation-state";
 
 export function NavigationController() {
   const pathname = usePathname();
@@ -15,6 +15,10 @@ export function NavigationController() {
     updateMastheadHeight();
     const mastheadObserver = new ResizeObserver(updateMastheadHeight);
     if (masthead) mastheadObserver.observe(masthead);
+    // The browser keeps applying the fragment until load; only then restore CSS smooth scrolling.
+    const finishArrival = () => document.documentElement.removeAttribute(ARRIVAL_ATTRIBUTE);
+    if (document.readyState === "complete") finishArrival();
+    else window.addEventListener("load", finishArrival, { once: true });
     const routePath = location.pathname;
     const routeChanged = previousPath.current !== null;
     previousPath.current = pathname;
@@ -201,6 +205,7 @@ export function NavigationController() {
       active = false; generation++;
       stopSmoothScroll();
       mastheadObserver.disconnect();
+      window.removeEventListener("load", finishArrival);
       clearTimeout(scrollTimer); cancelAnimationFrame(frame); cancelAnimationFrame(settleFrame);
       history.scrollRestoration = oldRestoration;
       document.removeEventListener("click", click, true);
