@@ -95,6 +95,7 @@ test('home anchor starts one uninterrupted smooth move and reduced motion is imm
   });
   expect(smoothMove.startY).toBeLessThan(smoothMove.finalY - 2);
   expect(smoothMove.instantScrolls).toBe(0);
+  expect(await page.evaluate(() => window.__scrollIntoViewCalls)).toHaveLength(1);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });
