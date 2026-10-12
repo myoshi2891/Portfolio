@@ -14,7 +14,8 @@ export default function Profile() {
     <SiteLink className="text-link" href="/#about">← ホームの紹介へ</SiteLink>
     <section className="profile-intro" aria-labelledby="profile-title">
       <div className="profile-portrait">
-        <Image src="/images/profile.jpeg" alt="myoshi2891のモノクロの肖像画" width={1792} height={2400} unoptimized loading="eager" fetchPriority="high" />
+        {/* Static export has no image optimizer: ship a pre-sized 2x WebP for the 360px slot. */}
+        <Image src="/images/optimized/profile-720.webp" alt="myoshi2891のモノクロの肖像画" width={720} height={964} sizes="(max-width: 360px) 100vw, 360px" unoptimized loading="eager" fetchPriority="high" />
       </div>
       <div className="profile-copy">
         <p className="eyebrow">Profile / {site.name}</p>
