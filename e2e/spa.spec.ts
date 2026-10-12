@@ -3,7 +3,8 @@ import { expect, test, type Page } from '@playwright/test';
 declare global { interface Window {
   __scrollIntoViewCalls: ScrollIntoViewOptions[];
   __anchorActions: string[];
-  __anchorPositions: number[];
+  __anchorScrollY: number[];
+  __instantScrolls: number;
 } }
 
 async function markDocument(page: Page) {
@@ -50,12 +51,17 @@ test('mobile navigation and 404 recovery use client navigation', async ({ page }
   await expect(page.locator('html')).toHaveAttribute('data-spa-document', 'retained');
 });
 
-test('home anchor moves through intermediate positions and reduced motion is immediate', async ({ page }) => {
+test('home anchor starts one uninterrupted smooth move and reduced motion is immediate', async ({ page }) => {
   await page.addInitScript(() => {
     window.__scrollIntoViewCalls = [];
     window.__anchorActions = [];
-    window.__anchorPositions = [];
-    window.addEventListener('scroll', () => window.__anchorPositions.push(window.scrollY));
+    window.__anchorScrollY = [];
+    window.__instantScrolls = 0;
+    const originalScrollTo = window.scrollTo.bind(window);
+    window.scrollTo = ((...args: [ScrollToOptions?]) => {
+      if (args[0]?.behavior === 'instant') window.__instantScrolls++;
+      return originalScrollTo(...args);
+    }) as typeof window.scrollTo;
     const originalFocus = HTMLElement.prototype.focus;
     HTMLElement.prototype.focus = function (options?: FocusOptions) {
       window.__anchorActions.push(`focus:${this.id}`);
@@ -65,23 +71,29 @@ test('home anchor moves through intermediate positions and reduced motion is imm
     Element.prototype.scrollIntoView = function (this: Element, options?: boolean | ScrollIntoViewOptions) {
       window.__anchorActions.push(`scroll:${this.id}`);
       window.__scrollIntoViewCalls.push(options as ScrollIntoViewOptions);
-      return original.call(this, options as ScrollIntoViewOptions);
+      original.call(this, options as ScrollIntoViewOptions);
+      window.__anchorScrollY.push(window.scrollY);
     };
   });
   await page.goto('/');
   await markDocument(page);
   await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.hero-actions a')!.click());
-  await expect(page.locator('#selected-work h2')).toBeInViewport();
+  // Linux WebKit dispatches scroll events only on throttled rendering updates,
+  // so sampled intermediate positions are unreliable. Assert the move instead:
+  // it does not jump synchronously and nothing cancels it before it arrives.
+  await expect(page.locator('#selected-work h2')).toBeInViewport({ timeout: 10_000 });
   const normalCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
   expect(normalCall).toMatchObject({ behavior: 'smooth', block: 'start' });
   await expect(page.locator('#selected-work-heading')).toBeFocused();
   const actions = await page.evaluate(() => window.__anchorActions);
   expect(actions.indexOf('focus:selected-work-heading')).toBeLessThan(actions.indexOf('scroll:selected-work'));
-  await expect.poll(() => page.evaluate(() => {
+  const smoothMove = await page.evaluate(() => {
     const destination = document.getElementById('selected-work')!;
     const finalY = window.scrollY + destination.getBoundingClientRect().top - parseFloat(getComputedStyle(destination).scrollMarginTop);
-    return window.__anchorPositions.some(position => position > 0 && position < finalY - 2);
-  })).toBe(true);
+    return { startY: window.__anchorScrollY[0], finalY, instantScrolls: window.__instantScrolls };
+  });
+  expect(smoothMove.startY).toBeLessThan(smoothMove.finalY - 2);
+  expect(smoothMove.instantScrolls).toBe(0);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });
