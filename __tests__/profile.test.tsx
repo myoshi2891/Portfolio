@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { existsSync, statSync } from "node:fs";
 import sharp from "sharp";
 import Profile, { generateMetadata } from "../app/profile/page";
 
@@ -8,9 +9,14 @@ afterEach(() => vi.unstubAllEnvs());
 describe("profile page", () => {
   it("renders the portrait, qualifications in newest-first order, and all activity links", async () => {
     const html = renderToStaticMarkup(<Profile />);
-    expect(html).toContain('src="/images/profile.jpeg"');
+    // The portrait is displayed at most 360 CSS px wide; ship a 2x WebP only.
+    expect(html).toContain('src="/images/optimized/profile-720.webp"');
+    expect(html).toContain('width="720"');
+    expect(html).toContain('height="964"');
     expect(html).toContain('alt="myoshi2891のモノクロの肖像画"');
-    expect(await sharp("public/images/profile.jpeg").metadata()).toMatchObject({ width: 1792, height: 2400 });
+    expect(await sharp("public/images/optimized/profile-720.webp").metadata()).toMatchObject({ format: "webp", width: 720, height: 964 });
+    expect(statSync("public/images/optimized/profile-720.webp").size).toBeLessThan(150_000);
+    expect(existsSync("public/images/profile.jpeg")).toBe(false);
     expect([...html.matchAll(/datetime="([^"]+)"/gi)].map(match => match[1])).toEqual([
       "2026-10", "2026-08", "2026-03", "2025-12", "2025-11", "2021-09", "2019-01", "2017-11",
     ]);
