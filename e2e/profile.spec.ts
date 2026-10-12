@@ -26,7 +26,7 @@ for (const mobile of [false, true]) {
       await expect(page).toHaveURL(/\/$/);
       await expect(page.getByRole("heading", { name: "学びを、仕組みにする。" })).toBeVisible();
       await page.goto("/profile/");
-      await expect(page.getByRole("heading", { name: "資格", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "保有資格・スコア", exact: true })).toBeVisible();
     });
   }
 }
