@@ -36,7 +36,7 @@ bun run preview
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
-| `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成 |
+| `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成。原本PNGがなくなった公開用WebPは削除 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
 | `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
 | `bun scripts/generate-og.ts` | 文字主体のOG画像を再生成 |
