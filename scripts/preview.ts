@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, extname, sep } from "node:path";
+import { headersFor, type HeaderRule } from "../lib/response-headers";
 
 const root = resolve("out");
 const types: Record<string, string> = {
@@ -9,7 +10,10 @@ const types: Record<string, string> = {
   ".woff2": "font/woff2", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml", ".ico": "image/x-icon",
 };
 await stat(resolve(root, "index.html"));
+// Serve the deployed security headers so E2E catches CSP regressions before Vercel does.
+const { headers: rules } = JSON.parse(await readFile("vercel.json", "utf8")) as { headers: HeaderRule[] };
 createServer(async (request, response) => {
+  for (const [key, value] of Object.entries(headersFor(new URL(request.url ?? "/", "http://localhost").pathname, rules))) response.setHeader(key, value);
   if (request.method !== "GET" && request.method !== "HEAD") {
     response.writeHead(405, { Allow: "GET, HEAD" }).end(); return;
   }

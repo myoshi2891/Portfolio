@@ -17,7 +17,7 @@ describe("Vercel deployment configuration", () => {
     for (const path of ["/", "/profile/", "/projects/medical-studies/", "/_next/static/chunks/app.js", "/missing-page/"]) {
       const headers = headersFor(path, config.headers);
       expect(headers["Strict-Transport-Security"], path).toMatch(/^max-age=(\d+)/);
-      expect(Number(/max-age=(\d+)/.exec(headers["Strict-Transport-Security"])![1])).toBeGreaterThanOrEqual(31_536_000);
+      expect(Number(/max-age=(\d+)/.exec(headers["Strict-Transport-Security"] ?? "")![1])).toBeGreaterThanOrEqual(31_536_000);
       expect(headers).toMatchObject({
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
@@ -30,7 +30,7 @@ describe("Vercel deployment configuration", () => {
   });
 
   it("limits the content security policy to same-origin resources", () => {
-    const csp = directives(headersFor("/", config.headers)["Content-Security-Policy"]);
+    const csp = directives(headersFor("/", config.headers)["Content-Security-Policy"] ?? "");
     expect(csp.get("default-src")).toEqual(["'self'"]);
     expect(csp.get("object-src")).toEqual(["'none'"]);
     expect(csp.get("base-uri")).toEqual(["'self'"]);
