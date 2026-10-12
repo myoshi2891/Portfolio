@@ -18,11 +18,14 @@ test("pages run under the deployed security headers without CSP violations", asy
     await page.evaluate(() => document.fonts.ready);
     await expect.poll(() => page.evaluate(() => Boolean(history.state?.portfolioNavigation)), path).toBe(true);
     expect(await page.evaluate(() => window.__cspViolations), path).toEqual([]);
+    // WebKit reports prefetches aborted by the next document navigation as page errors.
+    await page.waitForLoadState("networkidle");
   }
   // The inline theme script must still apply a saved choice before first paint.
   await page.evaluate(() => localStorage.setItem("portfolio-theme", "dark"));
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.waitForLoadState("networkidle");
   // Client navigation fetches RSC payloads and must stay within connect-src.
   await page.goto("/");
   await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().click();
