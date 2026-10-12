@@ -55,6 +55,9 @@ test("anchor history restores closed state, scroll and focus independently of th
 
 test("detail round trip and reload restore additional studies and a return focus", async ({ page }) => {
   await page.goto("/"); await ready(page);
+  // html uses smooth scrolling, so focus() would still be animating when the
+  // departure position is read. Restoration, not motion, is under test here.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("#more-studies-toggle").click();
   await page.locator("#github-r10").focus();
   // Read the actual departure position in the same task as activation. Lazy
