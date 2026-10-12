@@ -36,7 +36,7 @@ bun run preview
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
-| `bun run images:generate` | Homeの提供PNGから表示幅別のWebPを再生成 |
+| `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
 | `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
 | `bun scripts/generate-og.ts` | 文字主体のOG画像を再生成 |
@@ -94,7 +94,8 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
-- `public/images/`: 原本PNG、Home用WebP、詳細用Mermaid SVG。Home画像は`data/screens.ts`、ギャラリーは対応するスライド配列を更新。生成物も管理。
+- `assets/screens/`: 表示する提供画像の原本PNG（公開しない）。`assets/unused-screens/`は提供済みで未掲載の原本。
+- `public/images/`: 公開用WebP（`images:generate`の生成物）、Home用の表示幅別WebP、詳細用Mermaid SVG。PNG・JPEGは置きません。Home画像は`data/screens.ts`（原本PNG名）、ギャラリーは対応するスライド配列（WebP名）を更新。生成物も管理。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定（`site-config.ts`）、配信ヘッダーの照合（`response-headers.ts`）。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。

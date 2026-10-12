@@ -39,7 +39,7 @@ Homeの代表画像は`data/screens.ts`にfile・alt・titleを登録し、`Scre
 bun run images:generate
 ```
 
-生成先は`public/images/optimized`、指定幅640／1280／1854、原本を拡大しない設定です。pictureのsrcsetで選び、PNGをfallbackにします。今回のR01は`multi-vendor-e-commerce/storefront-home-hero.png`、WebPは`r01-640.webp`・`r01-1280.webp`・`r01-1854.webp`です。
+生成先は`public/images/optimized`、指定幅640／1280／1854、原本を拡大しない設定です。pictureのsrcsetで選び、原本と同じパスの全幅WebPをfallbackにします。原本PNGは`assets/screens/`に置き、公開しません。今回のR01は`multi-vendor-e-commerce/storefront-home-hero.png`、WebPは`r01-640.webp`・`r01-1280.webp`・`r01-1854.webp`です。
 
 詳細ギャラリーは各`components/projects/*-slideshow.tsx`の配列に画像・タイトル・altを登録します。Home用の対応表への登録だけではギャラリーに追加されません。保存先・枚数・Multi Vendor10枚の旧名と新名は[現行仕様の画像一覧](current-specification.md#実画面とギャラリー)を参照してください。
 

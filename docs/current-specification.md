@@ -73,7 +73,7 @@ Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジト
 
 4詳細は共通`ProjectSlideshow`を使用し、概要の後・目次と本文の前に配置します。
 
-| 詳細 | 枚数 | PNGディレクトリ（`public/images/`） | ギャラリーコンポーネント |
+| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | ギャラリーコンポーネント |
 |---|---|---|---|
 | Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-slideshow.tsx` |
 | LLM | 9 | `llm-studies` | `llm-studies-slideshow.tsx` |
