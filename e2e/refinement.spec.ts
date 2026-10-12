@@ -31,7 +31,7 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   const gallery = page.locator('.project-slideshow');
   const track = gallery.locator('.slideshow-track');
   const initialTransform = await track.evaluate(element => getComputedStyle(element).transform);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.webp$/);
   const viewportBox = await gallery.locator('.slideshow-viewport').boundingBox();
   const activeBox = await gallery.locator('.slideshow-slide').nth(1).boundingBox();
   const previousBox = await gallery.locator('.slideshow-slide').nth(0).boundingBox();
@@ -43,28 +43,28 @@ test("LLM Studies gallery slides horizontally and provides an autoplay control",
   await expect(toggle).toBeVisible();
   await toggle.focus();
   await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.webp$/);
   await toggle.press('Enter');
   await page.keyboard.press('Tab');
   await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.webp$/);
   await gallery.getByRole('button', { name: 'スライドショーを再生' }).click();
   await page.mouse.move(0, 0);
   await page.keyboard.press('Tab');
   await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.webp$/);
   await expect.poll(() => track.evaluate(element => getComputedStyle(element).transform)).not.toBe(initialTransform);
   // 実行中の emulateMedia 切替は Firefox で change イベントが安定しないため、リロードで初期判定を検証する
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
   await expect(gallery.getByRole('button', { name: 'スライドショーを一時停止' })).toBeVisible();
   await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /cost-calculator-overview\.webp$/);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.reload();
   await expect(gallery.getByRole('button', { name: 'スライドショーを一時停止' })).toBeVisible();
   await page.clock.fastForward(5100);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.webp$/);
 });
 
 test("LLM Studies gallery autoplay keeps the active slide centered when transitionend never fires", async ({ page }) => {
@@ -75,7 +75,7 @@ test("LLM Studies gallery autoplay keeps the active slide centered when transiti
   const gallery = page.locator('.project-slideshow');
   await page.mouse.move(0, 0);
   for (let tick = 0; tick < 10; tick += 1) await page.clock.fastForward(5000);
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.webp$/);
   const viewportBox = await gallery.locator('.slideshow-viewport').boundingBox();
   const activeBox = await gallery.locator('.slideshow-slide.is-active').boundingBox();
   expect(Math.abs(activeBox!.x + activeBox!.width / 2 - (viewportBox!.x + viewportBox!.width / 2))).toBeLessThan(2);
@@ -87,11 +87,11 @@ test("LLM Studies gallery slides are reachable with previous and next buttons un
   const gallery = page.locator('.project-slideshow');
   const activeImage = gallery.locator('.slideshow-slide.is-active img');
   await gallery.getByRole('button', { name: '前のスライド' }).press('Enter');
-  await expect(activeImage).toHaveAttribute('src', /whats-new-guides\.png$/);
+  await expect(activeImage).toHaveAttribute('src', /whats-new-guides\.webp$/);
   await expect(gallery.locator('figcaption')).toContainText('9 / 9');
   await gallery.getByRole('button', { name: '次のスライド' }).press('Enter');
   await gallery.getByRole('button', { name: '次のスライド' }).press('Enter');
-  await expect(activeImage).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.png$/);
+  await expect(activeImage).toHaveAttribute('src', /claude-code-spec-driven-development-guide\.webp$/);
   await expect(gallery.locator('figcaption')).toContainText('2 / 9');
 });
 
@@ -154,9 +154,9 @@ test('Medical Studies gallery and case study remain usable across display modes'
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/projects/medical-studies/');
   const gallery = page.getByRole('figure', { name: 'Medical Studiesの画面ギャラリー' });
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.webp$/);
   await gallery.getByRole('button', { name: '次のスライド' }).click();
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-headache-diary\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-headache-diary\.webp$/);
   expect(await page.locator('html').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
@@ -177,7 +177,7 @@ test('Medical Studies keeps its core content and first image without JavaScript'
   const page = await context.newPage();
   await page.goto('/projects/medical-studies/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('頭痛医療教育・記録プラットフォーム');
-  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.png$/);
+  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /prom-checker-dashboard\.webp$/);
   await expect(page.getByRole('heading', { name: '学ぶ・理解する・記録するを、1つのWebアプリへ' })).toBeVisible();
   await context.close();
 });
@@ -191,12 +191,12 @@ test('Multi-Vendor E-Commerce gallery shows all supplied screens and keeps its c
   const files = ['storefront-home-hero', 'storefront-fortune-section', 'storefront-happiness-section', 'storefront-newsletter-footer', 'product-collection', 'account-wishlist', 'product-comparison', 'frequently-asked-questions', 'order-tracking', 'returns-and-exchange'];
   for (const [index, file] of files.entries()) {
     const image = gallery.locator('.slideshow-slide.is-active img');
-    await expect(image).toHaveAttribute('src', `/images/multi-vendor-e-commerce/${file}.png`);
+    await expect(image).toHaveAttribute('src', `/images/multi-vendor-e-commerce/${file}.webp`);
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
     await expect(gallery.locator('figcaption')).toContainText(`${index + 1} / 10`);
     await gallery.getByRole('button', { name: '次のスライド' }).click();
   }
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /storefront-home-hero\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect(page.locator('main a[href*="github.com/myoshi2891/Multi-Vendor-E-Commerce"]')).toHaveCount(0);
   for (const image of await page.locator('.commerce-mermaid img').all()) {
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
@@ -224,7 +224,7 @@ test('Multi-Vendor E-Commerce keeps its case study in no-JavaScript HTML', async
   await expect(page.getByRole('heading', { name: '顧客・販売者・管理者を、1つの市場でつなぐ' })).toBeVisible();
   await expect(page.locator('main > .project-slideshow')).toHaveCount(1);
   const firstImage = page.locator('.slideshow-slide.is-active img');
-  await expect(firstImage).toHaveAttribute('src', /storefront-home-hero\.png$/);
+  await expect(firstImage).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect.poll(() => firstImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   await expect(page.locator('.commerce-mermaid img')).toHaveCount(3);
   for (const image of await page.locator('.commerce-mermaid img').all()) {
@@ -237,9 +237,9 @@ test('The Wild Oasis gallery and case study remain usable across display modes',
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/projects/the-wild-oasis-for-admin/');
   const gallery = page.getByRole('figure', { name: 'The Wild Oasis管理画面ギャラリー' });
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.webp$/);
   await gallery.getByRole('button', { name: '次のスライド' }).click();
-  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /bookings-management\.png$/);
+  await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /bookings-management\.webp$/);
   const intro = await page.locator('#features > .section-intro').first().boundingBox();
   const section = await page.locator('#features').boundingBox();
   expect(Math.abs(intro!.width - section!.width)).toBeLessThan(2);
@@ -260,7 +260,7 @@ test('The Wild Oasis keeps core content and the first image without JavaScript',
   const page = await context.newPage();
   await page.goto('/projects/the-wild-oasis-for-admin/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('宿泊施設の管理アプリ');
-  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.png$/);
+  await expect(page.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /dashboard-overview\.webp$/);
   await expect(page.getByRole('heading', { name: 'ホテルの日次業務を、1つの管理画面へ' })).toBeVisible();
   await context.close();
 });
