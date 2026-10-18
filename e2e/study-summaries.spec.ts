@@ -3,6 +3,8 @@ import { expect, test } from "@playwright/test";
 for (const width of [320, 390, 768, 1280, 1440]) {
   test(`study summaries stay readable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
+    // smooth scroll と入場アニメーション中は summary が動き、クリックが外れるため静止状態で検証する
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
     const studies = page.locator("#studies");
     await expect(studies.locator(".study-card")).toHaveCount(6);
