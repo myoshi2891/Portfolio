@@ -9,22 +9,22 @@ test("a saved color choice overrides the OS and persists across all screens and 
   await page.goto("/");
   // Firefox は COOP による初回遷移で colorScheme のエミュレーションを失うため、遷移後に指定する
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-  await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
+  await page.getByRole("button", { name: "表示をライトに切り替える" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(await page.evaluate(() => localStorage.getItem("portfolio-theme"))).toBe("light");
   for (const path of paths) {
     await page.goto(path);
-    await expect(page.getByRole("button", { name: "ダークモードに切り替える" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "表示をダークに切り替える" })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     expect(await page.locator("html").evaluate(element => getComputedStyle(element).colorScheme)).toBe("light");
     expect(await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor)).toBe("rgb(247, 248, 250)");
     // WebKit reports prefetches aborted by the next document navigation as page errors.
     await page.waitForLoadState("networkidle");
   }
-  await page.getByRole("button", { name: "ダークモードに切り替える" }).press("Enter");
+  await page.getByRole("button", { name: "表示をダークに切り替える" }).press("Enter");
   await page.emulateMedia({ colorScheme: "light" });
   await page.reload();
-  await expect(page.getByRole("button", { name: "ライトモードに切り替える" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "表示をライトに切り替える" })).toBeVisible();
   expect(await page.locator("body").evaluate(element => getComputedStyle(element).backgroundColor)).toBe("rgb(13, 20, 32)");
   expect(errors).toEqual([]);
 });
@@ -33,13 +33,13 @@ test("a choice survives client navigation and browser back", async ({ page }) =>
   await page.goto("/");
   // Firefox は COOP による初回遷移で colorScheme のエミュレーションを失うため、遷移後に指定する
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-  await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
+  await page.getByRole("button", { name: "表示をライトに切り替える" }).click();
   await page.locator('a[href="/projects/comparison-of-llms/"]').first().click();
   await expect(page).toHaveURL(/\/projects\/comparison-of-llms\/?$/);
-  await expect(page.getByRole("button", { name: "ダークモードに切り替える" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "表示をダークに切り替える" })).toBeVisible();
   await page.goBack();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.getByRole("button", { name: "ダークモードに切り替える" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "表示をダークに切り替える" })).toBeVisible();
 });
 
 test("unselected mode follows the OS and the toggle remains usable when storage is denied", async ({ page }) => {
@@ -49,10 +49,10 @@ test("unselected mode follows the OS and the toggle remains usable when storage 
   });
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "ダークモードに切り替える" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "表示をダークに切り替える" })).toBeVisible();
   await page.emulateMedia({ colorScheme: "dark" });
-  await expect(page.getByRole("button", { name: "ライトモードに切り替える" })).toBeVisible();
-  await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
+  await expect(page.getByRole("button", { name: "表示をライトに切り替える" })).toBeVisible();
+  await page.getByRole("button", { name: "表示をライトに切り替える" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
 
@@ -62,9 +62,9 @@ test("the theme control synchronizes an explicit choice between tabs", async ({ 
   const other = await context.newPage();
   await other.goto("/projects/medical-studies/");
   await expect(other.locator(".theme-toggle")).toHaveJSProperty("tagName", "BUTTON");
-  await page.getByRole("button", { name: "ダークモードに切り替える" }).click();
+  await page.getByRole("button", { name: "表示をダークに切り替える" }).click();
   await expect(other.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(other.getByRole("button", { name: "ライトモードに切り替える" })).toBeVisible();
+  await expect(other.getByRole("button", { name: "表示をライトに切り替える" })).toBeVisible();
 });
 
 test("the toggle fits narrow and enlarged headers and is accessible in both modes", async ({ page }) => {
@@ -84,8 +84,8 @@ test("the toggle fits narrow and enlarged headers and is accessible in both mode
     }
   }
   await page.evaluate(() => { document.documentElement.style.fontSize = "100%"; });
-  await page.getByRole("button", { name: "ライトモードに切り替える" }).click();
+  await page.getByRole("button", { name: "表示をライトに切り替える" }).click();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-  await page.getByRole("button", { name: "ダークモードに切り替える" }).click();
+  await page.getByRole("button", { name: "表示をダークに切り替える" }).click();
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
