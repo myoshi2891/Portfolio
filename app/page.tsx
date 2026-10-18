@@ -28,7 +28,7 @@ export default function Home() {
         </div>
         <div className="hero-showcase"><HeroScene /><SiteLink className="text-link hero-project-link" href="/#domains">制作と学習の全体を見る <span aria-hidden="true">→</span></SiteLink></div>
       </div>
-      <div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><SiteLink href="#selected-work" aria-label="代表的な制作へ">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></SiteLink></div>
+      <div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><SiteLink href="#selected-work" aria-label="SCROLL TO EXPLORE：代表的な制作へ">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></SiteLink></div>
     </section>
     <section id="selected-work" className="section" aria-label="代表的な制作"><SectionHeader number="01" english="Selected Work" title="代表的な制作" intro="用途と実装の異なる4つの制作を、コードと構成から紹介します。" /><div>{featuredProjects.map(p => <ProjectCard key={p.id} project={p} />)}</div></section>
     <section id="domains" className="section" aria-label="制作と学習の領域"><SectionHeader number="02" english="Engineering Domains" title="制作と学習の領域" intro="アプリを作ること、領域を学ぶこと、設計と品質を考えること。" /><div className="domain-grid">{domains.map(d => <article className="domain-card" key={d.title}><p className="domain-label">{d.title}</p><p className="domain-english">{d.english}</p><h3>{d.subtitle}</h3><p>{d.description}</p><ul>{d.links.map(l => <li key={l.anchor}><SiteLink className="text-link" href={"href" in l ? l.href : `/#${l.anchor}`}>{l.label} <span aria-hidden="true">↗</span></SiteLink></li>)}</ul></article>)}</div></section>
