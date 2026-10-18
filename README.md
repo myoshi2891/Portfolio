@@ -114,7 +114,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→型・Lint・単体→build→静的出力E2Eを実行します。最新のローカル結果と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)に集約しています。GitHub Actions上の実行結果はまだありません。
+[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→静的出力E2Eを実行します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。最新のローカル結果と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)に集約しています。GitHub Actions上の実行結果はまだありません。
 
 検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・Lighthouse・実ユーザー性能は未測定です。
 
