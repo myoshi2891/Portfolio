@@ -4,39 +4,30 @@ Use this reference for rich `/projects/<slug>/` case studies in this portfolio.
 
 ## Content model
 
-Prefer the source document's information architecture. A common six-part sequence is:
+Follow the source document's information architecture. The shared sequence is:
 
-1. Overview
-2. Main features
-3. Architecture
-4. Structure and constraints
-5. Quality and unverified boundaries
-6. Reference code
+1. Overview (`overview`)
+2. Main features (`features`)
+3. Architecture (`architecture`)
+4. Structure and constraints (`decisions`)
+5. Quality and open issues (`quality`)
+6. Basis of the description (`documentation`)
 
-The sequence is a starting point, not a reason to invent empty sections. The page contents navigation must match the rendered section IDs.
+A project may add a section only when its material requires one (Multi Vendor adds `orders`). Do not invent empty sections. The contents navigation must match the rendered section IDs, and Home links into a detail page may only target IDs that the page actually renders (`lib/validate-home-content.ts`).
 
-The overview should include the editorial title, concise lead, technologies, primary actions, and a visible page update date. Keep the source document's own update date in the reference area when it differs from the page update date.
+The overview should include the editorial title, concise lead, technologies, the public-site action when a demo URL exists, and a visible page update date. Keep the source document's own update date in the “説明の基準” section when it differs from the page update date.
 
-## Repository references
+## No repository links
 
-Each section may show up to three curated links. For every link, provide:
-
-- A short role label, such as “calculation logic” or “validation boundary”.
-- The repository-relative path, with line numbers when a fixed audit supplies them.
-- “Why selected”: why this file is representative for the section.
-- “What can be verified”: the exact behavior, data flow, constraint, or decision visible in the linked code.
-
-Enforce the three-link ceiling in the renderer as well as the data. Avoid dumping every evidence URL at the bottom of a section. In the final reference section, select the three files that best represent the project rather than repeating a complete audit inventory.
+Featured detail pages show no GitHub links. Code changes would make line references drift away from the explanation, so each page stays a self-contained description based on its documents. State the document names and the point in time they describe in the “説明の基準” section. GitHub links on Home are out of scope of this rule.
 
 ## Technical storytelling
 
-- Use compact cards for two or more project roles or deliverables.
-- Use a table for exact function contracts or technology-to-responsibility mappings.
-- Use a flow for pipelines with three or more dependent stages.
-- Explain fallback and source-of-truth decisions visually when they affect several consumers.
+- Use GFM tables for exact function contracts or technology-to-responsibility mappings.
+- Use Mermaid flowcharts or sequence diagrams for pipelines with three or more dependent stages, state transitions, and request flows. Each detail page currently has three diagrams.
+- Write a one-sentence description for every diagram in `data/project-documentation.ts`; it becomes the alt text and caption.
+- Generated SVGs are named `diagram-<hash>.svg` from the trimmed Mermaid source. Regenerate them after any Mermaid change, or rendering fails because the referenced file does not exist.
 - Keep implementation limits visible: data freshness, external service behavior, CI omissions, or tests known to be stale.
-
-Diagrams should be semantic HTML/CSS when small. Reuse an existing shared diagram component when the repository already defines one; do not recreate its layout rules locally.
 
 ## Screenshot galleries
 
@@ -44,7 +35,7 @@ Inspect images visually before naming them. Use names that identify the page or 
 
 For a supplied multi-image gallery in this portfolio:
 
-- Store images under `public/images/<slug>/`.
+- Keep source PNGs under `assets/screens/<gallery-directory>/` and publish generated WebPs under `public/images/<gallery-directory>/`. Use the directory named in `docs/current-specification.md`; it may differ from the slug.
 - Keep the central slide large while showing the edges of the previous and next slides on wide and narrow screens.
 - Move the whole track horizontally with a transform transition; avoid cross-fading when the requested interaction is spatial sliding.
 - If automatic rotation is requested, cycle at a calm interval and loop without a long reverse jump. Pause while hovered, while focus is within the gallery, while the document is hidden, and when reduced motion is preferred.
@@ -68,7 +59,8 @@ Keep intentional limits for long-form reading only when they improve readability
 Add tests for meaningful invariants, not exact decorative wording:
 
 - Server HTML includes the project-specific layout and first gallery image.
-- Curated references never exceed three per section.
+- Detail pages contain no GitHub links.
+- Section IDs, contents navigation, and diagram counts stay aligned with the Markdown.
 - Auto-rotating galleries expose a pause/stop control; a gallery without controls does not rotate automatically.
 - Automatic gallery movement changes the active slide and track transform.
 - Previous and next slide edges intersect the gallery viewport.
