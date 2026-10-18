@@ -13,7 +13,7 @@ export function SecondaryProjectCard({ project }: { project: Extract<Project, { 
       <ScreenPreview id={project.id} sizes="(min-width: 960px) 560px, calc(100vw - 4rem)" />
     </div>
     <div className="secondary-copy">
-      <p className="eyebrow"><span className="secondary-index">{String(project.order).padStart(2, "0")}</span>Related project</p>
+      <p className="eyebrow" lang="en"><span className="secondary-index">{String(project.order).padStart(2, "0")}</span>Related project</p>
       <h3 id={homeAnchor(project)} tabIndex={-1}>{project.title}</h3>
       <p className="secondary-lead">{project.description.text}</p>
       {summary && <div className="secondary-summary"><MarkdownDocumentContent document={summary} /></div>}

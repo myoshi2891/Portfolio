@@ -36,7 +36,7 @@ export function HeroScene() {
   }, [paused]);
 
   return <div className="hero-scene" ref={ref}>
-    <div className="hero-scene-header"><p className="eyebrow">Portfolio architecture</p><span aria-hidden="true">01 — 04</span></div>
+    <div className="hero-scene-header"><p className="eyebrow" lang="en">Portfolio architecture</p><span aria-hidden="true">01 — 04</span></div>
     <div className="hero-scene-stage" role="img" aria-label="学びを起点に、制作・設計・改善へ循環するポートフォリオ">
       <div className="hero-scene-aura" />
       <div className="hero-scene-world" aria-hidden="true">
@@ -49,6 +49,6 @@ export function HeroScene() {
         {facets.map(facet => <div className={`hero-scene-node node-${facet.key}`} key={facet.key}><span>{facet.index}</span><strong>{facet.label}</strong><small>{facet.detail}</small></div>)}
       </div>
     </div>
-    <div className="hero-scene-caption"><span>Learn. Build. Keep improving.</span><button type="button" className="scene-toggle" aria-label={paused ? "立体図のアニメーションを再生" : "立体図のアニメーションを一時停止"} aria-pressed={paused} onClick={() => setPaused(value => !value)}><span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>{paused ? "再生" : "一時停止"}</button></div>
+    <div className="hero-scene-caption"><span lang="en">Learn. Build. Keep improving.</span><button type="button" className="scene-toggle" aria-label={paused ? "立体図のアニメーションを再生" : "立体図のアニメーションを一時停止"} aria-pressed={paused} onClick={() => setPaused(value => !value)}><span aria-hidden="true">{paused ? "▷" : "Ⅱ"}</span>{paused ? "再生" : "一時停止"}</button></div>
   </div>;
 }

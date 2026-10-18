@@ -8,5 +8,5 @@ export function ActionLink({ href, children, primary = false, label, id }: { hre
   return <SiteLink id={id} href={href} className={`action ${primary ? "action-primary" : "action-secondary"}`} aria-label={label}>{children}<Arrow external={href.startsWith("https://")} /></SiteLink>;
 }
 export function SectionHeader({ number, title, english, intro }: { number: string; title: string; english: string; intro?: string }) {
-  return <div className="section-header"><p className="eyebrow"><span>{number}</span> {english}</p><h2>{title}</h2>{intro && <p className="section-intro">{intro}</p>}</div>;
+  return <div className="section-header"><p className="eyebrow" lang="en"><span>{number}</span> {english}</p><h2>{title}</h2>{intro && <p className="section-intro">{intro}</p>}</div>;
 }

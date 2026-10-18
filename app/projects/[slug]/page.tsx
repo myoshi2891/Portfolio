@@ -40,7 +40,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   return <main id="main" tabIndex={-1} className={`container detail-page${isLlmStudies ? " llm-detail-page" : ""}${isMedicalStudies ? " medical-detail-page" : ""}${isMultiVendor ? " multi-vendor-detail-page" : ""}${isWildOasis ? " wild-oasis-detail-page" : ""}${!isMultiVendor ? " documented-detail-page" : ""}`}>
     <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
-      <p className="eyebrow">Selected Work / {String(project.order).padStart(2, "0")}</p>
+      <p className="eyebrow" lang="en">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
       <p className="detail-updated">画面の最終更新日：<time dateTime="2026-10-02">2026年10月2日</time></p>
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
@@ -53,6 +53,6 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
         {isLlmStudies ? <LlmStudiesDetail /> : isMedicalStudies ? <MedicalStudiesDetail /> : isMultiVendor ? <MultiVendorDetail /> : <WildOasisDetail />}
       </div>
     </div>
-    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink></nav>
+    <nav className="detail-next" aria-label="次の制作"><p className="eyebrow" lang="en">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink></nav>
   </main>;
 }

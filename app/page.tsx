@@ -20,25 +20,25 @@ export default function Home() {
     <section className="hero" aria-labelledby="top">
       <div className="hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow hero-eyebrow">Engineering Portfolio <span className="edition">/ 2026</span></p>
+          <p className="eyebrow hero-eyebrow" lang="en">Engineering Portfolio <span className="edition">/ 2026</span></p>
           <h1 id="top" tabIndex={-1} aria-label={site.hero}>学びを、<br /><span>仕組みにする。</span></h1>
           <p className="hero-lead">{site.description}</p>
           <div className="hero-actions"><ActionLink primary href="/#selected-work">制作を見る</ActionLink><ActionLink href={site.githubUrl}>GitHubを見る</ActionLink></div>
-          <div className="hero-index"><SiteLink href="/#selected-work"><strong>04</strong><span>Featured projects</span><span aria-hidden="true">↗</span></SiteLink><SiteLink href="/#studies"><strong>06</strong><span>Learning collections</span><span aria-hidden="true">↗</span></SiteLink></div>
+          <div className="hero-index"><SiteLink href="/#selected-work"><strong>04</strong><span lang="en">Featured projects</span><span aria-hidden="true">↗</span></SiteLink><SiteLink href="/#studies"><strong>06</strong><span lang="en">Learning collections</span><span aria-hidden="true">↗</span></SiteLink></div>
         </div>
         <div className="hero-showcase"><HeroScene /><SiteLink className="text-link hero-project-link" href="/#domains">制作と学習の全体を見る <span aria-hidden="true">→</span></SiteLink></div>
       </div>
-      <div className="hero-foot"><p>Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><SiteLink href="#selected-work" aria-label="SCROLL TO EXPLORE：代表的な制作へ">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></SiteLink></div>
+      <div className="hero-foot"><p lang="en">Learn <span>→</span> Build <span>→</span> Engineer <span>→</span> Improve</p><SiteLink href="#selected-work"><span lang="en">SCROLL TO EXPLORE</span><span className="visually-hidden">：代表的な制作へ</span> <span aria-hidden="true">↓</span></SiteLink></div>
     </section>
     <section id="selected-work" className="section" aria-label="代表的な制作"><SectionHeader number="01" english="Selected Work" title="代表的な制作" intro="用途と実装の異なる4つの制作を、コードと構成から紹介します。" /><div>{featuredProjects.map(p => <ProjectCard key={p.id} project={p} />)}</div></section>
-    <section id="domains" className="section" aria-label="制作と学習の領域"><SectionHeader number="02" english="Engineering Domains" title="制作と学習の領域" intro="アプリを作ること、領域を学ぶこと、設計と品質を考えること。" /><div className="domain-grid">{domains.map(d => <article className="domain-card" key={d.title}><p className="domain-label">{d.title}</p><p className="domain-english">{d.english}</p><h3>{d.subtitle}</h3><p>{d.description}</p><ul>{d.links.map(l => <li key={l.anchor}><SiteLink className="text-link" href={"href" in l ? l.href : `/#${l.anchor}`}>{l.label} <span aria-hidden="true">↗</span></SiteLink></li>)}</ul></article>)}</div></section>
+    <section id="domains" className="section" aria-label="制作と学習の領域"><SectionHeader number="02" english="Engineering Domains" title="制作と学習の領域" intro="アプリを作ること、領域を学ぶこと、設計と品質を考えること。" /><div className="domain-grid">{domains.map(d => <article className="domain-card" key={d.title}><p className="domain-label" lang="en">{d.title}</p><p className="domain-english" lang="en">{d.english}</p><h3>{d.subtitle}</h3><p>{d.description}</p><ul>{d.links.map(l => <li key={l.anchor}><SiteLink className="text-link" href={"href" in l ? l.href : `/#${l.anchor}`}>{l.label} <span aria-hidden="true">↗</span></SiteLink></li>)}</ul></article>)}</div></section>
     <section id="studies" className="section" aria-label="学習と技術資料"><SectionHeader number="03" english="Selected Studies" title="学習と技術資料" intro="設計・品質・セキュリティを中心に、6つの学習テーマと資料をまとめています。" /><div className="study-grid">{studies.map(s => <StudyCard key={s.id} study={s} />)}</div></section>
     <section id="more-work" className="section" aria-label="その他の制作"><SectionHeader number="04" english="More Work" title="その他の制作" intro="宿泊先を探す、予約を管理する、買い物をする。利用者の操作に沿って作った3つのWebアプリです。" /><div className="secondary-grid">{secondaryProjects.map(p => <ProjectCard key={p.id} project={p} />)}</div></section>
-    <section id="about" className="section about" aria-label="プロフィール"><p className="eyebrow">About / {site.name}</p><h2>コードと学習の、<br />両側から。</h2><div><p>Webアプリケーションの制作と、設計・品質・セキュリティの学習資料を公開しています。</p><p>このサイトでは、操作からデータ処理までの流れと、実装上の選択を紹介します。気になる機能から、対応するコードまでたどれます。</p><SiteLink className="text-link" href="/profile/">プロフィールと保有資格を見る <span aria-hidden="true">→</span></SiteLink><br /><SiteLink className="text-link" href={site.githubUrl}>GitHubで活動を見る <span aria-hidden="true">↗</span></SiteLink></div></section>
-    <section id="philosophy" className="section philosophy" aria-label="学び、作り、見直す"><SectionHeader number="05" english="Engineering Philosophy" title="学び、作り、見直す" /><div className="philosophy-grid">{site.philosophy.map((p, i) => <article key={p.title}><p className="eyebrow">{String(i + 1).padStart(2, "0")}</p><h3>{p.title}<span aria-hidden="true">{i < 3 ? " →" : " ↗"}</span></h3><p>{p.text}</p><SiteLink className="text-link" href={p.href}>{p.label} <span aria-hidden="true">↗</span></SiteLink></article>)}</div></section>
+    <section id="about" className="section about" aria-label="プロフィール"><p className="eyebrow" lang="en">About / {site.name}</p><h2>コードと学習の、<br />両側から。</h2><div><p>Webアプリケーションの制作と、設計・品質・セキュリティの学習資料を公開しています。</p><p>このサイトでは、操作からデータ処理までの流れと、実装上の選択を紹介します。気になる機能から、対応するコードまでたどれます。</p><SiteLink className="text-link" href="/profile/">プロフィールと保有資格を見る <span aria-hidden="true">→</span></SiteLink><br /><SiteLink className="text-link" href={site.githubUrl}>GitHubで活動を見る <span aria-hidden="true">↗</span></SiteLink></div></section>
+    <section id="philosophy" className="section philosophy" aria-label="学び、作り、見直す"><SectionHeader number="05" english="Engineering Philosophy" title="学び、作り、見直す" /><div className="philosophy-grid">{site.philosophy.map((p, i) => <article key={p.title}><p className="eyebrow">{String(i + 1).padStart(2, "0")}</p><h3 lang="en">{p.title}<span aria-hidden="true">{i < 3 ? " →" : " ↗"}</span></h3><p>{p.text}</p><SiteLink className="text-link" href={p.href}>{p.label} <span aria-hidden="true">↗</span></SiteLink></article>)}</div></section>
     <section id="contact" className="contact section" aria-labelledby="contact-title">
       <div className="contact-copy">
-        <p className="eyebrow contact-eyebrow"><span aria-hidden="true" />Explore the source</p>
+        <p className="eyebrow contact-eyebrow" lang="en"><span aria-hidden="true" />Explore the source</p>
         <h2 id="contact-title">GitHubで<br /><span>制作と学習を見る</span></h2>
         <p className="contact-description">アプリの実装から、設計・品質・セキュリティの学習まで。<br />各リポジトリで、コードと資料を公開しています。</p>
         <div className="contact-topics" aria-label="公開している内容"><span>Webアプリ</span><span>設計・品質</span><span>学習資料</span></div>
@@ -46,7 +46,7 @@ export default function Home() {
       </div>
       <div className="contact-identity">
         <Image className="contact-logo" src="/images/optimized/myoshi-logo-720.webp" alt="myoshi2891のロゴ" width={720} height={720} sizes="(min-width: 768px) 360px, 280px" unoptimized />
-        <p className="contact-handle">@{site.name}<span>Learn. Build. Keep improving.</span></p>
+        <p className="contact-handle">@{site.name}<span lang="en">Learn. Build. Keep improving.</span></p>
       </div>
     </section>
   </main>;

@@ -12,7 +12,7 @@ export function ProjectCard({ project }: { project: Project }) {
   return <article className="project-row" data-repository={project.id} aria-labelledby={id}>
     <div className="project-visual"><ScreenPreview id={project.id} sizes="(min-width: 1340px) 620px, (min-width: 960px) 50vw, calc(100vw - 4rem)" /></div>
     <div className="project-copy">
-      <p className="eyebrow project-kicker"><span className="project-number">{String(project.order).padStart(2, "0")}</span>Featured project</p>
+      <p className="eyebrow project-kicker" lang="en"><span className="project-number">{String(project.order).padStart(2, "0")}</span>Featured project</p>
       <h3 id={id} tabIndex={-1}><SiteLink href={projectPath(project.slug)}>{project.title}</SiteLink></h3><p>{project.description.text}</p>
       <ul className="badges" aria-label="実装技術">{project.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul>
       <div className="project-highlight"><p className="eyebrow">構成の見どころ</p><p>{project.highlights[0]?.text}</p></div>

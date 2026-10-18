@@ -16,7 +16,7 @@ export function StudyCard({ study }: { study: Study }) {
         <ScreenPreview id={study.id} sizes="(min-width: 1340px) 560px, (min-width: 960px) 44vw, calc(100vw - 4rem)" />
       </div>
       <div className="study-copy">
-        <p className="eyebrow"><span className="study-index">{String(study.order).padStart(2, "0")}</span>Learning collection</p>
+        <p className="eyebrow" lang="en"><span className="study-index">{String(study.order).padStart(2, "0")}</span>Learning collection</p>
         <h3 id={homeAnchor(study)} tabIndex={-1}>{study.title}</h3>
         <p className="study-lead">{study.description.text}</p>
       </div>
