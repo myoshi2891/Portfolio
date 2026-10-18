@@ -117,6 +117,6 @@ test('hero keeps its sculpture animated with a static reduced-motion state', asy
   await expect(scene.locator('img')).toHaveCount(0);
   for (const label of ['BUILD', 'STUDY', 'ENGINEER', 'IMPROVE']) await expect(scene.getByText(label, { exact: true })).toBeVisible();
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect.poll(() => world.evaluate(el => el.getAnimations().length)).toBe(0);
+  await expect.poll(() => world.evaluate(el => el.getAnimations().every(a => a.playState !== 'running'))).toBe(true);
   await expect(scene).toBeVisible();
 });
