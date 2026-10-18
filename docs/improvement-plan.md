@@ -150,7 +150,7 @@
 #### B3. Vercel の配信設定を確認する（キャッシュ・末尾スラッシュ）〔P2 / S〕
 
 - **現状**: `vercel.json` にはセキュリティヘッダーしかありません。`/fonts/*` と `/images/*` のファイル名にはハッシュがなく、ギャラリー画像には `?v=` も付いていません。preview は `/x` と `/x/` の両方に200を返します。
-- **改善案**: 本番 URL で `curl -I` を実行し、実際のヘッダーとリダイレクトを確認します。必要なら、`/fonts/(.*)` に `Cache-Control: public, max-age=31536000, immutable` を、`/images/(.*)` に長めの max-age を追加します（画像を差し替えるときに revision を更新する手順も決めます）。末尾スラッシュなしの URL も200を返して重複する場合は、`vercel.json` に `trailingSlash: true` を設定することを検討します。期待値は `__tests__/vercel-config.test.ts` に追加します。
+- **改善案**: 本番 URL で `curl -I` を実行し、実際のヘッダーとリダイレクトを確認します。必要なら、`/fonts/(.*)` にキャッシュ指定を追加します。`immutable` を付けた1年の max-age（`Cache-Control: public, max-age=31536000, immutable`）は、フォントの URL にバージョン（ファイル名のハッシュや `?v=`）を付け、内容が変わると URL も変わるようにしてから採用します。URL が変わらずハッシュもない現状のままなら、`Cache-Control: public, max-age=0, must-revalidate` のように毎回再検証する短い指定にします。また、`/images/(.*)` に長めの max-age を追加します（画像を差し替えるときに revision を更新する手順も決めます）。末尾スラッシュなしの URL も200を返して重複する場合は、`vercel.json` に `trailingSlash: true` を設定することを検討します。期待値は `__tests__/vercel-config.test.ts` に追加します。
 
 #### B4. 性能のベースラインを測り、予算を決める〔P2 / M・要判断〕
 
