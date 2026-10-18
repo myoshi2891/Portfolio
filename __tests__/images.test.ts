@@ -12,8 +12,7 @@ function files(directory: string): string[] {
 }
 
 describe("published images", () => {
-  // The supplied brand original is retained; displayed images use WebP derivatives.
-  const published = files("public/images").filter(path => path !== join("public/images", "myoshi.jpeg"));
+  const published = files("public/images");
 
   it("ships only compressed WebP captures and SVG diagrams", () => {
     expect(published.filter(path => !/\.(webp|svg)$/.test(path))).toEqual([]);
@@ -27,6 +26,10 @@ describe("published images", () => {
       expect(path).toMatch(/\.png$/);
       expect(published, path).toContain(captureOutput(path));
     }
+  });
+
+  it("keeps the brand original outside the deployed directory as a generation source", () => {
+    expect(existsSync("assets/brand/myoshi.jpeg")).toBe(true);
   });
 
   it("leaves no capture WebP without a source PNG", () => {
