@@ -45,6 +45,9 @@ jobs:
         run: bun run test
       - name: Build static site
         run: bun run build
+      # The build regenerates tracked files such as app/fonts.css; any drift means a missed regeneration commit.
+      - name: Check generated files are committed
+        run: git diff --exit-code && test -z "$(git status --porcelain)"
       - name: Install browsers
         run: bunx playwright install --with-deps chromium firefox webkit
       - name: Test static output
