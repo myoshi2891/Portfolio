@@ -1,24 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-for (const width of [320, 375, 768, 1280, 1920]) {
+for (const width of [320, 390, 768, 1280, 1440]) {
   test(`study summaries stay readable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await page.locator("#more-studies-toggle").click();
     const studies = page.locator("#studies");
     await expect(studies.locator(".study-card")).toHaveCount(6);
     await expect(studies.locator(".study-summary")).toHaveCount(6);
+    await expect(studies.locator("details[open]")).toHaveCount(0);
+    for (const heading of await studies.getByRole('heading', { level: 3 }).all()) await expect(heading).toBeVisible();
     await expect(studies.locator(".disclosure")).toHaveCount(0);
     await expect(page.getByText("資料サイトの実装", { exact: true })).toHaveCount(0);
     const management = studies.locator('[data-repository="R09"]');
     await management.scrollIntoViewIfNeeded();
     await expect(management).toContainText("資格・書籍学習ガイド");
+    await management.locator('summary').click();
     await expect(management.getByRole("table")).toBeVisible();
     for (const label of ["ガイドカタログ", "サイト内検索", "学習ガイド"]) {
       await expect(management.getByRole("cell", { name: label, exact: true })).toBeVisible();
     }
     for (const grid of await studies.locator(".study-grid").all()) {
-      expect(await grid.evaluate(element => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(1);
+      expect(await grid.evaluate(element => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(width >= 960 ? 2 : 1);
     }
     for (const card of await studies.locator(".study-card").all()) {
       await card.scrollIntoViewIfNeeded();
@@ -26,8 +28,8 @@ for (const width of [320, 375, 768, 1280, 1920]) {
       const visual = await card.locator(".study-visual").boundingBox();
       expect(copy).not.toBeNull();
       expect(visual).not.toBeNull();
-      if (width >= 960) expect(visual!.x).toBeGreaterThanOrEqual(copy!.x + copy!.width);
-      else expect(visual!.y).toBeGreaterThanOrEqual(copy!.y + copy!.height);
+      expect(copy!.y).toBeGreaterThanOrEqual(visual!.y + visual!.height);
+      if (!(await card.locator('details').getAttribute('open') === '')) await card.locator('summary').click();
       for (const name of ["学習内容", "資料の探し方", "活用方法"]) {
         await expect(card.getByRole("heading", { level: 4, name })).toBeVisible();
       }
@@ -37,18 +39,22 @@ for (const width of [320, 375, 768, 1280, 1920]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(await management.getByRole("table").evaluate(element => element.scrollWidth <= element.parentElement!.clientWidth)).toBe(true);
     await studies.locator(".study-card").first().screenshot({ path: test.info().outputPath(`study-${width}.png`) });
+    await page.locator('html').evaluate(el => { el.style.fontSize = '200%'; });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
 
 test("all six summaries are included in static HTML", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, baseURL: "http://127.0.0.1:4173" });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL: test.info().project.use.baseURL ?? "http://127.0.0.1:4173" });
   const page = await context.newPage();
   try {
     await page.goto("/");
-    await page.locator("#more-studies-toggle").click();
     const summaries = page.locator("#studies .study-summary");
     await expect(summaries).toHaveCount(6);
-    for (const summary of await summaries.all()) {
+    for (const card of await page.locator('.study-card').all()) {
+      await expect(card.getByRole('heading', { level: 3 })).toBeVisible();
+      await card.locator('summary').click();
+      const summary = card.locator('.study-summary');
       await expect(summary.getByRole("table")).toBeVisible();
       await expect(summary.getByRole("heading", { name: "活用方法" })).toBeVisible();
     }

@@ -107,17 +107,16 @@ test('home anchor starts one uninterrupted smooth move and reduced motion is imm
   expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollBehavior)).toBe('auto');
 });
 
-test('hero visualizes the portfolio as an automatic 3D system with a static reduced-motion state', async ({ page }) => {
+test('hero keeps its sculpture animated with a static reduced-motion state', async ({ page }) => {
   await page.goto('/');
   const scene = page.locator('.hero-scene');
-  const world = scene.locator('.hero-scene-world');
+  const world = scene.locator('.hero-scene-core');
   await expect(world).toBeVisible();
   await expect.poll(() => world.evaluate(el => el.getAnimations().some(a => a.playState === 'running'))).toBe(true);
-  expect(await world.evaluate(el => getComputedStyle(el).transform)).toMatch(/^matrix3d/);
-  await expect(scene.getByRole('button')).toHaveCount(0);
+  await expect(scene.getByRole('button', { name: '立体図のアニメーションを一時停止' })).toBeVisible();
   await expect(scene.locator('img')).toHaveCount(0);
   for (const label of ['BUILD', 'STUDY', 'ENGINEER', 'IMPROVE']) await expect(scene.getByText(label, { exact: true })).toBeVisible();
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  expect(await world.evaluate(el => el.getAnimations().length)).toBe(0);
+  await expect.poll(() => world.evaluate(el => el.getAnimations().length)).toBe(0);
   await expect(scene).toBeVisible();
 });

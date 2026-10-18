@@ -27,13 +27,13 @@ test("unknown project 404 hydrates cleanly and hides the header GitHub link", as
 test("all content is accessible without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4173/");
-  await page.getByText("すべての学習を見る（残り3件）", { exact: true }).click();
+  await page.goto(`${test.info().project.use.baseURL ?? "http://127.0.0.1:4173"}/`);
+  await page.locator("#study-details-r10-toggle").click();
   await expect(page.locator("#study-r10")).toBeVisible();
   await expect(page.locator("[data-repository]")).toHaveCount(13);
   await page.locator('a[href="/projects/multi-vendor-e-commerce/"]').first().click();
   await expect(page.locator("#documentation")).toBeVisible();
-  await page.goto("http://127.0.0.1:4173/projects/comparison-of-llms/");
+  await page.goto(`${test.info().project.use.baseURL ?? "http://127.0.0.1:4173"}/projects/comparison-of-llms/`);
   // Firefox は読み込み直後にトラックの transform トランジションが走るため、収束を待って判定する
   await expect.poll(async () => {
     const galleryViewport = await page.locator('.slideshow-viewport').boundingBox();
@@ -50,13 +50,13 @@ test("keyboard skip link and disclosure retain a visible focus", async ({ page, 
   await expect(page.getByRole("link", { name: "本文へ移動" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator("main")).toBeFocused();
-  const summary = page.locator("#more-studies > summary");
+  const summary = page.locator("#study-details-r10 > summary");
   await summary.focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator("#more-studies")).toHaveAttribute("open", "");
+  await expect(page.locator("#study-details-r10")).toHaveAttribute("open", "");
   await expect(summary).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.locator("#more-studies")).not.toHaveAttribute("open", "");
+  await expect(page.locator("#study-details-r10")).not.toHaveAttribute("open", "");
 });
 
 for (const width of [320, 768, 1200, 1440]) {

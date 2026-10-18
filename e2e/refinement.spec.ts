@@ -7,12 +7,12 @@ test("pending anchor layout never takes focus back from the next control", async
   await page.evaluate(async () => {
     document.querySelector<HTMLAnchorElement>('.skip-link')!.click();
     await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
-    document.querySelector<HTMLElement>('#more-studies > summary')!.focus();
+    document.querySelector<HTMLElement>('#study-details-r10 > summary')!.focus();
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
   });
-  await expect(page.locator('#more-studies > summary')).toBeFocused();
+  await expect(page.locator('#study-details-r10 > summary')).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.locator('#more-studies')).toHaveAttribute('open', '');
+  await expect(page.locator('#study-details-r10')).toHaveAttribute('open', '');
 });
 
 test("detail contents follow scrolling and anchor selection", async ({ page }) => {
@@ -143,7 +143,7 @@ test('screen previews decode and use responsive local images', async ({ page }) 
   await image.scrollIntoViewIfNeeded();
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   expect(await image.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\/images\/optimized\/r06-\d+\.webp$/);
-  await page.locator('#more-studies-toggle').click();
+  await page.locator('#study-details-r10-toggle').click();
   for (const preview of await page.locator('.screen-preview img').all()) {
     await preview.scrollIntoViewIfNeeded();
     await expect.poll(() => preview.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
