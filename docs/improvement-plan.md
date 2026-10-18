@@ -105,8 +105,8 @@
 
 - **現状**: `lib/validate-home-content.ts:13` は、旧データの節キーに `evidence`・`scope` を加えたものから有効なリンク先を作っています。一方、実際の詳細ページの節は `overview / features / (orders) / architecture / decisions / quality / documentation` です。
 - **問題**: すでに存在しない `#evidence`・`#scope` へのリンクを通し、実在する `#orders`・`#documentation` へのリンクを不正と判定します。実行時には `e2e/integrity.spec.ts` が検出しますが、build 時の検査そのものが誤っています。
-- **改善案**: `documentedDetailSections` と `multiVendorDetailSections`（A1 の後はレジストリ）から有効なアンカーを作ります。
-- **完了条件**: 「`#documentation` を許可し、`#evidence` を拒否する」失敗テストを先に追加する。
+- **改善案**: slug ごとに、その slug で選ばれるレンダラーが描画する節だけから有効なアンカーを作ります（現状は Multi Vendor が `multiVendorDetailSections`、他の3件が `documentedDetailSections`。A1 の後はレジストリの `sections`）。両方の節定義を合わせた全体共通の許可リストにはしません。合わせてしまうと、`#orders` を持たない詳細への `#orders` リンクも通ってしまいます。
+- **完了条件**: 次の失敗テストを先に追加する。「`#documentation` を許可し、`#evidence` を拒否する」。「`#orders` を、レンダラーにその節がある slug（`multi-vendor-e-commerce`）では許可し、ない slug（`medical-studies` など）では拒否する」。
 
 #### A5. ギャラリー定義のデータ化と画像パスの正規化〔P3 / S〜M〕
 
