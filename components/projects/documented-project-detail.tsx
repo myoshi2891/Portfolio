@@ -1,9 +1,13 @@
-import { projectDocumentation, type DocumentedProjectSlug } from "../../data/project-documentation";
+import { projectDocumentation } from "../../data/project-documentation";
+import type { ProjectDocumentation } from "../../types/portfolio";
 import { loadMarkdownDocument } from "../../lib/markdown-document";
 import { MarkdownDocumentContent } from "../content/markdown-document";
 
-export function DocumentedProjectDetail({ slug }: { slug: DocumentedProjectSlug }) {
-  const document = projectDocumentation[slug];
+const documents: Readonly<Record<string, ProjectDocumentation>> = projectDocumentation;
+
+export function DocumentedProjectDetail({ slug }: { slug: string }) {
+  const document = documents[slug];
+  if (!document) throw new Error(`Unregistered project documentation: ${slug}`);
   const { content } = loadMarkdownDocument(document);
   const sections = content.split(/(?=^## )/m).filter(section => section.trim());
   if (sections.length !== document.sections.length - 1) {

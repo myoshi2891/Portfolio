@@ -8,7 +8,8 @@ import { homeAnchor, projectPath } from "../../../lib/routes";
 import { ActionLink } from "../../../components/ui/primitives";
 import { pageMetadata } from "../../../lib/metadata";
 import { site } from "../../../data/site";
-import { detailViews } from "../../../components/projects/detail-views";
+import { detailGalleries } from "../../../components/projects/detail-galleries";
+import { DocumentedProjectDetail } from "../../../components/projects/documented-project-detail";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -24,11 +25,10 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const { slug } = await params;
   const project = getFeatured(slug);
   const documentation = portfolio.documentation[slug];
-  const views = detailViews[slug];
-  if (!project || !documentation || !views) notFound();
+  const Gallery = detailGalleries[slug];
+  if (!project || !documentation || !Gallery) notFound();
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   const demoUrl = demoUrls[project.id];
-  const { Gallery, Body } = views;
   return <main id="main" tabIndex={-1} className={`container detail-page ${documentation.pageClassName}`}>
     <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
@@ -42,7 +42,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
     <div className="detail-grid">
       <DetailContents sections={documentation.sections} />
       <div className="detail-body">
-        <Body />
+        <DocumentedProjectDetail slug={slug} />
       </div>
     </div>
     <nav className="detail-next" aria-label="次の制作"><p className="eyebrow" lang="en">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink></nav>

@@ -67,5 +67,3 @@ export const projectDocumentation = {
     ],
   },
 } as const satisfies Record<FeaturedSlug, ProjectDocumentation>;
-
-export type DocumentedProjectSlug = keyof typeof projectDocumentation;

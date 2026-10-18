@@ -131,10 +131,6 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
 .multi-vendor-detail-page h3 { margin-block: 2rem .75rem; }
 .multi-vendor-detail-page .section-intro + .section-intro { margin-top: 1rem; }
 .multi-vendor-detail-page .reading-table-wrap { margin-block: 1.5rem; }
-.commerce-mermaid { min-width: 0; margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--color-line); border-radius: 14px; background: var(--color-surface); }
-.commerce-diagram-scroll { max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: 8px; background: #fff; }
-.commerce-diagram-scroll img { display: block; max-width: none; height: auto; margin-inline: auto; }
-.commerce-mermaid figcaption { margin-top: .75rem; color: var(--color-muted); font-size: 1rem; }
 .documented-detail-page h3 { margin-block: 2rem .75rem; }
 .documented-detail-page .section-intro + .section-intro { margin-top: 1rem; }
 .documented-detail-page .section-intro { overflow-wrap: anywhere; }
@@ -236,6 +232,6 @@ body { background-image: none; }
 .reading-table thead th { background: var(--color-surface-subtle); color: var(--color-ink); }
 .reading-table tbody tr:nth-child(even) { background: light-dark(#f7f8fa, transparent); }
 .reading-table tbody td:first-child { color: var(--color-ink); font-weight: 500; }
-.commerce-mermaid, .detail-mermaid { background: var(--color-surface); }
+.detail-mermaid { background: var(--color-surface); }
 
 .brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
