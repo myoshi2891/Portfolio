@@ -14,14 +14,12 @@ function sources(directory: string): string[] {
 }
 
 describe("next/image delivery", () => {
-  it("disables optimization once in the config so static export cannot miss it", () => {
+  // The config is the static-export safety net; per-image props stay because unit renders do not load next.config.
+  it("disables optimization in the config and avoids the deprecated priority prop", () => {
     expect(config.images?.unoptimized).toBe(true);
     for (const path of [...sources("app"), ...sources("components")]) {
       const images = readFileSync(path, "utf8").match(/<Image\b[^>]*>/g) ?? [];
-      for (const image of images) {
-        expect(image, path).not.toMatch(/\bunoptimized\b/);
-        expect(image, path).not.toMatch(/\bpriority=/);
-      }
+      for (const image of images) expect(image, path).not.toMatch(/\bpriority=/);
     }
   });
 
