@@ -37,4 +37,4 @@ Read [references/detail-page-pattern.md](references/detail-page-pattern.md) befo
 
 Run the repository's content validation, typecheck, lint, unit tests, and production build in proportion to the change. For layout or interaction changes, also run browser checks covering the affected route, narrow and wide viewports, enlarged text, reduced motion, dark mode, and JavaScript-disabled initial content where applicable.
 
-When a sandbox-only Turbopack process or port restriction blocks the normal build, verify with the repository-supported webpack build and report the environment limitation accurately. Revert generated incidental changes such as `next-env.d.ts`; keep generated font/image artifacts only when the changed content requires them.
+When a sandbox-only Turbopack process or port restriction blocks the normal build, verify with the repository-supported webpack build and report the environment limitation accurately. Revert generated incidental changes; keep generated font/image artifacts only when the changed content requires them.
