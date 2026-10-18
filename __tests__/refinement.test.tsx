@@ -14,7 +14,7 @@ it('shows supplied study screenshots with descriptive alternatives in the initia
   expect(html).not.toContain('layer-stack');
 });
 
-it('expresses the portfolio itself as the hero 3D scene without image controls', () => {
+it('expresses the portfolio as a sculpture with a separate motion control', () => {
   const html = renderToStaticMarkup(<Home />);
   const hero = html.split('class="hero"')[1]?.split('</section>')[0] ?? '';
   expect(hero).toContain('aria-label="学びを起点に、制作・設計・改善へ循環するポートフォリオ"');
@@ -23,7 +23,7 @@ it('expresses the portfolio itself as the hero 3D scene without image controls',
   const contact = html.split('id="contact"')[1]!;
   expect(contact).toContain('class="contact-copy"');
   expect(contact).toContain('src="/images/optimized/myoshi-logo-720.webp"');
-  expect(hero).not.toContain('<button');
+  expect(hero).toContain('aria-label="立体図のアニメーションを一時停止"');
   expect(hero).not.toContain('LLM Studies');
 });
 it('adds breadcrumb context and a meaningful preview of the next project', async () => {
