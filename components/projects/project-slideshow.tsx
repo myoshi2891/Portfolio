@@ -112,7 +112,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
           const isActive = !isClone && originalIndex === active;
           return <div className={`slideshow-slide${isActive ? " is-active" : ""}`} key={`${item.file}-${index}`} aria-hidden={!isActive}>
             <Image src={`/images/${imageDirectory}/${item.file}`} alt={isActive ? item.alt : ""} fill sizes="(min-width: 1200px) 1040px, 84vw"
-              priority={index === 1} loading={index === 1 ? "eager" : "lazy"} unoptimized />
+              loading={index === 1 ? "eager" : "lazy"} fetchPriority={index === 1 ? "high" : "auto"} unoptimized />
           </div>;
         })}
       </div>
