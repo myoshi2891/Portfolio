@@ -6,10 +6,10 @@
 
 - Homeの全13リポジトリに代表プレビュー、4詳細に資料から編集した説明と実画面ギャラリー（10／9／11／4枚）を配置。
 - 詳細にはMarkdown表とMermaid SVG各3図。図中文字は1rem、縮小せず図の領域内を横スクロール。ASCII図解は使用しない。
-- 詳細のGitHubリンクは共通ヘッダーを含めすべて削除。HomeのGitHub・公開URL7件への導線は維持。
+- 詳細のGitHubリンクは共通ヘッダーを含めすべて削除。HomeのGitHub・公開URL9件への導線は維持。
 - 全画面のヘッダーでライト／ダークを切り替え。選択保存をOSより優先し、未選択ならOS追従。SPA・reload・タブ同期・保存拒否に対応。
-- 最終ライトは白・チャコール・シルバーを基調にブルー一点。Heroのブルーの立体パネルとシルバーの軌道、10秒周期の反射が特徴。途中の制作別多色パレットは廃止。
-- Heroは学習・制作・設計・改善をCSS 3Dで表現し、作品画像と操作ボタンを置かない。画面外・非表示タブで停止、reduced-motionとJS無効時は静止。
+- Homeは白・チャコール・シルバーを基調にブルー一点。専用CSSで余白と文字組みを揃え、作品の画像と説明を横並びに配置。学習6件は全件を掲載し、項目ごとのdetailsで文章・表を展開。
+- Heroの軌道は24秒、中央パネルは12秒周期で動き、停止／再生ボタンを備える。画面外・非表示タブで停止、モバイル・reduced-motion・JS無効時は静止。モバイルはラベルを2列へ整理する。
 - モバイルはネイティブdetailsメニュー、詳細はパンくずと現在節の目次。内部ページ遷移はSPA、画面内アンカーとページ移動後の指定アンカーはsmooth、履歴復元・hashなしのページ切替・共有hash初回はinstant。動きを減らす設定ではアンカーもinstant。
 - 肩書き・経歴・担当範囲・連絡先は未提供のため補わない。作品画像を架空のUIで代用しない。
 
@@ -47,12 +47,14 @@ bun run images:generate
 
 ## 公開URL
 
-`data/presentation.ts`で7件を管理します。以下は2026-09-17に提供・読み取り確認したURLで、公開版と固定SHAの一致、認証・購入・外部書き込みは検証していません。
+`data/presentation.ts`で9件を管理します。2026-09-17に提供・読み取り確認した7件に、2026-10-18に提供されたR08・R09を追加しています。追加2件の公開内容、公開版と固定SHAの一致、認証・購入・外部書き込みは検証していません。
 
 | ID | 対象 | 公開サイト |
 |---|---|---|
 | R06 | Comparison-of-LLMs | https://comparison-of-llms.netlify.app/ |
 | R07 | Quality-Assurance-Studies | https://quality-assurance-studies.netlify.app/ |
+| R08 | Software-Design-and-Architecture | https://software-design-and-architecture.netlify.app/ |
+| R09 | Management-Team-Building-Studies | https://management-team-building-studies.netlify.app/ |
 | R10 | Cloud-Infrastructure-and-Network-Studies | https://cloud-infrastructure-studies.netlify.app/ |
 | R11 | Security_Studies | https://security-studies.netlify.app/ |
 | R13 | Algorithm-DataStructures-Math-SQL | https://algorithm-datastructures-math-studies.netlify.app/ |

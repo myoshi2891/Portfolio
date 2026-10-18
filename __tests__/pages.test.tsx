@@ -10,7 +10,8 @@ describe("server-rendered pages", () => {
     expect(html).toContain("学びを、仕組みにする。");
     for (const id of ["selected-work", "domains", "studies", "more-work", "philosophy", "contact", "study-r10"]) expect(html).toContain(`id="${id}"`);
     expect(html.match(/data-repository=/g)).toHaveLength(13);
-    expect(html).toContain("すべての学習を見る（残り3件）");
+    expect(html.match(/<details class="study-details"/g)).toHaveLength(6);
+    expect(html).not.toContain("すべての学習を見る（残り3件）");
     expect(html).not.toContain("実装の補足");
     for (const id of ["r04", "r03", "r05"]) {
       expect(html).toContain(`id="work-${id}"`);

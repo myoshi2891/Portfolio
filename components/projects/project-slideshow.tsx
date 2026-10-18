@@ -112,7 +112,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
           const isActive = !isClone && originalIndex === active;
           return <div className={`slideshow-slide${isActive ? " is-active" : ""}`} key={`${item.file}-${index}`} aria-hidden={!isActive}>
             <Image src={`/images/${imageDirectory}/${item.file}`} alt={isActive ? item.alt : ""} fill sizes="(min-width: 1200px) 1040px, 84vw"
-              priority={index === 1} loading={index === 1 ? "eager" : "lazy"} unoptimized />
+              loading={index === 1 ? "eager" : "lazy"} fetchPriority={index === 1 ? "high" : "auto"} unoptimized />
           </div>;
         })}
       </div>
@@ -120,8 +120,8 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
     <div className="slideshow-meta">
       <figcaption><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
       {isInteractive && <>
-      <button className="slideshow-toggle" type="button" aria-label="前のスライド" onClick={() => step(-1)}>前へ</button>
-      <button className="slideshow-toggle" type="button" aria-label="次のスライド" onClick={() => step(1)}>次へ</button>
+      <button className="slideshow-toggle" type="button" aria-label="前へ（前のスライド）" onClick={() => step(-1)}>前へ</button>
+      <button className="slideshow-toggle" type="button" aria-label="次へ（次のスライド）" onClick={() => step(1)}>次へ</button>
       <button className="slideshow-toggle" type="button" aria-label={isPaused ? "スライドショーを再生" : "スライドショーを一時停止"} aria-pressed={isPaused}
         onClick={() => { manualPausedRef.current = !manualPausedRef.current; setIsPaused(manualPausedRef.current); syncPaused(); }}>
         {isPaused ? "再生" : "一時停止"}

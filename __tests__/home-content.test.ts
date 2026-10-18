@@ -16,6 +16,19 @@ describe("Home editorial references", () => {
     expect(errors).toContain("study-r99");
     for (const { href } of home.philosophy) expect(errors).toContain(href);
   });
+  it("accepts only detail anchors rendered by each slug's renderer", () => {
+    const philosophy = [
+      { href: "/projects/comparison-of-llms/#documentation" },
+      { href: "/projects/comparison-of-llms/#evidence" },
+      { href: "/projects/multi-vendor-e-commerce/#orders" },
+      { href: "/projects/medical-studies/#orders" },
+    ];
+    const errors = validateHomeContent(portfolio, { ...site, philosophy }, domains);
+    expect(errors).toEqual([
+      "invalid philosophy link: /projects/comparison-of-llms/#evidence",
+      "invalid philosophy link: /projects/medical-studies/#orders",
+    ]);
+  });
   it("keeps every published repository source tied to its original audit row", () => {
     const audit = readFileSync("docs/phase-0-repository-evidence-audit.md", "utf8");
     for (const source of Object.values(portfolio.evidence)) {

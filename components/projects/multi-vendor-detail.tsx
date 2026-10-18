@@ -4,16 +4,7 @@ import { createHash } from "node:crypto";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { extractMermaidSources } from "../../lib/mermaid-sources";
-
-export const multiVendorDetailSections = [
-  { id: "overview", label: "概要" },
-  { id: "features", label: "主な機能" },
-  { id: "orders", label: "注文と決済" },
-  { id: "architecture", label: "アーキテクチャ" },
-  { id: "decisions", label: "構成と制約" },
-  { id: "quality", label: "品質と継続課題" },
-  { id: "documentation", label: "説明の基準" },
-] as const;
+import { multiVendorDetailSections } from "../../data/project-documentation";
 
 const content = readFileSync("data/multi-vendor-detail.md", "utf8");
 const sections = content.split(/(?=^## )/m).filter(section => section.trim());
@@ -26,6 +17,11 @@ const diagrams = extractMermaidSources(content);
 if (sections.length !== multiVendorDetailSections.length - 1 || diagrams.length !== diagramDescriptions.length) {
   throw new Error(`Documentation structure does not match its navigation or diagrams: multi-vendor-e-commerce (sections ${sections.length}/${multiVendorDetailSections.length - 1}, diagrams ${diagrams.length}/${diagramDescriptions.length})`);
 }
+// Pair each Markdown chapter with the navigation entry it renders under (the first entry is the page header).
+const sectionEntries = sections.flatMap((content, index) => {
+  const navigation = multiVendorDetailSections[index + 1];
+  return navigation ? [{ ...navigation, content }] : [];
+});
 
 // Source hashes prevent changed Markdown diagrams from displaying stale SVGs.
 function diagramPath(source: string) {
@@ -41,8 +37,8 @@ function diagramWidth(source: string) {
 }
 
 export function MultiVendorDetail() {
-  return <>{sections.map((section, index) => <section key={multiVendorDetailSections[index + 1]!.id} id={multiVendorDetailSections[index + 1]!.id}>
-    <p className="detail-section-lead"><span>{String(index + 1).padStart(2, "0")}</span>{multiVendorDetailSections[index + 1]!.label}</p>
+  return <>{sectionEntries.map(({ id, label, content }, index) => <section key={id} id={id}>
+    <p className="detail-section-lead"><span>{String(index + 1).padStart(2, "0")}</span>{label}</p>
     <Markdown remarkPlugins={[remarkGfm]} components={{
     a: ({ href, children, title }) => <SiteLink href={href ?? ""} title={title}>{children}</SiteLink>,
       p: ({ children }) => <p className="section-intro">{children}</p>,
@@ -62,6 +58,6 @@ export function MultiVendorDetail() {
           <figcaption>{description}</figcaption>
         </figure>;
       },
-    }}>{section}</Markdown>
+    }}>{content}</Markdown>
   </section>)}</>;
 }

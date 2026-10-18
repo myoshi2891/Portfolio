@@ -20,7 +20,8 @@ export function NavigationController() {
     if (document.readyState === "complete") finishArrival();
     else window.addEventListener("load", finishArrival, { once: true });
     const routePath = location.pathname;
-    const routeChanged = previousPath.current !== null;
+    // Development effect replay is still the same arrival, not a route change.
+    const routeChanged = previousPath.current !== null && previousPath.current !== pathname;
     previousPath.current = pathname;
     const disclosures = [...document.querySelectorAll<HTMLDetailsElement>("main details[id]")];
     // Reassign generated IDs on each route, including persistent header/footer links.

@@ -3,9 +3,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import Home from '../app/page';
 import Detail from '../app/projects/[slug]/page';
 
-it('links all five owner-provided public demos from Home', () => {
+it('links all seven owner-provided Netlify sites from Home', () => {
   const html = renderToStaticMarkup(<Home />);
-  for (const host of ['cloud-infrastructure-studies', 'quality-assurance-studies', 'comparison-of-llms', 'algorithm-datastructures-math-studies', 'security-studies']) {
+  for (const host of ['cloud-infrastructure-studies', 'quality-assurance-studies', 'comparison-of-llms', 'algorithm-datastructures-math-studies', 'security-studies', 'software-design-and-architecture', 'management-team-building-studies']) {
     expect(html.includes(`href="https://${host}.netlify.app/"`), host).toBe(true);
   }
   expect(html.includes('llm-studies/cost-calculator-overview.webp')).toBe(true);

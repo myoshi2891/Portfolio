@@ -40,6 +40,7 @@ describe("page metadata and discovery", () => {
     expect(meta.robots).toEqual({ index: false, follow: false });
     expect(meta.alternates).toBeUndefined();
     expect(meta.metadataBase).toBeUndefined();
+    expect(meta.twitter).toMatchObject({ card: "summary" });
     expect(sitemap()).toEqual([]);
     expect(robots()).toEqual({ rules: { userAgent: "*", disallow: "/" } });
   });
@@ -51,6 +52,7 @@ describe("page metadata and discovery", () => {
     expect(meta.description).toContain("料金");
     expect(meta.alternates).toEqual({ canonical: "https://example.com/projects/comparison-of-llms/" });
     expect(meta.openGraph).toMatchObject({ locale: "ja_JP", url: "https://example.com/projects/comparison-of-llms/", images: [{ url: "https://example.com/og/portfolio.png", width: 1200, height: 630 }] });
+    expect(meta.twitter).toMatchObject({ card: "summary_large_image", title: meta.title, description: meta.description, images: [{ url: "https://example.com/og/portfolio.png" }] });
     expect(meta.robots).toEqual({ index: true, follow: true });
   });
   it("lists Home, Profile and the four published details without invented dates", () => {

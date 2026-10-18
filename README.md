@@ -36,6 +36,7 @@ bun run preview
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
+| `bun run images:brand` | `assets/brand/myoshi.jpeg`から、ロゴWebP（`public/images/optimized/`）とfavicon・アイコン（`app/`）を再生成 |
 | `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成。原本PNGがなくなった公開用WebPは削除 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
 | `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
@@ -95,6 +96,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
 - `app/fonts.css`: `fonts:generate`で再生成する日本語フォントのCSS。
 - `assets/screens/`: 表示する提供画像の原本PNG（公開しない）。`assets/unused-screens/`は提供済みで未掲載の原本。
+- `assets/brand/`: ロゴ・faviconの原本JPEG（公開しない）。
 - `public/images/`: 公開用WebP（`images:generate`の生成物）、Home用の表示幅別WebP、詳細用Mermaid SVG。PNG・JPEGは置きません。Home画像は`data/screens.ts`（原本PNG名）、ギャラリーは対応するスライド配列（WebP名）を更新。生成物も管理。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定（`site-config.ts`）、配信ヘッダーの照合（`response-headers.ts`）。
 - `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
@@ -112,7 +114,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→型・Lint・単体→build→静的出力E2Eを実行します。最新のローカル結果と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)に集約しています。GitHub Actions上の実行結果はまだありません。
+[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→静的出力E2Eを実行します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。最新のローカル結果と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)に集約しています。GitHub Actions上の実行結果はまだありません。
 
 検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・Lighthouse・実ユーザー性能は未測定です。
 

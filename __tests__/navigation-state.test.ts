@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { parseNavigationState, readBackup, writeBackup, withNavigationState, STORAGE_KEY } from "../lib/navigation-state";
 
-const allowed = new Set(["more-studies", "study-r10", "more-studies-toggle"]);
-const state = { version: 1 as const, id: "entry-1", openIds: ["more-studies"], scrollY: 1200, focusId: "study-r10" };
+const allowed = new Set(["study-details-r10", "study-r10", "study-details-r10-toggle"]);
+const state = { version: 1 as const, id: "entry-1", openIds: ["study-details-r10"], scrollY: 1200, focusId: "study-r10" };
 const memory = () => {
   const values = new Map<string, string>();
   return { getItem: (k: string) => values.get(k) ?? null, setItem: (k: string, v: string) => { values.set(k, v); } };
@@ -11,7 +11,7 @@ const memory = () => {
 describe("navigation storage boundary", () => {
   it("accepts valid state and rejects corrupt versions, IDs, positions and focus", () => {
     expect(parseNavigationState(state, allowed)).toEqual(state);
-    for (const value of [null, "broken", {}, { ...state, version: 2 }, { ...state, id: "" }, { ...state, scrollY: -1 }, { ...state, scrollY: Infinity }, { ...state, openIds: ["unknown"] }, { ...state, openIds: ["more-studies", "more-studies"] }, { ...state, focusId: "unknown" }]) {
+    for (const value of [null, "broken", {}, { ...state, version: 2 }, { ...state, id: "" }, { ...state, scrollY: -1 }, { ...state, scrollY: Infinity }, { ...state, openIds: ["unknown"] }, { ...state, openIds: ["study-details-r10", "study-details-r10"] }, { ...state, focusId: "unknown" }]) {
       expect(parseNavigationState(value, allowed)).toBeNull();
     }
   });

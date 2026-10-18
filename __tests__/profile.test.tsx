@@ -9,7 +9,7 @@ afterEach(() => vi.unstubAllEnvs());
 describe("profile page", () => {
   it("renders the portrait, qualifications with skill descriptions, and all activity links", async () => {
     const html = renderToStaticMarkup(<Profile />);
-    // The portrait is displayed at most 360 CSS px wide; ship a 2x WebP only.
+    // Reuse the supplied high-resolution WebP for the 300 CSS px portrait.
     expect(html).toContain('src="/images/optimized/profile-720.webp"');
     expect(html).toContain('width="720"');
     expect(html).toContain('height="964"');
