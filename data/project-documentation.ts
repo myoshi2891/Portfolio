@@ -7,6 +7,16 @@ export const documentedDetailSections = [
   { id: "documentation", label: "説明の基準" },
 ] as const;
 
+export const multiVendorDetailSections = [
+  { id: "overview", label: "概要" },
+  { id: "features", label: "主な機能" },
+  { id: "orders", label: "注文と決済" },
+  { id: "architecture", label: "アーキテクチャ" },
+  { id: "decisions", label: "構成と制約" },
+  { id: "quality", label: "品質と継続課題" },
+  { id: "documentation", label: "説明の基準" },
+] as const;
+
 export const projectDocumentation = {
   "comparison-of-llms": {
     contentPath: "data/llm-studies-detail.md",
@@ -38,3 +48,9 @@ export const projectDocumentation = {
 } as const;
 
 export type DocumentedProjectSlug = keyof typeof projectDocumentation;
+
+// Sections rendered by each detail renderer; Home link validation uses the same source.
+export function detailSectionsFor(slug: string): readonly { id: string; label: string }[] | undefined {
+  if (slug === "multi-vendor-e-commerce") return multiVendorDetailSections;
+  return slug in projectDocumentation ? documentedDetailSections : undefined;
+}

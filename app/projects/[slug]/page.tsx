@@ -12,7 +12,8 @@ import { LlmStudiesDetail, llmDetailSections } from "../../../components/project
 import { LlmStudiesSlideshow } from "../../../components/projects/llm-studies-slideshow";
 import { MedicalStudiesDetail, medicalDetailSections } from "../../../components/projects/medical-studies-detail";
 import { MedicalStudiesSlideshow } from "../../../components/projects/medical-studies-slideshow";
-import { MultiVendorDetail, multiVendorDetailSections } from "../../../components/projects/multi-vendor-detail";
+import { MultiVendorDetail } from "../../../components/projects/multi-vendor-detail";
+import { multiVendorDetailSections } from "../../../data/project-documentation";
 import { MultiVendorSlideshow } from "../../../components/projects/multi-vendor-slideshow";
 import { WildOasisDetail, wildOasisDetailSections } from "../../../components/projects/wild-oasis-detail";
 import { WildOasisSlideshow } from "../../../components/projects/wild-oasis-slideshow";

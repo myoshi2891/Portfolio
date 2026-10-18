@@ -4,16 +4,7 @@ import { createHash } from "node:crypto";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { extractMermaidSources } from "../../lib/mermaid-sources";
-
-export const multiVendorDetailSections = [
-  { id: "overview", label: "概要" },
-  { id: "features", label: "主な機能" },
-  { id: "orders", label: "注文と決済" },
-  { id: "architecture", label: "アーキテクチャ" },
-  { id: "decisions", label: "構成と制約" },
-  { id: "quality", label: "品質と継続課題" },
-  { id: "documentation", label: "説明の基準" },
-] as const;
+import { multiVendorDetailSections } from "../../data/project-documentation";
 
 const content = readFileSync("data/multi-vendor-detail.md", "utf8");
 const sections = content.split(/(?=^## )/m).filter(section => section.trim());
