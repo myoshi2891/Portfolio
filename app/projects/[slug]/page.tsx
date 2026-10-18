@@ -8,15 +8,7 @@ import { homeAnchor, projectPath } from "../../../lib/routes";
 import { ActionLink } from "../../../components/ui/primitives";
 import { pageMetadata } from "../../../lib/metadata";
 import { site } from "../../../data/site";
-import { LlmStudiesDetail, llmDetailSections } from "../../../components/projects/llm-studies-detail";
-import { LlmStudiesSlideshow } from "../../../components/projects/llm-studies-slideshow";
-import { MedicalStudiesDetail, medicalDetailSections } from "../../../components/projects/medical-studies-detail";
-import { MedicalStudiesSlideshow } from "../../../components/projects/medical-studies-slideshow";
-import { MultiVendorDetail } from "../../../components/projects/multi-vendor-detail";
-import { multiVendorDetailSections } from "../../../data/project-documentation";
-import { MultiVendorSlideshow } from "../../../components/projects/multi-vendor-slideshow";
-import { WildOasisDetail, wildOasisDetailSections } from "../../../components/projects/wild-oasis-detail";
-import { WildOasisSlideshow } from "../../../components/projects/wild-oasis-slideshow";
+import { detailViews } from "../../../components/projects/detail-views";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -31,15 +23,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function Detail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = getFeatured(slug);
-  const detail = portfolio.details[slug];
-  if (!project || !detail) notFound();
+  const documentation = portfolio.documentation[slug];
+  const views = detailViews[slug];
+  if (!project || !documentation || !views) notFound();
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   const demoUrl = demoUrls[project.id];
-  const isLlmStudies = project.slug === "comparison-of-llms";
-  const isMedicalStudies = project.slug === "medical-studies";
-  const isMultiVendor = project.slug === "multi-vendor-e-commerce";
-  const isWildOasis = project.slug === "the-wild-oasis-for-admin";
-  return <main id="main" tabIndex={-1} className={`container detail-page${isLlmStudies ? " llm-detail-page" : ""}${isMedicalStudies ? " medical-detail-page" : ""}${isMultiVendor ? " multi-vendor-detail-page" : ""}${isWildOasis ? " wild-oasis-detail-page" : ""}${!isMultiVendor ? " documented-detail-page" : ""}`}>
+  const { Gallery, Body } = views;
+  return <main id="main" tabIndex={-1} className={`container detail-page ${documentation.pageClassName}`}>
     <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
       <p className="eyebrow" lang="en">Selected Work / {String(project.order).padStart(2, "0")}</p>
@@ -48,11 +38,11 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
       {demoUrl && <ActionLink primary href={demoUrl}>公開サイトを試す</ActionLink>}
     </header>
-    {isLlmStudies ? <LlmStudiesSlideshow /> : isMedicalStudies ? <MedicalStudiesSlideshow /> : isWildOasis ? <WildOasisSlideshow /> : isMultiVendor ? <MultiVendorSlideshow /> : null}
+    <Gallery />
     <div className="detail-grid">
-      <DetailContents sections={isLlmStudies ? [...llmDetailSections] : isMedicalStudies ? [...medicalDetailSections] : isMultiVendor ? [...multiVendorDetailSections] : [...wildOasisDetailSections]} />
+      <DetailContents sections={documentation.sections} />
       <div className="detail-body">
-        {isLlmStudies ? <LlmStudiesDetail /> : isMedicalStudies ? <MedicalStudiesDetail /> : isMultiVendor ? <MultiVendorDetail /> : <WildOasisDetail />}
+        <Body />
       </div>
     </div>
     <nav className="detail-next" aria-label="次の制作"><p className="eyebrow" lang="en">Next Work</p><ScreenPreview id={next.id} /><h2>{next.title}</h2><p>{next.description.text}</p><ul className="badges">{next.technologies.slice(0, 3).map(t => <li key={t.text}>{t.text}</li>)}</ul><ActionLink href={projectPath(next.slug)}>次の制作を見る</ActionLink></nav>

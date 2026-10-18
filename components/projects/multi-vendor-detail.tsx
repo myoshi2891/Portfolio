@@ -4,15 +4,11 @@ import { createHash } from "node:crypto";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { extractMermaidSources } from "../../lib/mermaid-sources";
-import { multiVendorDetailSections } from "../../data/project-documentation";
+import { projectDocumentation } from "../../data/project-documentation";
 
-const content = readFileSync("data/multi-vendor-detail.md", "utf8");
+const { contentPath, sections: multiVendorDetailSections, diagrams: diagramDescriptions } = projectDocumentation["multi-vendor-e-commerce"];
+const content = readFileSync(contentPath, "utf8");
 const sections = content.split(/(?=^## )/m).filter(section => section.trim());
-const diagramDescriptions = [
-  "一つの注文を店舗A・店舗Bの受注へ分け、バリアント別の明細と支払い情報を保持します。",
-  "顧客の注文作成後に決済を行い、署名検証したWebhookで支払いと注文の状態を更新します。",
-  "認証した画面からServer Actions、Prisma、PostgreSQLへ進み、決済通知はRoute Handlersで受信します。",
-];
 const diagrams = extractMermaidSources(content);
 if (sections.length !== multiVendorDetailSections.length - 1 || diagrams.length !== diagramDescriptions.length) {
   throw new Error(`Documentation structure does not match its navigation or diagrams: multi-vendor-e-commerce (sections ${sections.length}/${multiVendorDetailSections.length - 1}, diagrams ${diagrams.length}/${diagramDescriptions.length})`);

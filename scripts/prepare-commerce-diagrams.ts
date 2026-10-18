@@ -7,7 +7,6 @@ import { projectDocumentation } from "../data/project-documentation";
 import { extractMermaidSources } from "../lib/mermaid-sources";
 
 const documents = [
-  { slug: "multi-vendor-e-commerce", contentPath: "data/multi-vendor-detail.md", imageDirectory: "multi-vendor-e-commerce" },
   ...Object.entries(projectDocumentation).map(([slug, document]) => ({ slug, ...document })),
   ...Object.entries(projectSummaries).map(([slug, document]) => ({ slug, ...document })),
 ];
