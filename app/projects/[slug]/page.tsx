@@ -34,6 +34,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const detail = portfolio.details[slug];
   if (!project || !detail) notFound();
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
+  const demoUrl = demoUrls[project.id];
   const isLlmStudies = project.slug === "comparison-of-llms";
   const isMedicalStudies = project.slug === "medical-studies";
   const isMultiVendor = project.slug === "multi-vendor-e-commerce";
@@ -45,7 +46,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
       <p className="detail-updated">画面の最終更新日：<time dateTime="2026-10-02">2026年10月2日</time></p>
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
-      {demoUrls[project.id] && <ActionLink primary href={demoUrls[project.id]!}>公開サイトを試す</ActionLink>}
+      {demoUrl && <ActionLink primary href={demoUrl}>公開サイトを試す</ActionLink>}
     </header>
     {isLlmStudies ? <LlmStudiesSlideshow /> : isMedicalStudies ? <MedicalStudiesSlideshow /> : isWildOasis ? <WildOasisSlideshow /> : isMultiVendor ? <MultiVendorSlideshow /> : null}
     <div className="detail-grid">

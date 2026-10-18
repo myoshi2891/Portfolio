@@ -9,6 +9,7 @@ import { StudySummary } from "./study-summary";
 
 export function StudyCard({ study }: { study: Study }) {
   const summary = projectSummaries[study.id];
+  const demoUrl = demoUrls[study.id];
   const disclosureId = `study-details-${study.id.toLowerCase()}`;
   return <article className="study-card" data-repository={study.id} aria-labelledby={homeAnchor(study)}>
     <div className="study-hero">
@@ -22,7 +23,7 @@ export function StudyCard({ study }: { study: Study }) {
       </div>
     </div>
     <footer className="study-footer">
-      {demoUrls[study.id] && <ActionLink primary href={demoUrls[study.id]!} label={`${study.name} 公開サイトを見る`}>公開サイトを見る</ActionLink>}
+      {demoUrl && <ActionLink primary href={demoUrl} label={`${study.name} 公開サイトを見る`}>公開サイトを見る</ActionLink>}
       <SiteLink className="text-link" id={`github-${study.id.toLowerCase()}`} href={study.githubUrl} aria-label={`${study.name} GitHubで資料を見る`}>GitHubで資料を見る <span aria-hidden="true">↗</span></SiteLink>
     </footer>
     {summary && <details className="study-details" id={disclosureId}>

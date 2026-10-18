@@ -8,6 +8,7 @@ import { ScreenPreview } from "./screen-preview";
 
 export function SecondaryProjectCard({ project }: { project: Extract<Project, { type: "secondary" }> }) {
   const summary = projectSummaries[project.id];
+  const demoUrl = demoUrls[project.id];
   return <article className="secondary-row" data-repository={project.id} aria-labelledby={homeAnchor(project)}>
     <div className="secondary-visual">
       <ScreenPreview id={project.id} sizes="(min-width: 960px) 560px, calc(100vw - 4rem)" />
@@ -18,7 +19,7 @@ export function SecondaryProjectCard({ project }: { project: Extract<Project, { 
       <p className="secondary-lead">{project.description.text}</p>
       {summary && <div className="secondary-summary"><MarkdownDocumentContent document={summary} /></div>}
       <div className="secondary-actions">
-        {demoUrls[project.id] && <ActionLink primary href={demoUrls[project.id]!} label={`${project.name} 公開サイトを試す`}>公開サイトを試す</ActionLink>}
+        {demoUrl && <ActionLink primary href={demoUrl} label={`${project.name} 公開サイトを試す`}>公開サイトを試す</ActionLink>}
         <ActionLink id={`github-${project.id.toLowerCase()}`} href={project.githubUrl} label={`${project.name} GitHubでコードを見る`}>GitHubでコードを見る</ActionLink>
       </div>
       <p className="repo-name">{project.name}</p>
