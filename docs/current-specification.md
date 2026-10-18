@@ -103,7 +103,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 
 前後スライドの端が見える水平移動方式。先頭・末尾クローンでループし、5秒間隔で自動送りします。前へ・次へ・一時停止／再生の操作、タイトル・枚数表示・位置ドットを持ちます。hover・内部フォーカス・非表示タブでは自動送りを抑制し、reduced-motionでは自動送りと移動アニメーションを停止します。手動の前後移動は利用可能です。
 
-初期HTMLには先頭の実画像を含めます。操作ボタンはhydration後に表示し、JavaScript無効時は先頭画像と説明を表示します。全画像の手動閲覧はJavaScript有効時の機能です。現在画像だけに説明altを付け、他スライドとループクローンは読み上げ対象から外します。先頭画像は優先読み込み、他画像は遅延読み込み。ギャラリーは生成済みの公開WebPファイルを`next/image`の`unoptimized`で表示し、Homeの`picture`（WebP fallback）によるHome専用WebP配信とは配信方法を分けます。
+初期HTMLには先頭の実画像を含めます。操作ボタンはhydration後に表示し、JavaScript無効時は先頭画像と説明を表示します。全画像の手動閲覧はJavaScript有効時の機能です。現在画像だけに説明altを付け、他スライドとループクローンは読み上げ対象から外します。先頭画像は`loading="eager"`と`fetchPriority="high"`（Next.js 16で非推奨の`priority`は使わない）、他画像は遅延読み込み。ギャラリーは生成済みの公開WebPファイルを`next/image`の`unoptimized`で表示し、Homeの`picture`（WebP fallback）によるHome専用WebP配信とは配信方法を分けます。
 
 ## 全画面共通のテーマ
 
@@ -111,7 +111,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 |---|---|
 | 対象 | Home・全4詳細・404の共通ヘッダー |
 | 初期選択 | 有効な保存値があれば優先。未選択時はOSの`prefers-color-scheme`へ追従 |
-| 操作 | 切り替え先を「ライト」「ダーク」と表示。動的なaria-label、現在モードのtitle、太陽／月アイコンを付ける |
+| 操作 | 切り替え先を「ライト」「ダーク」と表示。aria-labelは「表示をダーク（ライト）に切り替える」とし、表示文字を独立した語として含める（axe 4.14の単語単位の判定に対応）。現在モードのtitle、太陽／月アイコンを付ける |
 | 保存 | localStorageの`portfolio-theme`に`light`または`dark`を保存 |
 | 適用 | `html[data-theme]`と`color-scheme`、CSS変数・`light-dark()`で全体へ反映 |
 | 初期描画 | layoutのhead内インラインスクリプトで保存値を先に適用。`useSyncExternalStore`のSSR時は幅を予約した非表示要素を描画 |

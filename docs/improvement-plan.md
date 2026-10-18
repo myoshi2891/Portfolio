@@ -360,6 +360,27 @@
 - **期限があるもの**: G3（Node.js 22 のサポートは 2027-04-30 に終了）は、遅くともフェーズ3と並行して進めます。
 - **進め方**: 各項目は Red（失敗テストのコミット）→ Green（実装のコミット）→ Refactor（整理と文書同期のコミット）で進めます。フェーズが終わるたびに README と現行仕様を同期します。
 
+### 進捗（2026-10-19）
+
+フェーズ1の11項目は対応済みです（C1・C2 は計画作成時点で対応済み）。全項目で型・Lint・単体（72件）・build・E2E（3ブラウザ232件）が通過しています。
+
+| ID | 結果 |
+| --- | --- |
+| A4 | 節定義を `data/project-documentation.ts` に集約し、slug ごとに描画される節だけを Home 導線の許可先にした |
+| G2 | スキルと参照文書を、Markdown 本文・Mermaid SVG・GitHub リンク非表示・実ディレクトリ規則に更新 |
+| G6 | `demoUrls` と Multi Vendor の節の `!` を除去。jsx-ast-utils のメッセージは0件 |
+| B5 | 原本を `assets/brand/` へ移動。生成物は変更前と同一 |
+| B6 | 先頭スライドを `loading="eager"`・`fetchPriority="high"` に変更。`images.unoptimized` を設定に追加。各 `Image` の `unoptimized` は、単体テストの描画が `next.config` を読まないため残す |
+| D2 | `twitter` の card・title・description・images を明示。画像がない preview は `summary` |
+| F2 | `.gitignore` へ追加し追跡を解除 |
+| E2 | Dependabot（bun・github-actions、週次）と CI の `bun audit` を追加。braces（GHSA-vfj7-8cjw-p6xm）は修正版がなく lint 時の開発依存のみのため個別に除外。依存側の修正版が出たら除外を外す |
+| G4 | 表の7系統を更新。mermaid 更新で katex の勧告が解消。`source-map-js` の override は、依存側の範囲が `^1.2.1` のため下限として維持。図の再生成は内部 ID の連番だけが変わったため採用せず |
+
+対応中に見つかった事項:
+
+- axe 4.14 で `label-content-name-mismatch` が既定で有効になった。NFKD 正規化と単語分割で照合するため、「ダークモード」が1語と見なされ、`aria-hidden` の「Ⅱ」も表示文字に数えられる。テーマ切替の aria-label と立体図の記号を変更し、単体テストに同じ照合を追加した。
+- React 19 は SSR 時に lazy でない `<img>` を自動で preload するため、詳細ページでは Mermaid の SVG 3枚も `<link rel="preload">` されている。B4 の計測対象に加える。
+
 ## 6. 要判断事項
 
 | ID | 判断すること | 推奨 |
