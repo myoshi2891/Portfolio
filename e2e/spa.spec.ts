@@ -99,9 +99,9 @@ test('home anchor starts one uninterrupted smooth move and reduced motion is imm
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => { window.__scrollIntoViewCalls.length = 0; });
-  await page.locator('a[href="/#work-r01"]').evaluate((el: HTMLAnchorElement) => el.click());
-  await expect(page.locator('#work-r01')).toBeFocused();
-  await expect(page.locator('#work-r01')).toBeInViewport();
+  await page.locator('.hero-index a[href="/#studies"]').evaluate((el: HTMLAnchorElement) => el.click());
+  await expect(page.locator('#studies-heading')).toBeFocused();
+  await expect(page.locator('#studies h2')).toBeInViewport();
   const reducedMotionCall = await page.evaluate(() => window.__scrollIntoViewCalls[0]);
   expect(reducedMotionCall).toMatchObject({ behavior: 'instant', block: 'start' });
   expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollBehavior)).toBe('auto');
