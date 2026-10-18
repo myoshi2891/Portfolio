@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import sharp from "sharp";
 
-const source = "public/images/myoshi.jpeg";
+const source = "assets/brand/myoshi.jpeg";
 await mkdir("public/images/optimized", { recursive: true });
 for (const width of [96, 320, 720]) {
   await sharp(source).resize(width, width).webp({ quality: 88 }).toFile(`public/images/optimized/myoshi-logo-${width}.webp`);
