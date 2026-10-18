@@ -51,7 +51,8 @@ it('renders the Multi-Vendor E-Commerce gallery and documented case study', asyn
   expect(html).not.toContain('参照コード');
   expect(html).toContain('id="orders"');
   expect(html).toContain('id="documentation"');
-  expect(html.match(/class="commerce-mermaid"/g)).toHaveLength(3);
+  expect(html.match(/class="detail-mermaid"/g)).toHaveLength(3);
+  expect(html).not.toContain('commerce-');
   for (const match of html.matchAll(/src="(\/images\/multi-vendor-e-commerce\/diagram-[^"]+\.svg)"/g)) {
     expect(existsSync(`public${match[1]}`)).toBe(true);
   }

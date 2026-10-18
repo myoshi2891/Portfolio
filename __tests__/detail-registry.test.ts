@@ -28,6 +28,7 @@ describe("detail page registry", () => {
       "data/project-details.ts", "data/limitations.ts", "data/feature-guides.ts",
       "components/projects/feature-story.tsx", "components/projects/llm-studies-detail.tsx",
       "components/projects/medical-studies-detail.tsx", "components/projects/wild-oasis-detail.tsx",
+      "components/projects/multi-vendor-detail.tsx",
     ]) expect(existsSync(path), path).toBe(false);
   });
 });

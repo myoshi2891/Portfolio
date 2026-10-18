@@ -198,7 +198,7 @@ test('Multi-Vendor E-Commerce gallery shows all supplied screens and keeps its c
   }
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect(page.locator('main a[href*="github.com/myoshi2891/Multi-Vendor-E-Commerce"]')).toHaveCount(0);
-  for (const image of await page.locator('.commerce-mermaid img').all()) {
+  for (const image of await page.locator('.detail-mermaid img').all()) {
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   }
   const intro = await page.locator('#features > .section-intro').first().boundingBox();
@@ -226,8 +226,8 @@ test('Multi-Vendor E-Commerce keeps its case study in no-JavaScript HTML', async
   const firstImage = page.locator('.slideshow-slide.is-active img');
   await expect(firstImage).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect.poll(() => firstImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-  await expect(page.locator('.commerce-mermaid img')).toHaveCount(3);
-  for (const image of await page.locator('.commerce-mermaid img').all()) {
+  await expect(page.locator('.detail-mermaid img')).toHaveCount(3);
+  for (const image of await page.locator('.detail-mermaid img').all()) {
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   }
   await context.close();
