@@ -89,7 +89,8 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `docs/PROJECT-DETAILS/`: 詳細説明の基準資料。資料と表示用Markdownの対応は[現行仕様](docs/current-specification.md#ページと情報源)。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
-- `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
+- `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。モバイルメニューは、リンクの選択・Esc・メニュー外のタップ・メニュー外へのフォーカス移動で閉じる。
+- `components/layout/primary-nav-links.tsx`: ヘッダーとモバイルメニューで共有するナビゲーション（項目は`data/site.ts`の`navigation`）。表示中のページへのリンク（現在は`/profile/`）に`aria-current="page"`を付ける。Homeの節へのリンクには付けない。
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを新しいタブで開くアンカーとして表示し、そのことを支援技術へ伝える。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像を使わず、一時停止／再生ボタンを備え、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
