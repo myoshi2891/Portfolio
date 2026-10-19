@@ -55,5 +55,8 @@ export function validateContent(data: Portfolio): string[] {
   for (const project of featured) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.slug)) errors.push("invalid slug");
   }
+  for (const [slug, document] of Object.entries(data.documentation)) {
+    if (!validDate(document.updatedAt)) errors.push(`invalid detail date: ${slug}`);
+  }
   return errors;
 }

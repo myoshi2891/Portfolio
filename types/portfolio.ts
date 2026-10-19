@@ -36,4 +36,6 @@ export type DetailSection = { id: string; label: string };
 export type ProjectDocumentation = MarkdownDocument & {
   sections: readonly [{ id: 'overview'; label: string }, ...DetailSection[]];
   pageClassName: string;
+  // ISO date (YYYY-MM-DD) shown as the page's last update and used as the sitemap lastModified.
+  updatedAt: string;
 };

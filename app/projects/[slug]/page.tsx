@@ -8,6 +8,7 @@ import { homeAnchor, projectPath } from "../../../lib/routes";
 import { ActionLink } from "../../../components/ui/primitives";
 import { pageMetadata } from "../../../lib/metadata";
 import { site } from "../../../data/site";
+import { formatJapaneseDate } from "../../../lib/dates";
 import { detailGalleries } from "../../../components/projects/detail-galleries";
 import { DocumentedProjectDetail } from "../../../components/projects/documented-project-detail";
 
@@ -34,7 +35,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
     <header id="overview" className="detail-header">
       <p className="eyebrow" lang="en">Selected Work / {String(project.order).padStart(2, "0")}</p>
       <p className="repo-name">{project.name}</p><h1>{project.title}</h1><p className="hero-lead">{project.description.text}</p>
-      <p className="detail-updated">画面の最終更新日：<time dateTime="2026-10-02">2026年10月2日</time></p>
+      <p className="detail-updated">画面の最終更新日：<time dateTime={documentation.updatedAt}>{formatJapaneseDate(documentation.updatedAt)}</time></p>
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
       {demoUrl && <ActionLink primary href={demoUrl}>公開サイトを試す</ActionLink>}
     </header>

@@ -27,6 +27,7 @@ export const projectDocumentation = {
     imageDirectory: "multi-vendor-e-commerce",
     sections: multiVendorDetailSections,
     pageClassName: "multi-vendor-detail-page",
+    updatedAt: "2026-10-02",
     diagrams: [
       "一つの注文を店舗A・店舗Bの受注へ分け、バリアント別の明細と支払い情報を保持します。",
       "顧客の注文作成後に決済を行い、署名検証したWebhookで支払いと注文の状態を更新します。",
@@ -38,6 +39,7 @@ export const projectDocumentation = {
     imageDirectory: "comparison-of-llms",
     sections: documentedDetailSections,
     pageClassName: "llm-detail-page documented-detail-page",
+    updatedAt: "2026-10-02",
     diagrams: [
       "開発者が収集した価格JSONを検証し、Next.jsで静的生成してNetlifyへ配信します。",
       "取得成功時は新しい価格、失敗時は出自と基準価格の改定を確認して既存値か基準価格を採用します。",
@@ -49,6 +51,7 @@ export const projectDocumentation = {
     imageDirectory: "Medical-Studies",
     sections: documentedDetailSections,
     pageClassName: "medical-detail-page documented-detail-page",
+    updatedAt: "2026-10-02",
     diagrams: [
       "登録された記事を静的生成し、PROMと3D・MRIを対話機能へ分け、記録を端末内に保存します。",
       "利用者の回答を検証・採点して端末内へ保存し、選択時にCSVまたはGoogle Sheetsへ出力します。",
@@ -60,6 +63,7 @@ export const projectDocumentation = {
     imageDirectory: "the-wild-oasis-for-admin",
     sections: documentedDetailSections,
     pageClassName: "wild-oasis-detail-page documented-detail-page",
+    updatedAt: "2026-10-02",
     diagrams: [
       "未確定の予約を支払い確認と朝食選択の後にチェックイン済みへ更新し、退室時にチェックアウト済みへ進めます。",
       "スタッフの画面操作をフック・React Query・サービス層へ渡し、Supabaseの認証・データベース・画像保存へ接続します。",
