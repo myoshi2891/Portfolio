@@ -32,6 +32,8 @@ export type MarkdownDocument = {
 };
 
 export type DetailSection = { id: string; label: string };
+export type ProjectSlide = { file: string; title: string; alt: string };
+export type ProjectGallery = { slides: readonly ProjectSlide[]; imageDirectory: string; label: string; browserTitle: string };
 // A featured project's detail page: its Markdown body, contents navigation and page styling.
 export type ProjectDocumentation = MarkdownDocument & {
   sections: readonly [{ id: 'overview'; label: string }, ...DetailSection[]];
