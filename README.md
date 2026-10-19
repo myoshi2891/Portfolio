@@ -120,7 +120,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 [CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→Lighthouseの予算検査→静的出力E2Eを実行します。Lighthouseは`@lhci/cli`ではなく`lighthouse`本体を使います（`@lhci/cli`の依存は修正版のない高リスクの勧告を含むため）。外部リンクは[週次ワークフロー](.github/workflows/external-links.yml)で確認し、切れていればIssueを作成（既存のIssueがあればコメント）します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
 
-検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・Lighthouse・実ユーザー性能は未測定です。
+検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・実ユーザー性能は未測定です。Lighthouseはローカルのラボ計測（モバイルのシミュレーション）です。
 
 ## 設計・作業ルール
 
