@@ -445,6 +445,7 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | F5 | Playwright に `mobile-chromium`（`Pixel 7`: タッチ・DPR 2.625）を追加。`e2e/mobile-device.spec.ts` のスモークテスト3件（メニュー、ギャラリーの一時停止と送り、目次への移動）だけを `tap()` で実行し、デスクトップの3ブラウザからは除外する。5回の繰り返しで15件とも通過 |
 | A5 | スライド定義を `data/galleries.ts`（`satisfies Record<FeaturedSlug, ProjectGallery>`）に移し、slug を渡すだけのラッパー4件と `detail-galleries.tsx` を削除。URL は `lib/image-path.ts` の `publicImagePath` で区切りごとにエンコードし、`ScreenPreview` と共通にした。Wild Oasis 管理の画像 URL は `The%20Wild%20Oasis%20Admin` になる。全スライドのファイルの存在を単体テストで確認する。ディレクトリ名の kebab-case 化は任意のため行わない |
 | A6 | Home の8節を `components/home/home-sections.tsx` に分け、`app/page.tsx` は節を並べるだけにした。ヘッダーとフッターの JSX を要素ごとに改行し、フッターの項目を `data/site.ts` の `footerNavigation` にまとめた（ヘッダーは H2 で対応済み）。全ページの DOM は、`<script>` とアセットのハッシュを除いて変更前と同一 |
+| H3 | `@media print` を追加。ライトの配色にそろえ、ナビゲーション・操作部品・Hero の装飾・目次を隠し、外部リンクの URL を併記する。閉じた `details` は `::details-content` で表示し、`open` は変えない（`toggle` で開閉状態を保存する NavigationController に影響させないため）。3ブラウザの E2E（`e2e/print.spec.ts`）と、Chromium で出力した PDF を目視で確認した。PDF で見つかった、カードの枠だけが前ページに残る問題と、塗りつぶしボタンの文字が背景なしで読めない問題も直した |
 
 対応中に見つかった事項:
 
