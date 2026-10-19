@@ -21,7 +21,9 @@ export async function checkLink(url: string, fetcher: Fetcher = fetch): Promise<
     if (status < 400) return { url, state: "ok", detail: String(status) };
     return { url, state: refusals.has(status) ? "unverifiable" : "broken", detail: String(status) };
   } catch (error) {
-    return { url, state: "broken", detail: error instanceof Error ? error.message : String(error) };
+    // A timeout only shows the site was slow to answer, not that the page is gone.
+    const timedOut = error instanceof DOMException && error.name === "TimeoutError";
+    return { url, state: timedOut ? "unverifiable" : "broken", detail: error instanceof Error ? error.message : String(error) };
   }
 }
 

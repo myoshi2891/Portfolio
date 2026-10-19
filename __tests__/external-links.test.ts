@@ -25,6 +25,15 @@ describe("external link monitoring", () => {
     expect(linkReport(results)).not.toContain("https://ok.test/");
   });
 
+  it("treats a request timeout as unverifiable rather than broken", async () => {
+    // Arrange: AbortSignal.timeout は TimeoutError の DOMException で中断する
+    const fetcher = async () => { throw new DOMException("The operation timed out.", "TimeoutError"); };
+    // Act
+    const result = await checkLink("https://slow.test/", fetcher);
+    // Assert
+    expect(result).toEqual({ url: "https://slow.test/", state: "unverifiable", detail: "The operation timed out." });
+  });
+
   it("runs weekly outside pull requests and may only open issues", () => {
     const workflow = readFileSync(".github/workflows/external-links.yml", "utf8");
     expect(workflow).toMatch(/schedule:\s*\n\s*- cron: "[^"]+"/);
