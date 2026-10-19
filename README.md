@@ -34,7 +34,7 @@ bun run preview
 | `bun run test` | Vitestの単体・描画・データ境界テスト |
 | `bun run build` | データ・参照整合性検査、フォント定義生成、静的生成 |
 | `bun run preview` | 静的出力をローカル配信 |
-| `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
+| `bun run test:e2e` | 静的出力をデスクトップの3ブラウザで検証し、タッチ端末（Pixel 7相当）でメニュー・ギャラリー・目次のスモークテスト（`e2e/mobile-device.spec.ts`）を実行。必要に応じてプレビューを自動起動 |
 | `bun run lighthouse` | build後の静的出力をプレビューで配信し、Lighthouseを5回ずつ実行して`lighthouserc.json`の予算を検査（Playwright Chromiumが必要。レポートは`.lighthouseci/`） |
 | `bun scripts/check-external-links.ts` | build後の静的出力に含まれる外部リンクの生存を確認 |
 | `bun run fonts:generate` | 現在の本文の使用文字から日本語フォントのサブセットと定義を再生成 |
