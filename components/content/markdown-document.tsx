@@ -2,10 +2,14 @@ import { SiteLink } from "../ui/site-link";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { MarkdownDocument } from "../../types/portfolio";
-import { loadMarkdownDocument } from "../../lib/markdown-document";
+import { loadMarkdownDocument, type LoadedMarkdownDocument } from "../../lib/markdown-document";
 
-export function MarkdownDocumentContent({ document, content }: { document: MarkdownDocument; content?: string }) {
-  const loaded = loadMarkdownDocument(document);
+// Callers that render per chapter pass the loaded document to avoid rereading Markdown and SVGs.
+export function MarkdownDocumentContent({ document, loaded = loadMarkdownDocument(document), content }: {
+  document: MarkdownDocument;
+  loaded?: LoadedMarkdownDocument;
+  content?: string;
+}) {
   return <Markdown remarkPlugins={[remarkGfm]} components={{
     a: ({ href, children, title }) => <SiteLink href={href ?? ""} title={title}>{children}</SiteLink>,
     p: ({ children }) => <p className="section-intro">{children}</p>,

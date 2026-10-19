@@ -26,3 +26,5 @@ export function loadMarkdownDocument(document: MarkdownDocument) {
   });
   return { content, diagrams };
 }
+
+export type LoadedMarkdownDocument = ReturnType<typeof loadMarkdownDocument>;
