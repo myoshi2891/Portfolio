@@ -10,7 +10,8 @@ describe("Lighthouse CI budgets", () => {
     const { collect } = parse().ci;
     expect(collect.startServerCommand).toBe("bun run preview");
     expect(collect.url.map(url => new URL(url).pathname)).toEqual(["/", "/profile/", "/projects/multi-vendor-e-commerce/"]);
-    expect(collect.numberOfRuns).toBeGreaterThanOrEqual(3);
+    // シミュレーションの LCP は同一ページで 1秒以上ばらつくため、中央値を5回から取る
+    expect(collect.numberOfRuns).toBeGreaterThanOrEqual(5);
   });
 
   it("enforces scores and transfer budgets without uploading results to a third party", () => {
@@ -27,6 +28,13 @@ describe("Lighthouse CI budgets", () => {
   it("caps the transfer size near the subset-font baseline so a font regression fails", () => {
     // B1 の後は最大 1.51MB（Multi Vendor）。旧スライス方式の 2.24MB に戻ると失敗する
     expect(parse().ci.assert.assertions["total-byte-weight"]?.[1].maxNumericValue).toBeLessThanOrEqual(2_000_000);
+  });
+
+  it("keeps LCP headroom over the subset-font baseline without loosening it further", () => {
+    // B1 の後は Multi Vendor が 6.5〜7.9秒（CI の中央値 8.05秒）。9秒を超えたら回帰として失敗させる
+    const lcp = parse().ci.assert.assertions["largest-contentful-paint"]?.[1].maxNumericValue;
+    expect(lcp).toBeGreaterThanOrEqual(8_500);
+    expect(lcp).toBeLessThanOrEqual(9_000);
   });
 
   it("runs after the static build in CI", () => {
