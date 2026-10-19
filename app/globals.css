@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
 @theme {
   --color-canvas: #f7f8fa;
