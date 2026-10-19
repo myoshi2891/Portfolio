@@ -444,9 +444,11 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | H2 | ヘッダーとモバイルメニューの項目を `data/site.ts` の `navigation` にまとめ、`PrimaryNavLinks` で描画する（A6 のナビゲーション項目の集約のうち、フッター以外）。表示中のページへのリンクに `aria-current="page"` と現在地のスタイルを付ける。モバイルメニューは、メニュー外の `pointerdown` と `focusin` でも閉じる。WebKit はクリックしたリンクにフォーカスしないため、`blur` では判定しない。E2E は3ブラウザで247件が通過 |
 | F5 | Playwright に `mobile-chromium`（`Pixel 7`: タッチ・DPR 2.625）を追加。`e2e/mobile-device.spec.ts` のスモークテスト3件（メニュー、ギャラリーの一時停止と送り、目次への移動）だけを `tap()` で実行し、デスクトップの3ブラウザからは除外する。5回の繰り返しで15件とも通過 |
 | A5 | スライド定義を `data/galleries.ts`（`satisfies Record<FeaturedSlug, ProjectGallery>`）に移し、slug を渡すだけのラッパー4件と `detail-galleries.tsx` を削除。URL は `lib/image-path.ts` の `publicImagePath` で区切りごとにエンコードし、`ScreenPreview` と共通にした。Wild Oasis 管理の画像 URL は `The%20Wild%20Oasis%20Admin` になる。全スライドのファイルの存在を単体テストで確認する。ディレクトリ名の kebab-case 化は任意のため行わない |
+| A6 | Home の8節を `components/home/home-sections.tsx` に分け、`app/page.tsx` は節を並べるだけにした。ヘッダーとフッターの JSX を要素ごとに改行し、フッターの項目を `data/site.ts` の `footerNavigation` にまとめた（ヘッダーは H2 で対応済み）。全ページの DOM は、`<script>` とアセットのハッシュを除いて変更前と同一 |
 
 対応中に見つかった事項:
 
+- `e2e/navigation.spec.ts` の「actual Chromium BFCache restores …」は、全体を並列で実行すると時々失敗する（A6 の前のコミットでも再現し、単独では6回とも通過）。BFCache からの復元が負荷によって行われないためと考えられる。CI では retries 1回で吸収されているが、継続して失敗するならテストを直列にする。
 - `scripts/prepare-fonts.ts` は `app`・`components`・`data` のソースをコメントも含めて走査し、フォントに入れる文字を決める。これらのディレクトリのコメントに新しい日本語を書くとフォントが再生成され、F1 の同期チェックの対象になる。既存のコメントにならい英語で書く。
 
 ## 6. 要判断事項
