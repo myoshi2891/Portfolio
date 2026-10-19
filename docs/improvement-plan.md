@@ -448,6 +448,14 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | H3 | `@media print` を追加。ライトの配色にそろえ、ナビゲーション・操作部品・Hero の装飾・目次を隠し、外部リンクの URL を併記する。閉じた `details` は `::details-content` で表示し、`open` は変えない（`toggle` で開閉状態を保存する NavigationController に影響させないため）。3ブラウザの E2E（`e2e/print.spec.ts`）と、Chromium で出力した PDF を目視で確認した。PDF で見つかった、カードの枠だけが前ページに残る問題と、塗りつぶしボタンの文字が背景なしで読めない問題も直した |
 | A8 | 要検証としていた ID のずれは実際に起きていた。初回の読み込み時にはテーマ切替が `<span>` で連番の対象外だったが、SPA で移動して戻ると `<button>` として数えられ、後ろの ID が1つずつずれていた（例: `return-22` → `return-23`）。そのため履歴で別の要素にフォーカスが戻っていた。ID を要素の種類・`href`・名前のハッシュから作る `returnIds` に変え、ハッシュの解決と同一ページ判定とともに `lib/navigation-ids.ts` へ切り出して単体テストを付けた。再現の E2E は `e2e/navigation-return-ids.spec.ts`。状態遷移と不変条件は [設計メモ](navigation-controller.md) にまとめた。全面的な書き換えはしていない |
 | C6 | 強制カラーは Playwright のエミュレーションで自動化した（`e2e/forced-colors.spec.ts`）。Chromium では、塗りつぶしボタンの文字が見えない（axe の color-contrast 違反）、開閉マークが消える、ヘッダーが透ける、現在地が太字だけになる、の4点が見つかり、すべて直した。WebKit はメディアクエリだけが一致して色を強制しないため、描画の検査は skip する。**スクリーンリーダー（VoiceOver・NVDA）と実機の Windows コントラストテーマでの確認は手動で残っている** |
+| G5 | 評価のみ（2026-10-20、一時的な作業ツリーで実施し、dev には入れていない）。下の表のとおり、TypeScript 7 は lint が動かないため移行できない。ESLint 10 は動くが、3プラグインが peer の範囲外。移行するかは要判断事項に追加した |
+
+G5 の評価結果:
+
+| 対象 | 結果 |
+| --- | --- |
+| TypeScript 7.0.2 | 型チェック・単体テスト（123件）・build は通過。`tsc --noEmit` は約2.1秒から約0.3秒になった。ESLint は `typescript-eslint does not support TS 7.0` で停止する。`typescript-eslint` 8.71.2 の peer は `typescript >=4.8.4 <6.1.0` で、対応は typescript-eslint#10940 で追跡されている |
+| ESLint 10.13.0（TypeScript 5.9.3） | lint は通過。違反を含む確認用ファイルでは、ESLint 9 と同じルール（`@next/next/no-img-element`・`jsx-a11y/alt-text`・`react-hooks/exhaustive-deps`・`react/jsx-key`）が検出された。ただし `eslint-config-next` 16.4.2 が依存する `eslint-plugin-react`・`eslint-plugin-import`・`eslint-plugin-jsx-a11y` の peer は ESLint `^9` までで、範囲外での利用になる |
 
 対応中に見つかった事項:
 
@@ -465,6 +473,7 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | F4 | テスト用の DOM 実装を追加するか（外部依存） | 補助関数で済むなら追加しない |
 | F6 | 外部リンク監視のアクションを追加するか（外部依存） | **決定（2026-10-19）**: 依存を追加せず、自前のスクリプトを週次で実行 |
 | H1 | テーマを3状態にする仕様変更を行うか | 要望があれば行う |
+| G5 | TypeScript 7・ESLint 10 へ移行するか | TypeScript 7 は `typescript-eslint` の対応を待つ（TS 6 の API を並行して入れる回避策はあるが、依存が増える）。ESLint 10 は `eslint-config-next` の依存プラグインが peer で対応するまで待つことを推奨 |
 
 ## 7. 共通の検証手順
 
