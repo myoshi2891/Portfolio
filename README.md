@@ -91,7 +91,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを新しいタブで開くアンカーとして表示し、そのことを支援技術へ伝える。
-- `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像や操作ボタンを使わず、画面外停止・reduced-motionに対応。
+- `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像を使わず、一時停止／再生ボタンを備え、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
 - `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。ギャラリーとの対応は`detail-galleries.tsx`。
 - `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
