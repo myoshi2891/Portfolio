@@ -50,7 +50,7 @@ jobs:
         run: git diff --exit-code && test -z "$(git status --porcelain)"
       - name: Install browsers
         run: bunx playwright install --with-deps chromium firefox webkit
-      # Regression budgets from the 2026-10-19 baseline (docs/verification-log.md); tighten after B1.
+      # Regression budgets from the 2026-10-19 B1 baseline (docs/verification-log.md).
       - name: Check Lighthouse budgets
         run: bun run lighthouse
       - name: Test static output
