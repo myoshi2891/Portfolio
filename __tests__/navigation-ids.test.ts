@@ -28,6 +28,24 @@ describe("returnIds", () => {
     for (const id of ids) expect(id).toMatch(/^return-[a-z0-9]+(-\d+)?$/);
   });
 
+  it("keeps a stateful control's ID when its label changes", () => {
+    // Arrange
+    const toggle = (label: string): ReturnTarget => ({ tag: "button", href: null, label, key: "theme-toggle" });
+
+    // Act
+    const [dark] = returnIds([toggle("ダークモードに切り替える")]);
+    const [light] = returnIds([toggle("ライトモードに切り替える")]);
+
+    // Assert
+    expect(light).toBe(dark);
+  });
+
+  it("still distinguishes controls without a key by their label", () => {
+    const [previous, next] = returnIds([{ tag: "button", href: null, label: "前へ" }, { tag: "button", href: null, label: "次へ" }]);
+    expect(previous).not.toBe(next);
+    expect(next).not.toMatch(/-\d+$/);
+  });
+
   it("is deterministic across runs", () => {
     const targets = [link("/profile/", "プロフィール")];
     expect(returnIds(targets)).toEqual(returnIds(targets));
