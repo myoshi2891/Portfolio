@@ -10,12 +10,14 @@ import { ActionLink, SectionHeader } from "../components/ui/primitives";
 import { HeroScene } from "../components/home/hero-scene";
 import { HomeMotion } from "../components/home/home-motion";
 import { pageMetadata } from "../lib/metadata";
+import { SiteJsonLd } from "../components/seo/json-ld";
 import "./home.css";
 
 export function generateMetadata() { return pageMetadata("/", site.title, site.description); }
 
 export default function Home() {
   return <main id="main" tabIndex={-1} className="container home-page">
+    <SiteJsonLd />
     <HomeMotion />
     <section className="hero" aria-labelledby="top">
       <div className="hero-grid">

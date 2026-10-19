@@ -15,7 +15,7 @@ describe("curated portfolio", () => {
     const copy = structuredClone(portfolio);
     copy.projects.push(copy.projects[0]!);
     copy.studies[0]!.order = 9;
-    delete copy.details["medical-studies"];
+    delete copy.documentation["medical-studies"];
     expect(validateContent(copy).join(" ")).toMatch(/duplicate/);
     expect(validateContent(copy).join(" ")).toMatch(/order/);
     expect(validateContent(copy).join(" ")).toMatch(/detail/);
@@ -30,17 +30,17 @@ describe("curated portfolio", () => {
     expect(validateContent(copy).join(" ")).toMatch(/repo mismatch/);
   });
 
-  it("rejects forged source URLs, dates, SHAs and unprovided scope", () => {
+  it("rejects forged source URLs, dates and SHAs", () => {
     const copy = structuredClone(portfolio);
     copy.projects[0]!.githubUrl = "https://github.com/someone/other";
     const evidence = copy.evidence["R01-A01"]!;
     if (evidence.sourceType !== "REPOSITORY_VERIFIED") throw new Error("fixture");
     evidence.commit = "main";
     evidence.checkedAt = "2026-02-31";
+    copy.documentation["medical-studies"]!.updatedAt = "2026-13-01";
     evidence.sources[0]!.url = "https://example.com/code";
-    copy.details["multi-vendor-e-commerce"]!.scope = [{ text: "All work", evidenceIds: ["R01-A01"] }];
     const errors = validateContent(copy).join(" ");
-    for (const word of ["github", "SHA", "date", "source", "scope"]) expect(errors).toContain(word);
+    for (const word of ["github", "SHA", "date", "source", "invalid detail date: medical-studies"]) expect(errors).toContain(word);
   });
 
   it("keeps routes and Home anchors stable", () => {

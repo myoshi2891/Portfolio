@@ -42,6 +42,15 @@ describe("Vercel deployment configuration", () => {
     }
   });
 
+  it("revalidates unversioned fonts and caches images for a day", () => {
+    // フォントのURLは内容が変わっても同じため、immutableにせず毎回再検証する
+    expect(headersFor("/fonts/noto-sans-jp-0-400.woff2", config.headers)["Cache-Control"]).toBe("public, max-age=0, must-revalidate");
+    expect(headersFor("/images/llm-studies/whats-new-guides.webp", config.headers)["Cache-Control"]).toBe("public, max-age=86400");
+    for (const path of ["/", "/profile/", "/_next/static/chunks/app.js"]) {
+      expect(headersFor(path, config.headers)["Cache-Control"], path).toBeUndefined();
+    }
+  });
+
   it("matches header rules with Vercel path patterns", () => {
     const rules: HeaderRule[] = [
       { source: "/(.*)", headers: [{ key: "A", value: "all" }] },

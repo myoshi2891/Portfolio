@@ -15,7 +15,7 @@ updates:
           - "@types/react"
           - "@types/react-dom"
     ignore:
-      # Major upgrades are planned separately (Node.js 24: G3, TypeScript 7 / ESLint 10: G5).
+      # Major upgrades follow the runtime and are planned separately (Node.js types track .node-version; TypeScript 7 / ESLint 10: G5).
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
       - dependency-name: "typescript"

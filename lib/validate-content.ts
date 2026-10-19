@@ -18,14 +18,13 @@ export function validateContent(data: Portfolio): string[] {
     const group = entries.filter(e => e.type === type);
     if (group.map(e => e.id).join() !== ids.join() || group.some((e, i) => e.order !== i + 1)) errors.push(`order or membership: ${type}`);
   }
-  const checkClaim = (claim: Claim, repoId?: RepositoryId, scope = false) => {
+  const checkClaim = (claim: Claim, repoId?: RepositoryId) => {
     if (!claim.text.trim()) errors.push("empty claim");
     if (!claim.evidenceIds.length) errors.push("empty evidence");
     for (const id of claim.evidenceIds) {
       const source = data.evidence[id];
       if (!source || source.status !== "VERIFIED") { errors.push(`missing verified evidence: ${id}`); continue; }
       if (source.sourceType === "REPOSITORY_VERIFIED" && source.repoId !== repoId) errors.push(`evidence repo mismatch: ${id}`);
-      if (scope && source.sourceType !== "USER_PROVIDED") errors.push("scope requires user-provided evidence");
     }
   };
   for (const entry of entries) {
@@ -52,18 +51,12 @@ export function validateContent(data: Portfolio): string[] {
   }
   const featured = data.projects.filter(p => p.type === "featured");
   unique(featured.map(p => p.slug), "slug");
-  if (Object.keys(data.details).sort().join() !== featured.map(p => p.slug).sort().join()) errors.push("detail set mismatch");
+  if (Object.keys(data.documentation).sort().join() !== featured.map(p => p.slug).sort().join()) errors.push("detail set mismatch");
   for (const project of featured) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.slug)) errors.push("invalid slug");
-    const detail = data.details[project.slug];
-    if (!detail) continue;
-    for (const section of Object.values(detail.sections)) {
-      section.claims.forEach(c => checkClaim(c, project.id));
-      for (const id of section.limitationIds) {
-        if (data.limitations[id]?.repoId !== project.id) errors.push(`limitation repo mismatch: ${id}`);
-      }
-    }
-    detail.scope?.forEach(c => checkClaim(c, project.id, true));
+  }
+  for (const [slug, document] of Object.entries(data.documentation)) {
+    if (!validDate(document.updatedAt)) errors.push(`invalid detail date: ${slug}`);
   }
   return errors;
 }

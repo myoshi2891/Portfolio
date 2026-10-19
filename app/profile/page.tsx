@@ -5,6 +5,7 @@ import { SiteLink } from "../../components/ui/site-link";
 import { certifications, profileLinks } from "../../data/profile";
 import { site } from "../../data/site";
 import { pageMetadata } from "../../lib/metadata";
+import { SiteJsonLd } from "../../components/seo/json-ld";
 import "./profile.css";
 
 export function generateMetadata() {
@@ -13,6 +14,7 @@ export function generateMetadata() {
 
 export default function Profile() {
   return <main id="main" tabIndex={-1} className="container profile-page">
+    <SiteJsonLd />
     <SectionReveal selector=".profile-page [data-reveal]" />
     <SiteLink className="text-link profile-back" href="/#about"><span aria-hidden="true">←</span> ホームの紹介へ</SiteLink>
     <section className="profile-intro" aria-labelledby="profile-title">

@@ -8,11 +8,6 @@ export type VerifiedEvidence = {
 } | {
   sourceType: 'USER_PROVIDED'; status: 'VERIFIED'; sourceLocation: string; checkedAt: string;
 };
-export type Limitation = {
-  repoId: RepositoryId; auditId: string;
-  status: 'NOT_FOUND' | 'NOT_VERIFIED' | 'NOT_APPLICABLE' | 'INSPECTION_UNAVAILABLE';
-  sourceType: 'USER_PROVIDED' | 'REPOSITORY_VERIFIED' | 'INFERRED' | 'UNVERIFIED'; text: string;
-};
 export type Claim<E extends string = string> = { text: string; evidenceIds: NonEmpty<E> };
 type Entry<E extends string> = {
   id: RepositoryId; name: string; title: string; description: Claim<E>;
@@ -24,19 +19,23 @@ export type Project<E extends string = string> = Entry<E> & {
 export type Study<E extends string = string> = Entry<E> & {
   type: 'study'; topics: NonEmpty<string>;
 };
-export type DetailSectionId = 'features' | 'architecture' | 'decisions' | 'quality';
-export type ProjectDetail<E extends string = string, L extends string = string> = {
-  sections: Record<DetailSectionId, { claims: readonly Claim<E>[]; limitationIds: readonly L[] }>;
-  scope?: NonEmpty<Claim<E>>;
-};
 export type Portfolio = {
   projects: Project[]; studies: Study[];
-  details: Record<string, ProjectDetail>;
-  evidence: Record<string, VerifiedEvidence>; limitations: Record<string, Limitation>;
+  documentation: Record<string, ProjectDocumentation>;
+  evidence: Record<string, VerifiedEvidence>;
 };
 
 export type MarkdownDocument = {
   contentPath: string;
   imageDirectory: string;
   diagrams: readonly string[];
+};
+
+export type DetailSection = { id: string; label: string };
+// A featured project's detail page: its Markdown body, contents navigation and page styling.
+export type ProjectDocumentation = MarkdownDocument & {
+  sections: readonly [{ id: 'overview'; label: string }, ...DetailSection[]];
+  pageClassName: string;
+  // ISO date (YYYY-MM-DD) shown as the page's last update and used as the sitemap lastModified.
+  updatedAt: string;
 };

@@ -3,8 +3,9 @@
 import { SiteLink } from "../ui/site-link";
 
 import { useEffect, useState } from "react";
+import type { DetailSection } from "../../types/portfolio";
 
-export function DetailContents({ sections }: { sections: { id: string; label: string }[] }) {
+export function DetailContents({ sections }: { sections: readonly DetailSection[] }) {
   const [active, setActive] = useState('overview');
   useEffect(() => {
     let frame = 0;

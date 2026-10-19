@@ -198,7 +198,7 @@ test('Multi-Vendor E-Commerce gallery shows all supplied screens and keeps its c
   }
   await expect(gallery.locator('.slideshow-slide.is-active img')).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect(page.locator('main a[href*="github.com/myoshi2891/Multi-Vendor-E-Commerce"]')).toHaveCount(0);
-  for (const image of await page.locator('.commerce-mermaid img').all()) {
+  for (const image of await page.locator('.detail-mermaid img').all()) {
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   }
   const intro = await page.locator('#features > .section-intro').first().boundingBox();
@@ -226,8 +226,8 @@ test('Multi-Vendor E-Commerce keeps its case study in no-JavaScript HTML', async
   const firstImage = page.locator('.slideshow-slide.is-active img');
   await expect(firstImage).toHaveAttribute('src', /storefront-home-hero\.webp$/);
   await expect.poll(() => firstImage.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-  await expect(page.locator('.commerce-mermaid img')).toHaveCount(3);
-  for (const image of await page.locator('.commerce-mermaid img').all()) {
+  await expect(page.locator('.detail-mermaid img')).toHaveCount(3);
+  for (const image of await page.locator('.detail-mermaid img').all()) {
     await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   }
   await context.close();
@@ -311,3 +311,21 @@ for (const slug of ['comparison-of-llms', 'medical-studies', 'the-wild-oasis-for
     await context.close();
   });
 }
+
+test("gallery announces the current slide only while the reader controls it", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/projects/comparison-of-llms/');
+  const gallery = page.locator('.project-slideshow');
+  const status = gallery.locator('figcaption');
+  await expect(status).toHaveAttribute('aria-live', 'off');
+  await gallery.getByRole('button', { name: '次へ' }).click();
+  await expect(status).toHaveAttribute('aria-live', 'polite');
+  await expect(status).toContainText('2 / 9');
+  await page.locator('h1').click();
+  // WebKit never focuses the clicked button, so silence returns with the next 5s auto-advance.
+  await expect(status).toHaveAttribute('aria-live', 'off', { timeout: 10_000 });
+  // 実行中の emulateMedia 切替は Firefox で change イベントが安定しないため、リロードで初期判定を検証する
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  await expect(status).toHaveAttribute('aria-live', 'polite');
+});

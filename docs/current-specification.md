@@ -1,28 +1,28 @@
-# 現行仕様 — 2026年10月18日
+# 現行仕様 — 2026年10月19日
 
 この文書は、このセッションで確定したポートフォリオの表示・編集・検証仕様をまとめます。Phase 0のリポジトリ監査は2026年9月16日の記録として保持し、紹介対象アプリの再監査・テスト再実行とは区別します。旧Phase文書の設計案と食い違う場合は、この現行仕様を優先します。
 
 ## ページと情報源
 
-Home、代表的な制作4詳細、404を維持します。掲載分類はFeatured 4件、Studies 6件、Secondary 3件。static export、末尾スラッシュ、SPA内部遷移、パンくず、現在節の目次、履歴復元、公開URL9件の管理を維持します。
+Home、プロフィール、代表的な制作4詳細、404を維持します。掲載分類はFeatured 4件、Studies 6件、Secondary 3件。static export、末尾スラッシュ、SPA内部遷移、パンくず、現在節の目次、履歴復元、公開URL9件の管理を維持します。
 
 Homeの説明・技術タグ・掲載順は既存のTypeScriptデータと証拠で管理します。詳細の説明は以下の資料を読み、画面向けに編集したMarkdownをServer Componentsで描画します。資料をそのまま自動同期する仕組みではなく、資料更新時は編集本文も見直します。
 
 | 詳細slug | 基準資料（`docs/PROJECT-DETAILS/`） | 表示用本文 | 描画 |
 |---|---|---|---|
-| `multi-vendor-e-commerce` | `PROJECT_DOCUMENTATION-Multi-Vendor-E-Commerce.md` | `data/multi-vendor-detail.md` | `MultiVendorDetail` |
+| `multi-vendor-e-commerce` | `PROJECT_DOCUMENTATION-Multi-Vendor-E-Commerce.md` | `data/multi-vendor-detail.md` | `DocumentedProjectDetail` |
 | `comparison-of-llms` | `PROJECT_DETAILS-LLM-Studies.md` | `data/llm-studies-detail.md` | `DocumentedProjectDetail` |
 | `medical-studies` | `project-overview-medical-studies.md` | `data/medical-studies-detail.md` | `DocumentedProjectDetail` |
 | `the-wild-oasis-for-admin` | `technical-documentation-The-Wild-Oasis.md` | `data/wild-oasis-detail.md` | `DocumentedProjectDetail` |
 
-共通レンダラーの対応表は`data/project-documentation.ts`。各詳細コンポーネントはslugを渡すラッパーです。Multi Vendorは注文・決済の独立節を持つため専用レンダラーを使用します。`data/project-details.ts`・`data/feature-guides.ts`に残る旧データを編集しても、現在の4詳細本文には反映されません。既存データの整合性検査は維持します。
+`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーはClient Componentのため、`components/projects/detail-galleries.tsx`で対応付けます（build時の内容検査がReactに依存しないよう、データ側に置かない）。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
 
 | 対象 | 目次・節ID（表示順） |
 |---|---|
 | Multi Vendor | `overview` → `features` → `orders` → `architecture` → `decisions` → `quality` → `documentation` |
 | その他3詳細 | `overview` → `features` → `architecture` → `decisions` → `quality` → `documentation` |
 
-概要には用途・Repository名・技術タグ・画面の最終更新日（2026年10月2日）を表示し、提供済みの公開URLだけCTAを表示します。本文は主要機能、処理の流れ、技術の責務、構成と制約、品質と継続課題、説明の基準を具体的に説明します。担当範囲・制作背景を推測で補いません。
+概要には用途・Repository名・技術タグ・画面の最終更新日（レジストリの`updatedAt`。現在は4件とも2026年10月2日）を表示し、提供済みの公開URLだけCTAを表示します。本文は主要機能、処理の流れ、技術の責務、構成と制約、品質と継続課題、説明の基準を具体的に説明します。担当範囲・制作背景を推測で補いません。
 
 資料の調査日とテスト統計日を区別します。Multi Vendorの資料は9月18日、品質統計は9月4日、coverageは9月3日。LLM・Medical・Wild Oasisの資料基準は9月18日です。資料内の件数はその時点の記録であり、ポートフォリオで再実行した結果や現在の外部サービスの保証として表示しません。採用理由が資料にない場合は構造と制約を説明します。
 
@@ -101,7 +101,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 
 ### ギャラリーの操作契約
 
-前後スライドの端が見える水平移動方式。先頭・末尾クローンでループし、5秒間隔で自動送りします。前へ・次へ・一時停止／再生の操作、タイトル・枚数表示・位置ドットを持ちます。hover・内部フォーカス・非表示タブでは自動送りを抑制し、reduced-motionでは自動送りと移動アニメーションを停止します。手動の前後移動は利用可能です。
+前後スライドの端が見える水平移動方式。先頭・末尾クローンでループし、5秒間隔で自動送りします。前へ・次へ・一時停止／再生の操作、タイトル・枚数表示・位置ドットを持ちます。hover・内部フォーカス・非表示タブでは自動送りを抑制し、reduced-motionでは自動送りと移動アニメーションを停止します。手動の前後移動は利用可能です。キャプション（タイトルと「N / M」）は`aria-live`の領域で、自動送り中は`off`、フォーカス中・手動で前後へ移動した後・一時停止中・reduced-motion時は`polite`にします（WebKitはクリックでボタンにフォーカスしないため、手動移動も操作中として扱い、次の自動送りで`off`へ戻します）。
 
 初期HTMLには先頭の実画像を含めます。操作ボタンはhydration後に表示し、JavaScript無効時は先頭画像と説明を表示します。全画像の手動閲覧はJavaScript有効時の機能です。現在画像だけに説明altを付け、他スライドとループクローンは読み上げ対象から外します。先頭画像は`loading="eager"`と`fetchPriority="high"`（Next.js 16で非推奨の`priority`は使わない）、他画像は遅延読み込み。ギャラリーは生成済みの公開WebPファイルを`next/image`の`unoptimized`で表示し、Homeの`picture`（WebP fallback）によるHome専用WebP配信とは配信方法を分けます。
 
@@ -152,22 +152,18 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 1. 基準資料の更新箇所・日付・制約を読み、対応する`data/*-detail.md`を更新。章数・目次ID・図の説明を揃える。
 2. Mermaid変更後は`bun run diagrams:generate`でSVG生成。ギャラリー画像は実内容を確認し、説明的な小文字kebab-caseで配置してスライド配列を更新。
 3. Home画像は`data/screens.ts`を更新して`bun run images:generate`。公開URLは`data/presentation.ts`。
-4. 本文・alt追加後は`bun run fonts:generate`。収集対象は`app`・`components`・`data`内のTS／TSX／CSS／Markdownで、`docs/`自体は対象外。
+4. 本文・alt追加後は`bun run fonts:generate`。収集対象は`app`・`components`・`data`内のTS／TSX／CSS／Markdownで、`docs/`自体は対象外。使用文字だけのNoto Sans JPを400・600の各1ファイル（`public/fonts/`）として生成し、`app/fonts.css`を更新します。CSSのフォントウェイトは400と600だけを使います（500を指定すると、和文だけが400で描画されて欧文と太さがずれるため）。
 5. 型、Lint、単体、内容整合性、対象画面を確認。本文・図・画像の初期HTML、GitHubリンク非表示、前後操作・loop、両テーマ、保存拒否・タブ同期、狭い画面・200%文字拡大を確認。
 6. 静的公開前はbuildと全ブラウザE2Eで確認。今回のユーザー実施buildと、エージェントが実行した開発サーバー検証を同一の結果として扱わない。
 
-## このセッションの検証記録
+## 公開・アクセシビリティの共通契約
 
-| 検証 | 確認結果・範囲 |
-|---|---|
-| 単体 | Vitest 9ファイル・34件成功 |
-| 型・Lint | `bunx tsc --noEmit`、`bun run lint`成功。Lintツール由来のTSNonNullExpressionメッセージが出るが終了コード0 |
-| 内容整合性 | `bun scripts/validate-content.ts`成功（13リポジトリ、4詳細と証拠参照）。Markdownの意味・全画像の内容まで自動検証するものではない |
-| テーマ | `e2e/theme.spec.ts`5件成功。選択保持、OS追従、保存拒否、タブ同期、狭いヘッダー・200%・axe |
-| 最終ライトデザイン | Chromium 8件成功。全画面直接アクセス・404、テーマ保持・SPA復帰、320／768／1200／1440px・200%・フォント取得失敗等 |
-| コントラスト | Home＋4詳細の最終ライト画面でaxe違反0。両モードのテーマ操作も検証 |
-| Multi Vendor画像 | Chromium 2件成功。全10枚の読み込み・手動移動・loop、モバイル・ダーク・文字200%・JS無効時の先頭画像と本文・図 |
-| Home画像 | 390／1440pxでR01のWebP選択・読み込み・ページ横はみ出しなしを確認 |
-| build・全3ブラウザ | このセッションではエージェントによるbuild／全3ブラウザE2Eを実行していない。以前の成功記録はその当時の結果として保持 |
+- 外部サイトへのリンク（`SiteLink`）は常に新しいタブで開き、視覚的に隠した「（新しいタブで開きます）」を付けます。`aria-label`を持つリンクは、その末尾に同じ文言を付けます。
+- 内容や操作を担う文字は.75rem以上にします。`aria-hidden`の装飾（ブラウザ風バー、立体図内のラベル）だけを例外とし、`__tests__/css-usage.test.ts`で検査します。
+- `SITE_URL`があるときだけ、HomeとプロフィールにWebSite・Person（`sameAs`はGitHub・X・LeetCode）、詳細に表示中のパンくずと同じBreadcrumbListのJSON-LDを出力します。氏名など未提供の事実は含めません。
+- OG画像（`public/og/portfolio.png`）は`bun scripts/generate-og.ts`がPlaywright Chromiumで、現行のライトテーマのトークン・ロゴ・同梱Interから生成します。
+- 配信キャッシュ: `/fonts/*`はURLにバージョンがないため毎回再検証（`max-age=0, must-revalidate`）、`/images/*`は1日（`max-age=86400`）。同名で画像を差し替えると最大1日古い画像が表示されるため、即時反映が必要ならファイル名か`revision`を変えます。末尾スラッシュなしのURLはVercelが308で正規URLへ転送します。
 
-開発サーバーは当初localhost:3000、画像追加と最終デザインの確認はlocalhost:3001を使用しました。これは検証時のポートであり公開URLの仕様ではありません。Lighthouse・実機・スクリーンリーダー・実ユーザー性能・リモートCIは今回未確認。push・デプロイ・このセッションのコミットは実施していません。
+## 検証記録
+
+件数・日付を含む検証結果は[検証記録](verification-log.md)に集約しています。

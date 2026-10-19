@@ -1,6 +1,5 @@
 import type { Portfolio } from "../types/portfolio";
 import { homeAnchor, projectPath } from "./routes";
-import { detailSectionsFor } from "../data/project-documentation";
 
 type HomeReferences = { heroEvidenceIds: readonly string[]; philosophy: readonly { href: string }[] };
 type DomainReferences = readonly { links: readonly { anchor: string; href?: string }[] }[];
@@ -9,9 +8,10 @@ export function validateHomeContent(data: Portfolio, home: HomeReferences, domai
   const errors: string[] = [];
   const anchors = new Set(["main", "top", "selected-work", "domains", "studies", "more-work", "philosophy", "contact", ...data.projects.map(homeAnchor), ...data.studies.map(homeAnchor)]);
   const destinations = new Set(["/", ...[...anchors].map(id => `/#${id}`)]);
-  for (const slug of Object.keys(data.details)) {
+  // Each detail accepts only the sections its own documentation renders.
+  for (const [slug, { sections }] of Object.entries(data.documentation)) {
     destinations.add(projectPath(slug));
-    for (const { id } of detailSectionsFor(slug) ?? []) destinations.add(projectPath(slug, id));
+    for (const { id } of sections) destinations.add(projectPath(slug, id));
   }
   if (!home.heroEvidenceIds.length) errors.push("missing hero evidence");
   for (const id of home.heroEvidenceIds) {

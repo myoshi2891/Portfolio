@@ -381,16 +381,70 @@
 - axe 4.14 で `label-content-name-mismatch` が既定で有効になった。NFKD 正規化と単語分割で照合するため、「ダークモード」が1語と見なされ、`aria-hidden` の「Ⅱ」も表示文字に数えられる。テーマ切替の aria-label と立体図の記号を変更し、単体テストに同じ照合を追加した。
 - React 19 は SSR 時に lazy でない `<img>` を自動で preload するため、詳細ページでは Mermaid の SVG 3枚も `<link rel="preload">` されている。B4 の計測対象に加える。
 
+### 進捗（2026-10-19、フェーズ2）
+
+フェーズ2の7項目は対応済みです。A3 はオーナーの判断で (a) 廃止としました。検証結果は [検証記録](verification-log.md) にあります。
+
+| ID | 結果 |
+| --- | --- |
+| F1 | CI の build の後に `git diff --exit-code` と未追跡ファイルの確認を追加。A3 で `app/fonts.css` の再生成が必要になり、この確認の対象になることを実際に確かめた |
+| A3 | `project-details.ts`・`limitations.ts`・`feature-guides.ts`・`FeatureStory`・slug を渡すだけのラッパー3件・関連テストと、未使用の CSS 約160ルールを削除。未使用クラスの検出を単体テスト（`__tests__/css-usage.test.ts`）にした。単語単位の照合のため、識別子と同じ名前のクラス（例: `.claim`）は検出できない |
+| A1 | `data/project-documentation.ts` を4件のレジストリにし、`sections`・`pageClassName`・`updatedAt` を持たせた。page.tsx から slug の比較を除去。ギャラリーは Client Component で、build 時の内容検査を React に依存させないため、`components/projects/detail-galleries.tsx` で対応付ける |
+| A2 | `multi-vendor-detail.tsx` と `commerce-*` の CSS を削除。Multi Vendor の `<main>` の HTML は、図のクラス名を除いて変更前と同一 |
+| D4 | `updatedAt` を画面の更新日と sitemap の `lastModified` に使用。Home とプロフィールは日付を推測せず出力しない |
+| G1 | README から件数・日付を除き、検証結果を `docs/verification-log.md` に集約。現行仕様のページ一覧と描画方式、引き継ぎの未提供 URL、スキルを更新。Phase 0〜3 とレビューの文書は冒頭に履歴の注記が既にあるため移動しない |
+| G3 | engines・`.node-version`・CI を Node.js 24.21.0、`@types/node` を 24 に更新。Node.js 24 で型・単体・build を確認。**Vercel のプロジェクト設定（Node.js Version）を 24.x に切り替える作業は手動で残っている** |
+
+### 進捗（2026-10-19、フェーズ3）
+
+フェーズ3の10項目に対応しました。B1 は計測の後、オーナーの判断で「使用文字だけ＋ウェイト削減」（案2＋3）を採用しました。
+
+| ID | 結果 |
+| --- | --- |
+| B3 | 本番（`https://myoshi2891-portfolio.vercel.app/`）を実測。末尾スラッシュなしの URL は Vercel がすでに308で転送するため、`trailingSlash` は不要。フォントは URL にバージョンがないため、毎回再検証（`max-age=0, must-revalidate`）を明示した。画像は1日（`max-age=86400`）。`/_next/static` は Vercel の既定で `immutable` |
+| B2 | `@import "tailwindcss" source(none);` にした。`@layer utilities` が空になり、テーマ変数は維持。共通 CSS は約3.2KB 減少 |
+| C3 | 外部リンクに、視覚的に隠した「（新しいタブで開きます）」を付けた。`aria-label` を持つリンクは、その末尾に同じ文言を付ける（隠しテキストは読まれず、label-in-name の照合も崩すため） |
+| C4 | キャプションを `aria-live` の領域にし、自動送り中は `off`、操作中・一時停止中・reduced-motion のときは `polite` にした。WebKit はクリックでボタンにフォーカスしないため、手動の前後移動も操作中として扱う |
+| C5 | 内容を担う13ルールを .75rem に引き上げた。`aria-hidden` の装飾は対象外。単体テストで下限を検査する |
+| D1 | `SITE_URL` があるときだけ、WebSite・Person・BreadcrumbList の JSON-LD を出力。本番相当の build で、出力が JSON として正しいことを確認した |
+| D3 | OG 画像を Playwright Chromium で生成するようにし、現行のトークン・ロゴ・同梱 Inter を使った。画素と生成スクリプトを単体テストで確認する |
+| F6 | `scripts/check-external-links.ts` で、build 後の HTML に含まれる外部リンク（現在26件）を確認する。週次のワークフローが失敗時に Issue を作成し、既存の Issue があればコメントする。401・403・429 は「自動確認不可」として失敗にしない |
+| B1 | `subset-font` で、分割前の TTF（`@expo-google-fonts/noto-sans-jp`）から使用文字（824字）だけの WOFF2 を 400・600 の各1ファイル（計約328KB）生成。`@fontsource/noto-sans-jp` と372ファイルを削除。CSS の 500 は、ラベル・強調を 600、本文に近いもの（text-link、profile-name）を 400 にし、Inter も 400・600 にそろえた。出力は決定論的で、build 後の差分は0件 |
+| B4 | `@lhci/cli` 0.15.1 は依存に修正版のない high の勧告5件を持ち込むため採用せず、`lighthouse` 13.5.0 と Playwright Chromium で、Lighthouse CI 互換の `lighthouserc.json` を評価するスクリプトを作った。CI で予算を検査し、レポートを artifact に保存する |
+
+B4 のベースライン（モバイルのシミュレーション、3回の中央値、preview build）:
+
+| ページ | Performance | LCP | 転送量 | Noto Sans JP |
+| --- | --- | --- | --- | --- |
+| Home | 69〜70 | 7.0〜7.3秒 | 1.69MB | 62ファイル・720KB |
+| プロフィール | 79〜80 | 4.8〜5.0秒 | 1.47MB | 43ファイル・520KB |
+| Multi Vendor 詳細 | 79〜81 | 5.0〜5.3秒 | 2.24MB | 84ファイル・970KB |
+
+Accessibility・Best Practices・SEO は全ページ100（preview の noindex による `is-crawlable` は除外）。予算は回帰を防ぐための値（Performance 0.6 以上、LCP 8秒以下、転送量 2.5MB 以下、CLS 0.1 以下）としました。
+
+B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央値）:
+
+| ページ | 変更前 Perf／LCP／転送量 | 変更後 Perf／LCP／転送量 |
+| --- | --- | --- |
+| Home | 75／6.1秒／1.69MB | 68／7.3秒／1.22MB |
+| プロフィール | 80／5.0秒／1.47MB | 74／5.6秒／1.20MB |
+| Multi Vendor 詳細 | 75／6.7秒／2.24MB | 70〜71／6.5〜6.8秒／1.51MB |
+
+- フォントのリクエストは Home で62件から2件になり、転送量は2〜3割減りました。1ファイルを全ページで共有するため、2ページ目以降はフォントを再取得しません。
+- Lighthouse の LCP は Home とプロフィールで悪化しました。LCP 要素は冒頭の説明文（プロフィールは肖像画）で、そのページに必要な文字を含む164KB のファイル2件が届くまでの時間が、シミュレーションの LCP に加わるためです。旧スライス方式では、冒頭の文字を含む小さいファイルだけが先に届いていました。参考として、各ウェイトを4分割した版は Home 69／7.0秒、Noto Sans JP を読み込まない版は Home 79／5.3秒でした。この環境では TBT が30〜840ms の範囲でぶれるため、1秒未満の差は誤差の可能性があります。
+- 予算は転送量を 2.0MB に引き締めました（旧スライス方式の 2.24MB に戻ると失敗します）。Performance と LCP は、Home が予算に近くばらつきも大きいため据え置きます。
+- 据え置いた LCP 予算（8秒）は、GitHub Actions で Multi Vendor の中央値が 8.05秒となり超過しました。シミュレーションの LCP は同じページでも6.5〜7.9秒とぶれるため、LCP 予算を9秒に変更し、5回の中央値で判定します。テキストの LCP を待たせるフォント（2件で約320KB）を小さくする対策は、別タスクで検討します。
+
 ## 6. 要判断事項
 
 | ID | 判断すること | 推奨 |
 | --- | --- | --- |
-| A3 | 詳細ページの旧「主張＋証拠」モデルを廃止するか、監査用に残すか | 廃止（Home の証拠検査は維持） |
-| B1 | 日本語フォントを OS に任せるか、使用文字だけの Web フォントにするか | 計測後に決める。見た目を優先するなら使用文字だけのフォント＋ウェイト削減 |
-| B4 | Lighthouse CI・Speed Insights を追加するか（外部依存） | Lighthouse CI を CI に追加する |
+| A3 | 詳細ページの旧「主張＋証拠」モデルを廃止するか、監査用に残すか | **決定（2026-10-19）**: 廃止。Home の証拠検査は維持 |
+| B1 | 日本語フォントを OS に任せるか、使用文字だけの Web フォントにするか | **決定（2026-10-19）**: 使用文字だけのフォント＋ウェイト削減（400・600）。Lighthouse の LCP の悪化は、転送量の削減とページ間のキャッシュ共有を優先して許容 |
+| B4 | Lighthouse CI・Speed Insights を追加するか（外部依存） | **決定（2026-10-19）**: Lighthouse を CI に追加。`@lhci/cli` ではなく `lighthouse` 本体を使用 |
 | E1 | ハッシュ方式の CSP を導入するか | フェーズ4で費用対効果を評価する |
 | F4 | テスト用の DOM 実装を追加するか（外部依存） | 補助関数で済むなら追加しない |
-| F6 | 外部リンク監視のアクションを追加するか（外部依存） | 週次スケジュールで導入する |
+| F6 | 外部リンク監視のアクションを追加するか（外部依存） | **決定（2026-10-19）**: 依存を追加せず、自前のスクリプトを週次で実行 |
 | H1 | テーマを3状態にする仕様変更を行うか | 要望があれば行う |
 
 ## 7. 共通の検証手順
