@@ -6,12 +6,15 @@ vi.mock("next/navigation", () => ({ usePathname: () => navigation.pathname }));
 
 const { Navigation } = await import("../components/layout/chrome");
 
+// 単体テストの描画は next.config の trailingSlash を読まないため、Link の href を末尾スラッシュ付きにそろえる
+const normalize = (href: string | undefined) => href && (href.includes("#") || href.endsWith("/") ? href : `${href}/`);
+
 // aria-current を持つリンクの href を、ナビゲーションごとに取り出す
 function currentLinks(html: string) {
   const navs = [...html.matchAll(/<nav[^>]*aria-label="([^"]+)"[^>]*>([\s\S]*?)<\/nav>/g)];
   return Object.fromEntries(navs.map(([, label, body]) => [
     label,
-    [...(body ?? "").matchAll(/<a[^>]*>/g)].map(([tag]) => tag).filter(tag => tag.includes('aria-current="page"')).map(tag => tag.match(/href="([^"]+)"/)?.[1]),
+    [...(body ?? "").matchAll(/<a[^>]*>/g)].map(([tag]) => tag).filter(tag => tag.includes('aria-current="page"')).map(tag => normalize(tag.match(/href="([^"]+)"/)?.[1])),
   ]));
 }
 

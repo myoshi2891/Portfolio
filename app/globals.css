@@ -51,6 +51,7 @@ a:hover { color: var(--color-accent-hover); }
 .masthead a, .footer a { min-height: 44px; align-content: center; }
 .desktop-nav a { padding: .4rem 1rem; text-decoration: none; border-radius: 99px; color: var(--color-ink); font-size: .9rem; }
 .desktop-nav a:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
+.desktop-nav a[aria-current="page"] { background: var(--color-surface-subtle); color: var(--color-accent); font-weight: 600; }
 .github-nav { margin-left: auto; font-size: .875rem; text-decoration: none; }
 .theme-toggle { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: .4rem; width: 6rem; min-height: 44px; padding: .4rem .65rem; border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: .85rem; cursor: pointer; }
 .theme-toggle:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
@@ -197,6 +198,7 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .mobile-menu nav { position: absolute; z-index: 10; top: calc(100% + .5rem); inset-inline: 0; display: grid; padding: .75rem; border: 1px solid var(--color-line); border-radius: 12px; background: var(--color-surface); box-shadow: 0 12px 30px #0002; }
   .mobile-menu nav a { padding: .75rem; text-decoration: none; border-radius: 6px; }
   .mobile-menu nav a:hover { background: var(--color-surface-subtle); }
+  .mobile-menu nav a[aria-current="page"] { background: var(--color-surface-subtle); color: var(--color-accent); font-weight: 600; }
   .action { padding: 12px; gap: .5rem; }
   .detail-contents ul { display: flex; gap: .5rem; overflow-x: auto; max-width: 100%; }
   .detail-contents li { flex: 0 0 auto; max-width: 80%; }
