@@ -237,3 +237,17 @@ body { background-image: none; }
 .detail-mermaid { background: var(--color-surface); }
 
 .brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
+
+/* Print: light palette, content only. Closed disclosures are shown via ::details-content so their
+   open state (saved by NavigationController on toggle) is never changed. */
+@media print {
+  :root:not([data-theme]), :root[data-theme] { color-scheme: light; --color-canvas: #fff; --color-surface: #fff; --color-surface-subtle: #eef0f3; --color-ink: #20242c; --color-muted: #606873; --color-line: #dce0e6; --color-accent: #234bdb; --color-accent-hover: #1638b0; --on-accent: #fff; --focus: #234bdb; --hero-tint: #fff; }
+  .skip-link, .masthead, .page-entry-line, .footer nav, .hero-actions, .hero-foot, .hero-showcase, .scene-toggle, .slideshow-toggle, .slideshow-dots, .detail-contents { display: none !important; }
+  .detail-grid { display: block; }
+  /* Browsers drop backgrounds when printing, so filled buttons switch to outlined text. */
+  .action-primary { background: none !important; color: var(--color-ink) !important; box-shadow: none !important; }
+  details::details-content { content-visibility: visible; display: contents; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75rem; font-weight: 400; overflow-wrap: anywhere; }
+  /* Keep each card whole so its frame is not left behind on the previous page. */
+  figure, img, .reading-table tr, .project-row, .secondary-row, .domain-card, .study-card { break-inside: avoid; }
+}

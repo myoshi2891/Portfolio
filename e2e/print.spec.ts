@@ -3,10 +3,13 @@ import { expect, test } from '@playwright/test';
 test('print hides navigation and interactive controls on Home', async ({ page }) => {
   await page.goto('/');
   await page.emulateMedia({ media: 'print' });
-  for (const selector of ['.masthead', '.footer nav', '.scene-toggle', '.hero-actions']) {
+  for (const selector of ['.masthead', '.footer nav', '.scene-toggle', '.hero-actions', '.hero-showcase']) {
     await expect(page.locator(selector).first(), selector).toBeHidden();
   }
   await expect(page.getByRole('heading', { level: 2, name: '代表的な制作' })).toBeVisible();
+  // Backgrounds are not printed by default, so filled buttons must not rely on them for contrast.
+  const primary = await page.locator('.action-primary').first().evaluate(el => getComputedStyle(el).color);
+  expect(primary).toBe('rgb(32, 36, 44)');
 });
 
 test('print shows closed study disclosures without changing their open state', async ({ page }) => {
