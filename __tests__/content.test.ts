@@ -37,9 +37,10 @@ describe("curated portfolio", () => {
     if (evidence.sourceType !== "REPOSITORY_VERIFIED") throw new Error("fixture");
     evidence.commit = "main";
     evidence.checkedAt = "2026-02-31";
+    copy.documentation["medical-studies"]!.updatedAt = "2026-13-01";
     evidence.sources[0]!.url = "https://example.com/code";
     const errors = validateContent(copy).join(" ");
-    for (const word of ["github", "SHA", "date", "source"]) expect(errors).toContain(word);
+    for (const word of ["github", "SHA", "date", "source", "invalid detail date: medical-studies"]) expect(errors).toContain(word);
   });
 
   it("keeps routes and Home anchors stable", () => {

@@ -6,6 +6,7 @@ import sitemap from "../app/sitemap";
 import robots from "../app/robots";
 import { generateMetadata } from "../app/projects/[slug]/page";
 import { site } from "../data/site";
+import { featuredProjects, portfolio } from "../lib/portfolio";
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -55,12 +56,14 @@ describe("page metadata and discovery", () => {
     expect(meta.twitter).toMatchObject({ card: "summary_large_image", title: meta.title, description: meta.description, images: [{ url: "https://example.com/og/portfolio.png" }] });
     expect(meta.robots).toEqual({ index: true, follow: true });
   });
-  it("lists Home, Profile and the four published details without invented dates", () => {
+  it("lists Home, Profile and the four published details with only the details dated", () => {
     vi.stubEnv("SITE_URL", "https://example.com"); vi.stubEnv("DEPLOYMENT_ENV", "production");
     expect(sitemap().map(entry => entry.url)).toEqual([
       "https://example.com/", "https://example.com/profile/", "https://example.com/projects/multi-vendor-e-commerce/", "https://example.com/projects/comparison-of-llms/", "https://example.com/projects/medical-studies/", "https://example.com/projects/the-wild-oasis-for-admin/",
     ]);
-    expect(sitemap().every(entry => !("lastModified" in entry))).toBe(true);
+    // 更新日を持つのは詳細ページだけ。Homeとプロフィールは推測した日付を出さない
+    expect(sitemap().map(entry => entry.lastModified)).toEqual([undefined, undefined, ...featuredProjects.map(p => portfolio.documentation[p.slug]?.updatedAt)]);
+    expect(sitemap().slice(2).every(entry => /^\d{4}-\d{2}-\d{2}$/.test(String(entry.lastModified)))).toBe(true);
     expect(robots()).toEqual({ rules: { userAgent: "*", allow: "/" }, sitemap: "https://example.com/sitemap.xml" });
     vi.stubEnv("DEPLOYMENT_ENV", "preview");
     expect(pageMetadata("/", site.title, site.description).robots).toEqual({ index: false, follow: false });

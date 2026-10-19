@@ -21,6 +21,7 @@ describe("detail page registry", () => {
   it("selects detail content from the registry instead of slug comparisons", () => {
     const page = readFileSync("app/projects/[slug]/page.tsx", "utf8");
     expect(page).not.toMatch(/slug === "/);
+    expect(page).not.toMatch(/dateTime="\d/);
   });
 
   it("removes the legacy claim-and-evidence detail model and slug-only wrappers", () => {
