@@ -28,7 +28,7 @@
 .profile-page .profile-portrait { width: min(100%, 264px); margin: 0 auto; }
 .profile-page .profile-portrait-frame { padding: 12px; border: 1px solid var(--color-line); border-radius: 20px; background: var(--color-surface); box-shadow: 0 16px 40px light-dark(#20242c08, #0002); }
 .profile-page .profile-portrait img { display: block; width: 100%; height: auto; border-radius: 10px; }
-.profile-page .profile-portrait figcaption { margin-top: 1rem; color: var(--color-muted); font-size: .7rem; text-align: center; letter-spacing: .05em; }
+.profile-page .profile-portrait figcaption { margin-top: 1rem; color: var(--color-muted); font-size: .75rem; text-align: center; letter-spacing: .05em; }
 
 /* Activity links have one clear surface each. */
 .profile-page .profile-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem 2rem; margin-bottom: 2.5rem; }
