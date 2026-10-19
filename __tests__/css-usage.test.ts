@@ -16,3 +16,8 @@ it("keeps no class selectors that the pages and content never render", () => {
   // Assert
   expect(unused).toEqual([]);
 });
+
+it("keeps Tailwind from generating utilities out of words in the content", () => {
+  // JSXはTailwindのユーティリティを使わないため、本文の単語から.containerなどを生成させない
+  expect(readFileSync("app/globals.css", "utf8")).toMatch(/^@import "tailwindcss" source\(none\);$/m);
+});
