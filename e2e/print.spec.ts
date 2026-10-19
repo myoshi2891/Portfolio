@@ -15,10 +15,10 @@ test('print hides navigation and interactive controls on Home', async ({ page })
 test('print shows closed study disclosures without changing their open state', async ({ page }) => {
   await page.goto('/');
   const details = page.locator('#study-details-r10');
-  await expect(details).not.toHaveAttribute('open', '');
+  await expect(details).not.toHaveAttribute('open');
   await page.emulateMedia({ media: 'print' });
   await expect(details.locator('.study-summary')).toBeVisible();
-  await expect(details).not.toHaveAttribute('open', '');
+  await expect(details).not.toHaveAttribute('open');
 });
 
 test('print appends the destination of external links', async ({ page }) => {
