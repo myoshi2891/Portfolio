@@ -35,12 +35,14 @@ bun run preview
 | `bun run build` | データ・参照整合性検査、フォント定義生成、静的生成 |
 | `bun run preview` | 静的出力をローカル配信 |
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
+| `bun run lighthouse` | build後の静的出力をプレビューで配信し、Lighthouseを3回ずつ実行して`lighthouserc.json`の予算を検査（Playwright Chromiumが必要。レポートは`.lighthouseci/`） |
+| `bun scripts/check-external-links.ts` | build後の静的出力に含まれる外部リンクの生存を確認 |
 | `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
 | `bun run images:brand` | `assets/brand/myoshi.jpeg`から、ロゴWebP（`public/images/optimized/`）とfavicon・アイコン（`app/`）を再生成 |
 | `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成。原本PNGがなくなった公開用WebPは削除 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
 | `bun run diagrams:commerce` | Multi VendorのMermaid SVGのみ生成 |
-| `bun scripts/generate-og.ts` | 文字主体のOG画像を再生成 |
+| `bun scripts/generate-og.ts` | 現行トークン・ロゴ・同梱InterでOG画像を再生成（Playwright Chromiumが必要） |
 
 `bun run test`はVitestを呼び出します。Bun組み込みの`bun test`へ置き換えないでください。E2E初回はブラウザを導入し、事前にビルドします。
 
@@ -77,6 +79,8 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 
 `vercel.json`は全パスにCSP・HSTS・`X-Content-Type-Options`・`X-Frame-Options`・`Referrer-Policy`・`Permissions-Policy`・COOPを付与します。静的出力ではnonceを使えないため、Next.jsのインラインスクリプト、テーマ初期化、到着時スクロール初期化に限り`script-src 'unsafe-inline'`を許可し、外部オリジン・`eval`は許可しません。`bun run preview`も同じヘッダーを返し、E2EでCSP違反がないことを確認します。E2EのFirefoxはCOOPによるブラウジングコンテキスト切替でPlaywrightが初回遷移を見失うため、`playwright.config.ts`でCOOPの適用のみ無効化しています（ヘッダー値は検証対象のまま）。外部オリジンを追加する場合はCSPも更新してください。Preview環境のVercel Toolbarは外部スクリプトのためCSPで読み込まれません。
 
+`/fonts/*`は毎回再検証、`/images/*`は1日キャッシュします（詳細は[現行仕様](docs/current-specification.md#公開アクセシビリティの共通契約)）。
+
 HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメインの全サブドメインがHTTPS対応であることを確認してから追加します。
 
 ## 編集と構成
@@ -86,7 +90,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
-- `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを通常のアンカーで表示。
+- `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを新しいタブで開くアンカーとして表示し、そのことを支援技術へ伝える。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像や操作ボタンを使わず、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
 - `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。ギャラリーとの対応は`detail-galleries.tsx`。
@@ -114,7 +118,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→静的出力E2Eを実行します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
+[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→Lighthouseの予算検査→静的出力E2Eを実行します。Lighthouseは`@lhci/cli`ではなく`lighthouse`本体を使います（`@lhci/cli`の依存は修正版のない高リスクの勧告を含むため）。外部リンクは[週次ワークフロー](.github/workflows/external-links.yml)で確認し、切れていればIssueを作成（既存のIssueがあればコメント）します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
 
 検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・Lighthouse・実ユーザー性能は未測定です。
 
