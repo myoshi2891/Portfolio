@@ -29,3 +29,30 @@ describe("Lighthouse CI budgets", () => {
     expect(steps.indexOf("bun run lighthouse")).toBeGreaterThan(steps.indexOf("bun run build"));
   });
 });
+
+describe("Lighthouse budget evaluation", () => {
+  const run = (performance: number, lcp: number) => ({
+    categories: { performance: { score: performance }, seo: { score: 1 } },
+    audits: { "largest-contentful-paint": { numericValue: lcp } },
+  });
+
+  it("asserts on the median performance run like Lighthouse CI", async () => {
+    const { medianRun } = await import("../lib/lighthouse-budget");
+    expect(medianRun([run(.7, 1), run(.95, 2), run(.9, 3)])).toEqual(run(.9, 3));
+  });
+
+  it("reports every score and metric outside its budget", async () => {
+    const { budgetFailures } = await import("../lib/lighthouse-budget");
+    const assertions: Record<string, Assertion> = {
+      "categories:performance": ["error", { minScore: .9 }],
+      "categories:seo": ["error", { minScore: 1 }],
+      "largest-contentful-paint": ["error", { maxNumericValue: 2500 }],
+    };
+    expect(budgetFailures(run(.92, 2400), assertions)).toEqual([]);
+    expect(budgetFailures(run(.8, 3100), assertions)).toEqual([
+      "categories:performance 0.8 < 0.9",
+      "largest-contentful-paint 3100 > 2500",
+    ]);
+    expect(budgetFailures(run(.92, 2400), { "missing-audit": ["error", { maxNumericValue: 1 }] })).toEqual(["missing-audit: no result"]);
+  });
+});
