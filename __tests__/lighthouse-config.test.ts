@@ -36,9 +36,12 @@ describe("Lighthouse budget evaluation", () => {
     audits: { "largest-contentful-paint": { numericValue: lcp } },
   });
 
-  it("asserts on the median performance run like Lighthouse CI", async () => {
-    const { medianRun } = await import("../lib/lighthouse-budget");
-    expect(medianRun([run(.7, 1), run(.95, 2), run(.9, 3)])).toEqual(run(.9, 3));
+  it("asserts each score and metric on its own median across runs", async () => {
+    // Arrange: 性能スコアの中央値の回（.9）とLCPの中央値（2）は別の回にある
+    const { medianMetrics } = await import("../lib/lighthouse-budget");
+    // Act & Assert
+    expect(medianMetrics([run(.7, 1), run(.95, 2), run(.9, 3)])).toEqual(run(.9, 2));
+    expect(() => medianMetrics([])).toThrow("No Lighthouse runs to evaluate");
   });
 
   it("reports every score and metric outside its budget", async () => {

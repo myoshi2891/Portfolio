@@ -5,12 +5,20 @@ export type LighthouseRun = {
 };
 export type BudgetAssertion = [string, { minScore?: number; maxNumericValue?: number }];
 
-// Like Lighthouse CI, judge the run whose performance score is the median.
-export function medianRun<T extends LighthouseRun>(runs: readonly T[]): T {
-  const sorted = [...runs].sort((a, b) => (a.categories.performance?.score ?? 0) - (b.categories.performance?.score ?? 0));
-  const median = sorted[Math.floor(sorted.length / 2)];
-  if (!median) throw new Error("No Lighthouse runs to evaluate");
-  return median;
+// Each score and metric is judged on its own median, so one noisy run cannot decide every budget.
+const median = (values: readonly number[]) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+const isNumber = (value: number | null | undefined): value is number => typeof value === "number";
+
+export function medianMetrics(runs: readonly LighthouseRun[]): LighthouseRun {
+  if (!runs.length) throw new Error("No Lighthouse runs to evaluate");
+  const keys = (pick: (run: LighthouseRun) => object) => [...new Set(runs.flatMap(run => Object.keys(pick(run))))];
+  const categories = Object.fromEntries(keys(run => run.categories).map(key =>
+    [key, { score: median(runs.map(run => run.categories[key]?.score).filter(isNumber)) ?? null }]));
+  const audits = Object.fromEntries(keys(run => run.audits).map(key => {
+    const numericValue = median(runs.map(run => run.audits[key]?.numericValue).filter(isNumber));
+    return [key, numericValue === undefined ? {} : { numericValue }];
+  }));
+  return { categories, audits };
 }
 
 export function budgetFailures(run: LighthouseRun, assertions: Record<string, BudgetAssertion>): string[] {
