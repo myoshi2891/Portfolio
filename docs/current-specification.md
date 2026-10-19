@@ -15,7 +15,7 @@ Homeの説明・技術タグ・掲載順は既存のTypeScriptデータと証拠
 | `medical-studies` | `project-overview-medical-studies.md` | `data/medical-studies-detail.md` | `DocumentedProjectDetail` |
 | `the-wild-oasis-for-admin` | `technical-documentation-The-Wild-Oasis.md` | `data/wild-oasis-detail.md` | `DocumentedProjectDetail` |
 
-`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーはClient Componentのため、`components/projects/detail-galleries.tsx`で対応付けます（build時の内容検査がReactに依存しないよう、データ側に置かない）。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
+`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーのスライド定義は`data/galleries.ts`に置き（同じく`satisfies Record<FeaturedSlug, …>`）、ページは共通の`ProjectSlideshow`へ渡します。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
 
 | 対象 | 目次・節ID（表示順） |
 |---|---|
@@ -73,12 +73,14 @@ Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジト
 
 4詳細は共通`ProjectSlideshow`を使用し、概要の後・目次と本文の前に配置します。
 
-| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | ギャラリーコンポーネント |
+| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | `data/galleries.ts`のキー |
 |---|---|---|---|
-| Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-slideshow.tsx` |
-| LLM | 9 | `llm-studies` | `llm-studies-slideshow.tsx` |
-| Medical | 11 | `Medical-Studies` | `medical-studies-slideshow.tsx` |
-| Wild Oasis管理 | 4 | `The Wild Oasis Admin` | `wild-oasis-slideshow.tsx` |
+| Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-e-commerce` |
+| LLM | 9 | `llm-studies` | `comparison-of-llms` |
+| Medical | 11 | `Medical-Studies` | `medical-studies` |
+| Wild Oasis管理 | 4 | `The Wild Oasis Admin` | `the-wild-oasis-for-admin` |
+
+ディレクトリ名には空白や大文字が残っています。画像のURLは`publicImagePath`でパスの区切りごとにエンコードするため、そのままでも配信できます。
 
 Medicalのブラウザ風バーの「N views」表記はスライド配列の件数（現在11枚）から算出します。ギャラリーの枚数を確認するときはスライド配列と操作カウンターを基準にします。
 

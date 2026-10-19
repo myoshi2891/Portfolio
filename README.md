@@ -94,8 +94,8 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを新しいタブで開くアンカーとして表示し、そのことを支援技術へ伝える。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像を使わず、一時停止／再生ボタンを備え、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
-- `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。ギャラリーとの対応は`detail-galleries.tsx`。
-- `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
+- `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。
+- `components/projects/project-slideshow.tsx`・`data/galleries.ts`: 全4詳細の共通画像ギャラリーと、slugごとのスライド定義（画像・タイトル・alt・保存先）。画像のURLは`lib/image-path.ts`の`publicImagePath`がパスの区切りごとにエンコードする（Homeの`ScreenPreview`と共通）。
 - `lib/theme.ts`・`components/layout/theme-toggle.tsx`: OS追従・保存・タブ同期を持つ全画面共通テーマ切り替え。
 - `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。

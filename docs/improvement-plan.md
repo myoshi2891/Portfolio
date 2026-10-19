@@ -443,6 +443,7 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | F3 | `push` を `main`・`dev` に限定（PR のブランチは `pull_request` で1回だけ検証）。`actions/cache` v6.1.0 で、Bun のパッケージキャッシュ（ランナーのホームの `.bun/install/cache`、キーは `bun.lock` のハッシュ）と Playwright のブラウザ（同じく `.cache/ms-playwright`、キーは Playwright のバージョン）を保存する。ブラウザのキャッシュがあるときは `install-deps` で OS のライブラリだけを入れる。効果は GitHub Actions 上の2回目以降の実行で確認する |
 | H2 | ヘッダーとモバイルメニューの項目を `data/site.ts` の `navigation` にまとめ、`PrimaryNavLinks` で描画する（A6 のナビゲーション項目の集約のうち、フッター以外）。表示中のページへのリンクに `aria-current="page"` と現在地のスタイルを付ける。モバイルメニューは、メニュー外の `pointerdown` と `focusin` でも閉じる。WebKit はクリックしたリンクにフォーカスしないため、`blur` では判定しない。E2E は3ブラウザで247件が通過 |
 | F5 | Playwright に `mobile-chromium`（`Pixel 7`: タッチ・DPR 2.625）を追加。`e2e/mobile-device.spec.ts` のスモークテスト3件（メニュー、ギャラリーの一時停止と送り、目次への移動）だけを `tap()` で実行し、デスクトップの3ブラウザからは除外する。5回の繰り返しで15件とも通過 |
+| A5 | スライド定義を `data/galleries.ts`（`satisfies Record<FeaturedSlug, ProjectGallery>`）に移し、slug を渡すだけのラッパー4件と `detail-galleries.tsx` を削除。URL は `lib/image-path.ts` の `publicImagePath` で区切りごとにエンコードし、`ScreenPreview` と共通にした。Wild Oasis 管理の画像 URL は `The%20Wild%20Oasis%20Admin` になる。全スライドのファイルの存在を単体テストで確認する。ディレクトリ名の kebab-case 化は任意のため行わない |
 
 対応中に見つかった事項:
 

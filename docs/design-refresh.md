@@ -41,7 +41,7 @@ bun run images:generate
 
 生成先は`public/images/optimized`、指定幅640／1280／1854、原本を拡大しない設定です。pictureのsrcsetで選び、原本と同じパスの全幅WebPをfallbackにします。原本PNGは`assets/screens/`に置き、公開しません。今回のR01は`multi-vendor-e-commerce/storefront-home-hero.png`、WebPは`r01-640.webp`・`r01-1280.webp`・`r01-1854.webp`です。
 
-詳細ギャラリーは各`components/projects/*-slideshow.tsx`の配列に画像・タイトル・altを登録します。Home用の対応表への登録だけではギャラリーに追加されません。保存先・枚数・Multi Vendor10枚の旧名と新名は[現行仕様の画像一覧](current-specification.md#実画面とギャラリー)を参照してください。
+詳細ギャラリーは`data/galleries.ts`の各slugの配列に画像・タイトル・altを登録します。Home用の対応表への登録だけではギャラリーに追加されません。保存先・枚数・Multi Vendor10枚の旧名と新名は[現行仕様の画像一覧](current-specification.md#実画面とギャラリー)を参照してください。
 
 共通ギャラリーは水平移動とloop、5秒自動送り、前後・一時停止／再生操作を持ちます。hover・フォーカス・非表示タブ・reduced-motionで自動送りを抑制。初期HTMLは先頭画像を表示、操作ボタンはhydration後に提供します。JS無効時に全画像を切り替えられるとは記載しません。
 
