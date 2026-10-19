@@ -21,3 +21,15 @@ it("keeps Tailwind from generating utilities out of words in the content", () =>
   // JSXはTailwindのユーティリティを使わないため、本文の単語から.containerなどを生成させない
   expect(readFileSync("app/globals.css", "utf8")).toMatch(/^@import "tailwindcss" source\(none\);$/m);
 });
+
+it("keeps text that carries content or actions at .75rem or larger", () => {
+  // Arrange: aria-hiddenの装飾（ブラウザ風バー、立体図内のラベル）だけを例外にする
+  const decorative = /browser-bar|hero-scene-header > span|hero-scene-core|hero-scene-node/;
+  const stylesheets = files("app", /\.css$/).filter(path => !path.endsWith("fonts.css"));
+  // Act
+  const tooSmall = stylesheets.flatMap(path => [...readFileSync(path, "utf8").matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter(([, selector = "", body = ""]) => [...body.matchAll(/font-size:\s*([\d.]+)rem/g)].some(([, size]) => Number(size) < .75) && !decorative.test(selector))
+    .map(([, selector = ""]) => `${path}: ${selector.trim()}`));
+  // Assert
+  expect(tooSmall).toEqual([]);
+});
