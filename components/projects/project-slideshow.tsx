@@ -92,7 +92,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
       positionTrack(1, false);
     }
   };
-  const step = (delta: 1 | -1) => {
+  const move = (delta: 1 | -1) => {
     settleLoop();
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const next = visualIndexRef.current + delta;
@@ -102,6 +102,14 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
     setIsControlling(true);
     setActive(nextActive);
     positionTrack(target, !reduceMotion);
+  };
+  // Announce slide changes only while the reader controls the gallery, not during auto-rotation.
+  const announces = isPaused || isControlling || reducesMotion;
+  const step = (delta: 1 | -1) => {
+    if (announces) { move(delta); return; }
+    // Commit aria-live="polite" first; screen readers ignore a region that turns live in the same update its text changes.
+    setIsControlling(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => move(delta)));
   };
   const slide = slides[active]!;
 
@@ -130,8 +138,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
       </div>
     </div>
     <div className="slideshow-meta">
-      {/* Announce slide changes only while the reader controls the gallery, not during auto-rotation. */}
-      <figcaption aria-live={isPaused || isControlling || reducesMotion ? "polite" : "off"} aria-atomic="true"><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
+      <figcaption aria-live={announces ? "polite" : "off"} aria-atomic="true"><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
       {isInteractive && <>
       <button className="slideshow-toggle" type="button" aria-label="前へ（前のスライド）" onClick={() => step(-1)}>前へ</button>
       <button className="slideshow-toggle" type="button" aria-label="次へ（次のスライド）" onClick={() => step(1)}>次へ</button>

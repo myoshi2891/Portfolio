@@ -324,6 +324,8 @@ test("gallery announces the current slide only while the reader controls it", as
   await page.locator('h1').click();
   // WebKit never focuses the clicked button, so silence returns with the next 5s auto-advance.
   await expect(status).toHaveAttribute('aria-live', 'off', { timeout: 10_000 });
+  // 実行中の emulateMedia 切替は Firefox で change イベントが安定しないため、リロードで初期判定を検証する
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
   await expect(status).toHaveAttribute('aria-live', 'polite');
 });
