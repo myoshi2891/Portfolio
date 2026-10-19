@@ -88,7 +88,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `data/`: 掲載順・文案・証拠。Featured 4件、Studies 6件、Secondary 3件。4詳細本文は`*-detail.md`、本文・節・ページクラス・更新日のレジストリは`project-documentation.ts`（Featuredの登録漏れは型エラー）。
 - `docs/PROJECT-DETAILS/`: 詳細説明の基準資料。資料と表示用Markdownの対応は[現行仕様](docs/current-specification.md#ページと情報源)。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
-- `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
+- `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。状態遷移と不変条件は[設計メモ](docs/navigation-controller.md)、純粋な処理は`lib/navigation-state.ts`と`lib/navigation-ids.ts`。
 - `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。モバイルメニューは、リンクの選択・Esc・メニュー外のタップ・メニュー外へのフォーカス移動で閉じる。
 - `components/layout/primary-nav-links.tsx`: ヘッダーとモバイルメニューで共有するナビゲーション（項目は`data/site.ts`の`navigation`）。表示中のページへのリンク（現在は`/profile/`）に`aria-current="page"`を付ける。Homeの節へのリンクには付けない。フッターの項目は`data/site.ts`の`footerNavigation`。
 - `components/home/home-sections.tsx`: Homeの各節（Hero・Selected Work・Domains・Studies・More Work・About・Philosophy・Contact）。`app/page.tsx`は節を並べるだけにする。
