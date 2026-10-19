@@ -7,6 +7,7 @@ import { featuredProjects, getFeatured, portfolio } from "../../../lib/portfolio
 import { homeAnchor, projectPath } from "../../../lib/routes";
 import { ActionLink } from "../../../components/ui/primitives";
 import { pageMetadata } from "../../../lib/metadata";
+import { BreadcrumbJsonLd } from "../../../components/seo/json-ld";
 import { site } from "../../../data/site";
 import { formatJapaneseDate } from "../../../lib/dates";
 import { detailGalleries } from "../../../components/projects/detail-galleries";
@@ -31,6 +32,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   const demoUrl = demoUrls[project.id];
   return <main id="main" tabIndex={-1} className={`container detail-page ${documentation.pageClassName}`}>
+    <BreadcrumbJsonLd project={project} />
     <nav className="breadcrumbs" aria-label="パンくず"><SiteLink href="/">Home</SiteLink><span aria-hidden="true">/</span><SiteLink href={`/#${homeAnchor(project)}`}>代表的な制作</SiteLink><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
     <header id="overview" className="detail-header">
       <p className="eyebrow" lang="en">Selected Work / {String(project.order).padStart(2, "0")}</p>
