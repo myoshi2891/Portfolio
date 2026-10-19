@@ -24,6 +24,11 @@ describe("Lighthouse CI budgets", () => {
     expect(upload.target).toBe("filesystem");
   });
 
+  it("caps the transfer size near the subset-font baseline so a font regression fails", () => {
+    // B1 の後は最大 1.51MB（Multi Vendor）。旧スライス方式の 2.24MB に戻ると失敗する
+    expect(parse().ci.assert.assertions["total-byte-weight"]?.[1].maxNumericValue).toBeLessThanOrEqual(2_000_000);
+  });
+
   it("runs after the static build in CI", () => {
     const steps = readFileSync(".github/workflows/ci.yml", "utf8").match(/^\s+run: .+$/gm)?.map(line => line.replace(/^\s+run: /, "")) ?? [];
     expect(steps.indexOf("bun run lighthouse")).toBeGreaterThan(steps.indexOf("bun run build"));
