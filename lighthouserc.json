@@ -19,7 +19,7 @@
         "categories:seo": ["error", { "minScore": 1 }],
         "largest-contentful-paint": ["error", { "maxNumericValue": 8000 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "total-byte-weight": ["error", { "maxNumericValue": 2500000 }]
+        "total-byte-weight": ["error", { "maxNumericValue": 2000000 }]
       }
     },
     "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
