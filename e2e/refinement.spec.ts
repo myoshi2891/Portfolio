@@ -311,3 +311,18 @@ for (const slug of ['comparison-of-llms', 'medical-studies', 'the-wild-oasis-for
     await context.close();
   });
 }
+
+test("gallery announces the current slide only while the reader controls it", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/projects/comparison-of-llms/');
+  const gallery = page.locator('.project-slideshow');
+  const status = gallery.locator('figcaption');
+  await expect(status).toHaveAttribute('aria-live', 'off');
+  await gallery.getByRole('button', { name: '次へ' }).click();
+  await expect(status).toHaveAttribute('aria-live', 'polite');
+  await expect(status).toContainText('2 / 9');
+  await page.locator('h1').click();
+  await expect(status).toHaveAttribute('aria-live', 'off');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(status).toHaveAttribute('aria-live', 'polite');
+});
