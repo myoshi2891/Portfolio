@@ -435,6 +435,16 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 - 予算は転送量を 2.0MB に引き締めました（旧スライス方式の 2.24MB に戻ると失敗します）。Performance と LCP は、Home が予算に近くばらつきも大きいため据え置きます。
 - 据え置いた LCP 予算（8秒）は、GitHub Actions で Multi Vendor の中央値が 8.05秒となり超過しました。シミュレーションの LCP は同じページでも6.5〜7.9秒とぶれるため、LCP 予算を9秒に変更し、5回の中央値で判定します。テキストの LCP を待たせるフォント（2件で約320KB）を小さくする対策は、別タスクで検討します。
 
+### 進捗（2026-10-19、フェーズ4）
+
+| ID | 結果 |
+| --- | --- |
+| A7 | `StudySummary` と `DocumentedProjectDetail` が読み込んだ結果を `MarkdownDocumentContent` に `loaded` として渡す。`comparison-of-llms` の読み込みは24回から4回（Markdown 1件＋SVG 3件）になった。React の `cache()` は単体テストの描画（`renderToStaticMarkup`）では効かないため使わない。生成 HTML は Build ID を除いて変更前と同一 |
+
+対応中に見つかった事項:
+
+- `scripts/prepare-fonts.ts` は `app`・`components`・`data` のソースをコメントも含めて走査し、フォントに入れる文字を決める。これらのディレクトリのコメントに新しい日本語を書くとフォントが再生成され、F1 の同期チェックの対象になる。既存のコメントにならい英語で書く。
+
 ## 6. 要判断事項
 
 | ID | 判断すること | 推奨 |
