@@ -37,7 +37,7 @@ bun run preview
 | `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
 | `bun run lighthouse` | build後の静的出力をプレビューで配信し、Lighthouseを3回ずつ実行して`lighthouserc.json`の予算を検査（Playwright Chromiumが必要。レポートは`.lighthouseci/`） |
 | `bun scripts/check-external-links.ts` | build後の静的出力に含まれる外部リンクの生存を確認 |
-| `bun run fonts:generate` | 現在の本文に必要な日本語フォント定義を再生成 |
+| `bun run fonts:generate` | 現在の本文の使用文字から日本語フォントのサブセットと定義を再生成 |
 | `bun run images:brand` | `assets/brand/myoshi.jpeg`から、ロゴWebP（`public/images/optimized/`）とfavicon・アイコン（`app/`）を再生成 |
 | `bun run images:generate` | `assets/screens/`の提供PNGから、公開用WebP（同じパス）とHome用の表示幅別WebPを再生成。原本PNGがなくなった公開用WebPは削除 |
 | `bun run diagrams:generate` | 全4詳細のMermaidソースから静的SVGを生成（Playwright Chromiumが必要） |
@@ -103,7 +103,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `assets/brand/`: ロゴ・faviconの原本JPEG（公開しない）。
 - `public/images/`: 公開用WebP（`images:generate`の生成物）、Home用の表示幅別WebP、詳細用Mermaid SVG。PNG・JPEGは置きません。Home画像は`data/screens.ts`（原本PNG名）、ギャラリーは対応するスライド配列（WebP名）を更新。生成物も管理。
 - `lib/`: 取得、URL生成、データ検証、保存値の検証、公開設定（`site-config.ts`）、配信ヘッダーの照合（`response-headers.ts`）。
-- `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／500／600のローカルWOFF2。各ディレクトリにライセンス・出典・ファイル一覧。
+- `assets/fonts/`・`public/fonts/`: InterとNoto Sans JP、400／600のローカルWOFF2（CSSも400／600だけを使用）。Noto Sans JPは`fonts:generate`が本文の使用文字だけを含むサブセットをウェイトごとに1ファイル生成。各ディレクトリにライセンス・出典・ファイル一覧。
 - `public/og/portfolio.png`: サイト用OG画像。制作アプリのスクリーンショットではありません。
 
 図のソースを変更した場合は、build前に`bun run diagrams:generate`を実行して生成SVGを更新します。図中文字は1remを維持し、狭い画面では図の領域内で横スクロールできます。ASCII図解は使用しません。

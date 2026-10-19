@@ -152,7 +152,7 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 1. 基準資料の更新箇所・日付・制約を読み、対応する`data/*-detail.md`を更新。章数・目次ID・図の説明を揃える。
 2. Mermaid変更後は`bun run diagrams:generate`でSVG生成。ギャラリー画像は実内容を確認し、説明的な小文字kebab-caseで配置してスライド配列を更新。
 3. Home画像は`data/screens.ts`を更新して`bun run images:generate`。公開URLは`data/presentation.ts`。
-4. 本文・alt追加後は`bun run fonts:generate`。収集対象は`app`・`components`・`data`内のTS／TSX／CSS／Markdownで、`docs/`自体は対象外。
+4. 本文・alt追加後は`bun run fonts:generate`。収集対象は`app`・`components`・`data`内のTS／TSX／CSS／Markdownで、`docs/`自体は対象外。使用文字だけのNoto Sans JPを400・600の各1ファイル（`public/fonts/`）として生成し、`app/fonts.css`を更新します。CSSのフォントウェイトは400と600だけを使います（500を指定すると、和文だけが400で描画されて欧文と太さがずれるため）。
 5. 型、Lint、単体、内容整合性、対象画面を確認。本文・図・画像の初期HTML、GitHubリンク非表示、前後操作・loop、両テーマ、保存拒否・タブ同期、狭い画面・200%文字拡大を確認。
 6. 静的公開前はbuildと全ブラウザE2Eで確認。今回のユーザー実施buildと、エージェントが実行した開発サーバー検証を同一の結果として扱わない。
 
