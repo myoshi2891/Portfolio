@@ -322,7 +322,8 @@ test("gallery announces the current slide only while the reader controls it", as
   await expect(status).toHaveAttribute('aria-live', 'polite');
   await expect(status).toContainText('2 / 9');
   await page.locator('h1').click();
-  await expect(status).toHaveAttribute('aria-live', 'off');
+  // WebKit never focuses the clicked button, so silence returns with the next 5s auto-advance.
+  await expect(status).toHaveAttribute('aria-live', 'off', { timeout: 10_000 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(status).toHaveAttribute('aria-live', 'polite');
 });

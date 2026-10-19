@@ -7,6 +7,12 @@ export type ProjectSlide = { file: string; title: string; alt: string };
 
 // サーバー描画とハイドレーション中は false、以降は true を返す
 const subscribeNothing = () => () => {};
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
+const subscribeMotion = (onChange: () => void) => {
+  const query = window.matchMedia(reducedMotionQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
 
 export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }: {
   slides: readonly ProjectSlide[];
@@ -16,7 +22,10 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
 }) {
   const [active, setActive] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  // True while the reader drives the gallery (focus or a manual step); WebKit does not focus clicked buttons.
+  const [isControlling, setIsControlling] = useState(false);
   const isInteractive = useSyncExternalStore(subscribeNothing, () => true, () => false);
+  const reducesMotion = useSyncExternalStore(subscribeMotion, () => window.matchMedia(reducedMotionQuery).matches, () => false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const visualIndexRef = useRef(1);
@@ -61,6 +70,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
         }
         const next = visualIndexRef.current + 1;
         visualIndexRef.current = next;
+        setIsControlling(false);
         setActive((next - 1 + slides.length) % slides.length);
         positionTrack(next, true);
       }, 5000);
@@ -89,6 +99,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
     const nextActive = (next - 1 + slides.length) % slides.length;
     const target = reduceMotion ? nextActive + 1 : next;
     visualIndexRef.current = target;
+    setIsControlling(true);
     setActive(nextActive);
     positionTrack(target, !reduceMotion);
   };
@@ -97,10 +108,11 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
   return <figure className="project-slideshow" aria-label={label} aria-roledescription="カルーセル"
     onMouseEnter={() => { hoveredRef.current = true; syncPaused(); }}
     onMouseLeave={() => { hoveredRef.current = false; syncPaused(); }}
-    onFocusCapture={() => { focusedRef.current = true; syncPaused(); }}
+    onFocusCapture={() => { focusedRef.current = true; setIsControlling(true); syncPaused(); }}
     onBlurCapture={(event) => {
       if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return;
       focusedRef.current = false;
+      setIsControlling(false);
       syncPaused();
     }}>
     <div className="slideshow-browser-bar" aria-hidden="true"><span>● ● ●</span><span>{browserTitle}</span><span>{String(active + 1).padStart(2, "0")}</span></div>
@@ -118,7 +130,8 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
       </div>
     </div>
     <div className="slideshow-meta">
-      <figcaption><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
+      {/* Announce slide changes only while the reader controls the gallery, not during auto-rotation. */}
+      <figcaption aria-live={isPaused || isControlling || reducesMotion ? "polite" : "off"} aria-atomic="true"><strong>{slide.title}</strong><span>{active + 1} / {slides.length}</span></figcaption>
       {isInteractive && <>
       <button className="slideshow-toggle" type="button" aria-label="前へ（前のスライド）" onClick={() => step(-1)}>前へ</button>
       <button className="slideshow-toggle" type="button" aria-label="次へ（次のスライド）" onClick={() => step(1)}>次へ</button>
