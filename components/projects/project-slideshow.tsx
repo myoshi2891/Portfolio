@@ -137,7 +137,7 @@ export function ProjectSlideshow({ slides, imageDirectory, label, browserTitle }
       {isInteractive && <>
       <button className="slideshow-toggle" type="button" aria-label="前へ（前のスライド）" onClick={() => step(-1)}>前へ</button>
       <button className="slideshow-toggle" type="button" aria-label="次へ（次のスライド）" onClick={() => step(1)}>次へ</button>
-      <button className="slideshow-toggle" type="button" aria-label={isPaused ? "スライドショーを再生" : "スライドショーを一時停止"} aria-pressed={isPaused}
+      <button className="slideshow-toggle" type="button" data-navigation-key="slideshow-pause" aria-label={isPaused ? "スライドショーを再生" : "スライドショーを一時停止"} aria-pressed={isPaused}
         onClick={() => { manualPausedRef.current = !manualPausedRef.current; setIsPaused(manualPausedRef.current); syncPaused(); }}>
         {isPaused ? "再生" : "一時停止"}
       </button>

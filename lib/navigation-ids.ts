@@ -1,7 +1,8 @@
 // Pure helpers for NavigationController. They take plain values so they can be unit tested
 // without a DOM; the controller reads the DOM and applies the results.
 
-export type ReturnTarget = { tag: string; href: string | null; label: string };
+// `key` names a stateful control whose label changes with its state; it replaces the label as identity.
+export type ReturnTarget = { tag: string; href: string | null; label: string; key?: string | undefined };
 
 // FNV-1a keeps IDs short and deterministic without a crypto dependency.
 function hash(value: string) {
@@ -18,8 +19,8 @@ function hash(value: string) {
 // numbered in document order.
 export function returnIds(targets: readonly ReturnTarget[]) {
   const seen = new Map<string, number>();
-  return targets.map(({ tag, href, label }) => {
-    const key = hash(`${tag}\n${href ?? ""}\n${label}`);
+  return targets.map(({ tag, href, label, key: stable }) => {
+    const key = hash(stable === undefined ? `${tag}\n${href ?? ""}\n${label}` : `${tag}\n${href ?? ""}\n\0${stable}`);
     const count = (seen.get(key) ?? 0) + 1;
     seen.set(key, count);
     return count === 1 ? `return-${key}` : `return-${key}-${count}`;

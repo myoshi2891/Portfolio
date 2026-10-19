@@ -27,7 +27,7 @@ export function NavigationController() {
     const disclosures = [...document.querySelectorAll<HTMLDetailsElement>("main details[id]")];
     // Reassign generated IDs on each route, including persistent header/footer links.
     const unnamed = [...document.querySelectorAll<HTMLElement>("a, summary, button")].filter(el => !el.id || el.dataset.navigationId);
-    const ids = returnIds(unnamed.map(el => ({ tag: el.localName, href: el.getAttribute("href"), label: el.getAttribute("aria-label") ?? el.textContent.trim() })));
+    const ids = returnIds(unnamed.map(el => ({ tag: el.localName, href: el.getAttribute("href"), label: el.getAttribute("aria-label") ?? el.textContent.trim(), key: el.dataset.navigationKey })));
     unnamed.forEach((el, i) => { el.id = ids[i] ?? el.id; el.dataset.navigationId = "true"; });
     const title = document.querySelector<HTMLElement>("main h1");
     if (title && !title.id) { title.id = "page-title"; title.tabIndex = -1; }
