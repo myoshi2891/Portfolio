@@ -22,7 +22,6 @@ export function generateMetadata() {
 const inter = localFont({
   src: [
     { path: "../assets/fonts/inter-latin-400-normal.woff2", weight: "400" },
-    { path: "../assets/fonts/inter-latin-500-normal.woff2", weight: "500" },
     { path: "../assets/fonts/inter-latin-600-normal.woff2", weight: "600" },
   ],
   variable: "--font-inter", display: "swap",

@@ -1,17 +1,25 @@
-// Reduce CSS declarations only; the original OFL font files remain unchanged.
-export function subsetFontCss(source: string, content: string): string {
-  const points = [...new Set([...content].map(char => char.codePointAt(0)!))].sort((a, b) => a - b);
-  return [...source.matchAll(/@font-face\s*\{([^}]+)\}/g)].flatMap(([block, declarations]) => {
-    const range = declarations!.match(/unicode-range:\s*([^;]+);/);
-    const file = declarations!.match(/url\(\.\/files\/([^)]*\.woff2)\)/);
-    if (!range || !file) return [];
-    const intervals = range[1]!.split(',').map(part => {
-      const [start, end] = part.trim().replace(/^U\+/i, '').split('-');
-      return [parseInt(start!, 16), parseInt(end ?? start!, 16)] as const;
-    });
-    const used = points.filter(point => intervals.some(([start, end]) => point >= start && point <= end));
-    if (!used.length) return [];
-    return [block.replace(/src:[^;]+;/, `src: url(/fonts/${file[1]}) format('woff2');`)
-      .replace(/unicode-range:[^;]+;/, `unicode-range: ${used.map(point => `U+${point.toString(16).toUpperCase()}`).join(',')};`)];
-  }).join('\n\n') + '\n';
+// Noto Sans JP is served as one subset per weight; the files hold only the characters the content uses.
+export const notoWeights = [400, 600] as const;
+
+export function notoFontFile(weight: number): string {
+  return `noto-sans-jp-${weight}.woff2`;
+}
+
+export function usedText(content: string): string {
+  const points = new Set<number>();
+  for (const char of content) {
+    const point = char.codePointAt(0);
+    if (point !== undefined && point >= 0x20) points.add(point);
+  }
+  return String.fromCodePoint(...[...points].sort((a, b) => a - b));
+}
+
+export function fontFaceCss(weights: readonly number[]): string {
+  return weights.map(weight => `@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: ${weight};
+  src: url(/fonts/${notoFontFile(weight)}) format('woff2');
+}`).join('\n\n') + '\n';
 }

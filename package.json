@@ -34,8 +34,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
+    "@expo-google-fonts/noto-sans-jp": "0.4.4",
     "@fontsource/inter": "5.3.0",
-    "@fontsource/noto-sans-jp": "5.3.1",
     "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24",
@@ -46,6 +46,7 @@
     "lighthouse": "13.5.0",
     "mermaid": "^12.2.0",
     "sharp": "0.35.5",
+    "subset-font": "2.9.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vitest": "5.0.5"

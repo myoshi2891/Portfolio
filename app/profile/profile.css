@@ -18,7 +18,7 @@
 .profile-page .profile-intro { display: grid; align-items: center; gap: 2.5rem; padding-block: clamp(2rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem); }
 .profile-page .profile-copy { min-width: 0; }
 .profile-page .profile-copy h1 { margin-block: 1rem .75rem; font-size: clamp(2.35rem, 4.7vw, 4rem); line-height: 1.4; letter-spacing: -.055em; }
-.profile-page .profile-name { color: var(--color-muted); font-size: 1.15rem; font-weight: 500; }
+.profile-page .profile-name { color: var(--color-muted); font-size: 1.15rem; font-weight: 400; }
 .profile-page .profile-name > span { margin-right: .15em; color: var(--color-accent); }
 .profile-page .profile-lead { max-width: 34rem; margin-block: 1.5rem; color: var(--color-muted); font-size: 1rem; line-height: 1.95; }
 .profile-page .profile-focus { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; padding: 0; list-style: none; }
@@ -50,7 +50,7 @@
 .profile-page .profile-certifications { display: grid; column-gap: 3rem; list-style: none; margin: 0; padding: 0; }
 .profile-page .profile-certifications li { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); align-content: start; gap: 1rem; min-width: 0; padding-block: 1.75rem 2rem; border-top: 1px solid var(--color-line); }
 .profile-page .profile-certification-number { padding-top: .1rem; color: var(--color-muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
-.profile-page .profile-certification-category { margin-bottom: .75rem; color: var(--color-accent); font-size: .75rem; font-weight: 500; letter-spacing: .04em; }
+.profile-page .profile-certification-category { margin-bottom: .75rem; color: var(--color-accent); font-size: .75rem; font-weight: 600; letter-spacing: .04em; }
 .profile-page .profile-certifications h3 { font-size: 1.1rem; line-height: 1.65; }
 .profile-page .profile-certification-description { margin-top: .75rem; color: var(--color-muted); font-size: .95rem; line-height: 1.85; }
 .profile-page .profile-learning-link { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem 2rem; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--color-line); border-radius: 24px; background: linear-gradient(125deg, var(--color-surface), var(--hero-tint)); }
