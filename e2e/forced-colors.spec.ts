@@ -61,3 +61,11 @@ test('pages have no axe violations in forced colors', async ({ page }) => {
     expect((await new AxeBuilder({ page }).analyze()).violations, path).toEqual([]);
   }
 });
+
+test('the sticky header stays opaque in forced colors', async ({ page }) => {
+  await page.goto('/projects/medical-studies/');
+  await forceColors(page, { rendering: true });
+  // Forced colors keep author alpha, so a translucent header would show content scrolling beneath it.
+  const background = await page.locator('.masthead').evaluate(el => getComputedStyle(el).backgroundColor);
+  expect(background).toMatch(/^rgb\(/);
+});

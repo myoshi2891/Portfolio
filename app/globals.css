@@ -238,6 +238,15 @@ body { background-image: none; }
 
 .brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
 
+/* Forced colors drop author backgrounds and box shadows: show state with text decoration and
+   system colors instead. Filled buttons would otherwise keep light text on the forced Canvas. */
+@media (forced-colors: active) {
+  .desktop-nav a[aria-current="page"], .mobile-menu nav a[aria-current="page"], .detail-contents a[aria-current] { text-decoration: underline; text-underline-offset: .2em; }
+  .action-primary { color: LinkText !important; border-color: LinkText !important; }
+  .disclosure-mark::before, .disclosure-mark::after { background: CanvasText !important; }
+  .masthead { background: Canvas; }
+}
+
 /* Print: light palette, content only. Closed disclosures are shown via ::details-content so their
    open state (saved by NavigationController on toggle) is never changed. */
 @media print {
