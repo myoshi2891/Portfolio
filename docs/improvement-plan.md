@@ -381,11 +381,25 @@
 - axe 4.14 で `label-content-name-mismatch` が既定で有効になった。NFKD 正規化と単語分割で照合するため、「ダークモード」が1語と見なされ、`aria-hidden` の「Ⅱ」も表示文字に数えられる。テーマ切替の aria-label と立体図の記号を変更し、単体テストに同じ照合を追加した。
 - React 19 は SSR 時に lazy でない `<img>` を自動で preload するため、詳細ページでは Mermaid の SVG 3枚も `<link rel="preload">` されている。B4 の計測対象に加える。
 
+### 進捗（2026-10-19、フェーズ2）
+
+フェーズ2の7項目は対応済みです。A3 はオーナーの判断で (a) 廃止としました。検証結果は [検証記録](verification-log.md) にあります。
+
+| ID | 結果 |
+| --- | --- |
+| F1 | CI の build の後に `git diff --exit-code` と未追跡ファイルの確認を追加。A3 で `app/fonts.css` の再生成が必要になり、この確認の対象になることを実際に確かめた |
+| A3 | `project-details.ts`・`limitations.ts`・`feature-guides.ts`・`FeatureStory`・slug を渡すだけのラッパー3件・関連テストと、未使用の CSS 約160ルールを削除。未使用クラスの検出を単体テスト（`__tests__/css-usage.test.ts`）にした。単語単位の照合のため、識別子と同じ名前のクラス（例: `.claim`）は検出できない |
+| A1 | `data/project-documentation.ts` を4件のレジストリにし、`sections`・`pageClassName`・`updatedAt` を持たせた。page.tsx から slug の比較を除去。ギャラリーは Client Component で、build 時の内容検査を React に依存させないため、`components/projects/detail-galleries.tsx` で対応付ける |
+| A2 | `multi-vendor-detail.tsx` と `commerce-*` の CSS を削除。Multi Vendor の `<main>` の HTML は、図のクラス名を除いて変更前と同一 |
+| D4 | `updatedAt` を画面の更新日と sitemap の `lastModified` に使用。Home とプロフィールは日付を推測せず出力しない |
+| G1 | README から件数・日付を除き、検証結果を `docs/verification-log.md` に集約。現行仕様のページ一覧と描画方式、引き継ぎの未提供 URL、スキルを更新。Phase 0〜3 とレビューの文書は冒頭に履歴の注記が既にあるため移動しない |
+| G3 | engines・`.node-version`・CI を Node.js 24.21.0、`@types/node` を 24 に更新。Node.js 24 で型・単体・build を確認。**Vercel のプロジェクト設定（Node.js Version）を 24.x に切り替える作業は手動で残っている** |
+
 ## 6. 要判断事項
 
 | ID | 判断すること | 推奨 |
 | --- | --- | --- |
-| A3 | 詳細ページの旧「主張＋証拠」モデルを廃止するか、監査用に残すか | 廃止（Home の証拠検査は維持） |
+| A3 | 詳細ページの旧「主張＋証拠」モデルを廃止するか、監査用に残すか | **決定（2026-10-19）**: 廃止。Home の証拠検査は維持 |
 | B1 | 日本語フォントを OS に任せるか、使用文字だけの Web フォントにするか | 計測後に決める。見た目を優先するなら使用文字だけのフォント＋ウェイト削減 |
 | B4 | Lighthouse CI・Speed Insights を追加するか（外部依存） | Lighthouse CI を CI に追加する |
 | E1 | ハッシュ方式の CSP を導入するか | フェーズ4で費用対効果を評価する |

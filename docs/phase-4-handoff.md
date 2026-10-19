@@ -2,6 +2,8 @@
 
 更新日: 2026-10-02 JST。[現行仕様](current-specification.md)を表示・編集契約、[デザイン更新記録](design-refresh.md)を作業手順として使用してください。
 
+> 2026-10-19: 以降の検証結果は[検証記録](verification-log.md)に、残りの改善項目は[改善計画](improvement-plan.md)に集約します。本書の検証結果・環境（Node.js 22など）は2026-10-02時点の記録です。
+
 ## 現在地
 
 ユーザー依頼による4詳細の資料ベース化、詳細のGitHubリンク削除、全4ギャラリー、Multi Vendor10画像の命名・詳細掲載・Home代表画像、全画面テーマ切り替え、ライトモードの最終調整は実装済みです。このセッションの差分は作業ツリーにあり、コミット・push・デプロイは未実施です。
@@ -36,7 +38,7 @@
 
 ## 次の編集で確認すること
 
-- 詳細は旧project-details.ts／feature-guides.tsではなくdata/*-detail.mdを更新。章数・目次・図の説明と基準資料の対象時点を同期。
+- 詳細はdata/*-detail.mdを更新（旧project-details.ts／feature-guides.tsは2026-10-19に廃止）。章数・目次・図の説明と基準資料の対象時点を同期。
 - Mermaid変更時はdiagrams:generateでSVG生成。図中文字1rem、図専用スクロール、初期HTMLを確認。
 - ギャラリーは各スライド配列、Home画像はscreens.tsとimages:generate、本文・altはfonts:generateを更新。
 - Markdownと生成SVG、原本PNG、Home用WebP、生成フォントCSS、依存・lockfileを併せて管理。
@@ -47,7 +49,7 @@
 | 対象 | 状態 |
 |---|---|
 | R01の画像 | 今回10枚を受領・反映済み。画像未提供の扱いは解消 |
-| 未提供公開URL | R01・R02・R04・R08・R09・R12。URLを推測で補わない |
+| 未提供公開URL | R01・R02・R04・R12（R08・R09は2026-10-18に提供済み）。URLを推測で補わない |
 | プロフィール | 肩書き・経歴・担当範囲・連絡先が未提供 |
 | 本体公開 | ポートフォリオのホスト・HTTPS URLが未決定 |
 | Medical表示ラベル | 解消済み: ブラウザ風バーはスライド件数から算出し「11 views」と表示 |

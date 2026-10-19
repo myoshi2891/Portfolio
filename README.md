@@ -1,14 +1,14 @@
 # Engineering Portfolio
 
-myoshi2891の制作・学習を紹介する日本語ポートフォリオ。Next.js App RouterでHomeと代表作の詳細4ページを静的生成します。Homeの13リポジトリの掲載情報は固定コミットの証拠と編集データ、4詳細の本文は`docs/PROJECT-DETAILS/`の基準資料と画面向けMarkdownで管理します。
+myoshi2891の制作・学習を紹介する日本語ポートフォリオ。Next.js App RouterでHome、プロフィール、代表作の詳細4ページを静的生成します。Homeの13リポジトリの掲載情報は固定コミットの証拠と編集データ、4詳細の本文は`docs/PROJECT-DETAILS/`の基準資料と画面向けMarkdownで管理します。
 
-2026-10-02更新: 全13件のHomeプレビュー、4詳細の実画面ギャラリー（10／9／11／4枚）、資料に基づく本文・Markdown表・Mermaid図12件、全画面共通のライト／ダーク切り替えを実装。詳細画面のGitHubリンクはすべて削除しました。ライトモードは白・チャコール・シルバーを基調に、ブルーの3Dパネルと光の反射をアクセントにしています。
+Homeは全13件のプレビュー、4詳細は実画面ギャラリー・資料に基づく本文・Markdown表・Mermaid図を持ち、全画面でライト／ダークを切り替えられます。詳細画面にはGitHubリンクを表示しません。ライトモードは白・チャコール・シルバーを基調に、ブルーの3Dパネルと光の反射をアクセントにしています。
 
-単体34件成功。最新デザインのChromium画面テスト8件、Multi Vendorギャラリー2件とHome画像のPC・モバイル表示を確認しました。このセッションではエージェントによるbuild・全3ブラウザE2Eを実行していません。[現行仕様](docs/current-specification.md)、[編集手順](docs/design-refresh.md)、[検証結果と残作業](docs/phase-4-handoff.md)を参照してください。
+件数・日付を含む検証結果は[検証記録](docs/verification-log.md)の1か所にまとめます。[現行仕様](docs/current-specification.md)、[編集手順](docs/design-refresh.md)、[残作業](docs/phase-4-handoff.md)、[改善計画](docs/improvement-plan.md)を参照してください。
 
 ## ローカル起動
 
-Bun **1.3.12**とNode.js **22.23.2**を使用します（`.bun-version`、`.node-version`、`package.json`）。
+Bun **1.3.12**とNode.js **24.21.0**（LTS）を使用します（`.bun-version`、`.node-version`、`package.json`）。
 
 ```sh
 bun install --frozen-lockfile
@@ -71,7 +71,7 @@ URLなしではcanonicalを省略し、sitemapは空、robotsはクロールを�
 [`vercel.json`](vercel.json)でNext.jsプリセット、`bun install --frozen-lockfile`、`bun run build`を指定しています。`output: "export"`の静的出力をそのまま配信し、サーバー機能は使いません。
 
 1. VercelでGitHubリポジトリをImportします。Framework・Install・Buildは`vercel.json`の値が使われ、Root Directoryは既定のままにします。
-2. Node.jsは22.xを選択します（`package.json`の`engines`と一致）。
+2. Node.jsは24.xを選択します（`package.json`の`engines`と一致）。
 3. 環境変数は不要です。Vercelの`VERCEL_ENV`が`production`のときだけインデックスを許可し、`SITE_URL`の既定値は`VERCEL_PROJECT_PRODUCTION_URL`（独自ドメイン設定時はそのドメイン）です。Preview・Developmentは常にnoindexで、canonicalとsitemapを出力しません。
 4. 独自ドメインを明示する場合は、Production環境にのみ`SITE_URL=https://example.com`を設定します。`DEPLOYMENT_ENV`・`SITE_URL`を明示した値はVercelの既定より優先します。
 
@@ -81,7 +81,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## 編集と構成
 
-- `data/`: 掲載順・文案・証拠・未検証範囲。Featured 4件、Studies 6件、Secondary 3件。4詳細本文は`*-detail.md`、共通対応表は`project-documentation.ts`。
+- `data/`: 掲載順・文案・証拠。Featured 4件、Studies 6件、Secondary 3件。4詳細本文は`*-detail.md`、本文・節・ページクラス・更新日のレジストリは`project-documentation.ts`（Featuredの登録漏れは型エラー）。
 - `docs/PROJECT-DETAILS/`: 詳細説明の基準資料。資料と表示用Markdownの対応は[現行仕様](docs/current-specification.md#ページと情報源)。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
 - `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
@@ -89,7 +89,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを通常のアンカーで表示。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像や操作ボタンを使わず、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
-- `components/projects/documented-project-detail.tsx`・`multi-vendor-detail.tsx`: Markdown本文・表・生成済みMermaid SVGをサーバー描画。旧`project-details.ts`・`feature-guides.ts`は現在の4詳細本文の編集先ではありません。
+- `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。ギャラリーとの対応は`detail-galleries.tsx`。
 - `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
 - `lib/theme.ts`・`components/layout/theme-toggle.tsx`: OS追従・保存・タブ同期を持つ全画面共通テーマ切り替え。
 - `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
@@ -114,7 +114,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→静的出力E2Eを実行します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。最新のローカル結果と検証範囲は[引き継ぎ](docs/phase-4-handoff.md)に集約しています。GitHub Actions上の実行結果はまだありません。
+[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→静的出力E2Eを実行します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
 
 検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・Lighthouse・実ユーザー性能は未測定です。
 

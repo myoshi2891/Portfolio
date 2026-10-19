@@ -17,7 +17,8 @@ Turn the project's source documentation into a readable case study without losin
 
 ## Choose the smallest suitable implementation
 
-- Write the body as Markdown in `data/<project>-detail.md` and render it with the shared `DocumentedProjectDetail` and its entry in `data/project-documentation.ts`. Keep the `##` section count, the contents navigation IDs, and the diagram descriptions aligned.
+- Write the body as Markdown in `data/<project>-detail.md` and render it with the shared `DocumentedProjectDetail` and its entry in `data/project-documentation.ts`. The entry holds the body path, diagram descriptions, SVG directory, contents `sections`, `pageClassName`, and `updatedAt` (shown on the page and used as the sitemap `lastModified`). Keep the `##` section count, the contents navigation IDs, and the diagram descriptions aligned.
+- Register the gallery component in `components/projects/detail-galleries.tsx`. Never branch on the slug in `app/projects/[slug]/page.tsx`.
 - Express tables as GFM tables and flows or sequences as Mermaid. Do not use ASCII diagrams. Mermaid is rendered to SVG at development time (`bun run diagrams:generate`); never load the Mermaid runtime in the browser.
 - Do not add a project-specific body renderer. Extend the shared renderer or its registry instead.
 - Scope project-specific CSS with a page class. Do not weaken the layout of other project pages.

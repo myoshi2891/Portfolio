@@ -1,28 +1,28 @@
-# 現行仕様 — 2026年10月18日
+# 現行仕様 — 2026年10月19日
 
 この文書は、このセッションで確定したポートフォリオの表示・編集・検証仕様をまとめます。Phase 0のリポジトリ監査は2026年9月16日の記録として保持し、紹介対象アプリの再監査・テスト再実行とは区別します。旧Phase文書の設計案と食い違う場合は、この現行仕様を優先します。
 
 ## ページと情報源
 
-Home、代表的な制作4詳細、404を維持します。掲載分類はFeatured 4件、Studies 6件、Secondary 3件。static export、末尾スラッシュ、SPA内部遷移、パンくず、現在節の目次、履歴復元、公開URL9件の管理を維持します。
+Home、プロフィール、代表的な制作4詳細、404を維持します。掲載分類はFeatured 4件、Studies 6件、Secondary 3件。static export、末尾スラッシュ、SPA内部遷移、パンくず、現在節の目次、履歴復元、公開URL9件の管理を維持します。
 
 Homeの説明・技術タグ・掲載順は既存のTypeScriptデータと証拠で管理します。詳細の説明は以下の資料を読み、画面向けに編集したMarkdownをServer Componentsで描画します。資料をそのまま自動同期する仕組みではなく、資料更新時は編集本文も見直します。
 
 | 詳細slug | 基準資料（`docs/PROJECT-DETAILS/`） | 表示用本文 | 描画 |
 |---|---|---|---|
-| `multi-vendor-e-commerce` | `PROJECT_DOCUMENTATION-Multi-Vendor-E-Commerce.md` | `data/multi-vendor-detail.md` | `MultiVendorDetail` |
+| `multi-vendor-e-commerce` | `PROJECT_DOCUMENTATION-Multi-Vendor-E-Commerce.md` | `data/multi-vendor-detail.md` | `DocumentedProjectDetail` |
 | `comparison-of-llms` | `PROJECT_DETAILS-LLM-Studies.md` | `data/llm-studies-detail.md` | `DocumentedProjectDetail` |
 | `medical-studies` | `project-overview-medical-studies.md` | `data/medical-studies-detail.md` | `DocumentedProjectDetail` |
 | `the-wild-oasis-for-admin` | `technical-documentation-The-Wild-Oasis.md` | `data/wild-oasis-detail.md` | `DocumentedProjectDetail` |
 
-共通レンダラーの対応表は`data/project-documentation.ts`。各詳細コンポーネントはslugを渡すラッパーです。Multi Vendorは注文・決済の独立節を持つため専用レンダラーを使用します。`data/project-details.ts`・`data/feature-guides.ts`に残る旧データを編集しても、現在の4詳細本文には反映されません。既存データの整合性検査は維持します。
+`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーはClient Componentのため、`components/projects/detail-galleries.tsx`で対応付けます（build時の内容検査がReactに依存しないよう、データ側に置かない）。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
 
 | 対象 | 目次・節ID（表示順） |
 |---|---|
 | Multi Vendor | `overview` → `features` → `orders` → `architecture` → `decisions` → `quality` → `documentation` |
 | その他3詳細 | `overview` → `features` → `architecture` → `decisions` → `quality` → `documentation` |
 
-概要には用途・Repository名・技術タグ・画面の最終更新日（2026年10月2日）を表示し、提供済みの公開URLだけCTAを表示します。本文は主要機能、処理の流れ、技術の責務、構成と制約、品質と継続課題、説明の基準を具体的に説明します。担当範囲・制作背景を推測で補いません。
+概要には用途・Repository名・技術タグ・画面の最終更新日（レジストリの`updatedAt`。現在は4件とも2026年10月2日）を表示し、提供済みの公開URLだけCTAを表示します。本文は主要機能、処理の流れ、技術の責務、構成と制約、品質と継続課題、説明の基準を具体的に説明します。担当範囲・制作背景を推測で補いません。
 
 資料の調査日とテスト統計日を区別します。Multi Vendorの資料は9月18日、品質統計は9月4日、coverageは9月3日。LLM・Medical・Wild Oasisの資料基準は9月18日です。資料内の件数はその時点の記録であり、ポートフォリオで再実行した結果や現在の外部サービスの保証として表示しません。採用理由が資料にない場合は構造と制約を説明します。
 

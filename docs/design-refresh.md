@@ -15,7 +15,7 @@
 
 ## 詳細本文・図の編集
 
-[基準資料・編集本文・節IDの対応表](current-specification.md#ページと情報源)に従い、`data/*-detail.md`を更新します。資料更新日・品質統計日・画面更新日を分け、資料の結果を現在の保証へ置き換えません。旧`data/project-details.ts`・`data/feature-guides.ts`の編集は現在の4詳細本文へ反映されません。
+[基準資料・編集本文・節IDの対応表](current-specification.md#ページと情報源)に従い、`data/*-detail.md`を更新します。資料更新日・品質統計日・画面更新日を分け、資料の結果を現在の保証へ置き換えません。節・ページクラス・画面の更新日は`data/project-documentation.ts`のレジストリで管理し、更新日はsitemapの`lastModified`にも使われます。
 
 `DocumentedProjectDetail`はLLM・Medical・Wild Oasisの共通描画、Multi Vendorは注文節を持つ専用描画。react-markdownとremark-gfmで本文・表を表示し、Mermaidソースを生成済みSVGへ置き換えます。章数と目次、図の説明を合わせて更新してください。
 
