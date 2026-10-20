@@ -1,7 +1,9 @@
 name: Portfolio CI
 
 on:
+  # PR branches are verified by pull_request; push covers only direct updates to long-lived branches.
   push:
+    branches: [main, dev]
   pull_request:
   workflow_dispatch:
 
@@ -32,6 +34,12 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: "1.3.12"
+      - name: Restore bun package cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
       - name: Install dependencies
         run: bun install --frozen-lockfile
       # braces (GHSA-vfj7-8cjw-p6xm) reaches only eslint-config-next's lint-time globbing and has no patched release yet.
@@ -48,8 +56,22 @@ jobs:
       # The build regenerates tracked files such as app/fonts.css; any drift means a missed regeneration commit.
       - name: Check generated files are committed
         run: git diff --exit-code && test -z "$(git status --porcelain)"
+      - name: Read Playwright version
+        id: playwright-version
+        run: echo "version=$(bunx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      # Browser builds are tied to the Playwright version; system libraries are not cached and are installed on a hit.
+      - name: Restore Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - name: Install browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: bunx playwright install --with-deps chromium firefox webkit
+      - name: Install browser system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: bunx playwright install-deps chromium firefox webkit
       # Regression budgets from the 2026-10-19 B1 baseline (docs/verification-log.md).
       - name: Check Lighthouse budgets
         run: bun run lighthouse

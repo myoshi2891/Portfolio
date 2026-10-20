@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ARRIVAL_ATTRIBUTE, HISTORY_KEY, parseNavigationState, readBackup, withNavigationState, writeBackup, type NavigationState } from "../../lib/navigation-state";
+import { fragmentId, returnIds, samePageFragment } from "../../lib/navigation-ids";
 
 export function NavigationController() {
   const pathname = usePathname();
@@ -25,9 +26,9 @@ export function NavigationController() {
     previousPath.current = pathname;
     const disclosures = [...document.querySelectorAll<HTMLDetailsElement>("main details[id]")];
     // Reassign generated IDs on each route, including persistent header/footer links.
-    document.querySelectorAll<HTMLElement>("a, summary, button").forEach((el, i) => {
-      if (!el.id || el.dataset.navigationId) { el.id = `return-${i}`; el.dataset.navigationId = "true"; }
-    });
+    const unnamed = [...document.querySelectorAll<HTMLElement>("a, summary, button")].filter(el => !el.id || el.dataset.navigationId);
+    const ids = returnIds(unnamed.map(el => ({ tag: el.localName, href: el.getAttribute("href"), label: el.getAttribute("aria-label") ?? el.textContent.trim(), key: el.dataset.navigationKey })));
+    unnamed.forEach((el, i) => { el.id = ids[i] ?? el.id; el.dataset.navigationId = "true"; });
     const title = document.querySelector<HTMLElement>("main h1");
     if (title && !title.id) { title.id = "page-title"; title.tabIndex = -1; }
     document.querySelectorAll<HTMLElement>("main section[id]").forEach(section => {
@@ -107,9 +108,8 @@ export function NavigationController() {
       });
     }
     function hashTarget(hash: string) {
-      let id: string;
-      try { id = decodeURIComponent(hash.slice(1)); } catch { return null; }
-      return allowed.has(id) ? document.getElementById(id) : null;
+      const id = fragmentId(hash);
+      return id !== null && allowed.has(id) ? document.getElementById(id) : null;
     }
     function reveal(target: HTMLElement, focus: boolean, smooth = true) {
       stopSmoothScroll();
@@ -138,8 +138,9 @@ export function NavigationController() {
       if (!link || link.target || link.hasAttribute("download")) return;
       const url = new URL(link.href, location.href);
       save();
-      if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search || !url.hash) return;
-      const target = hashTarget(url.hash);
+      const hash = samePageFragment(link.href, location.href);
+      if (!hash) return;
+      const target = hashTarget(hash);
       if (!target) return;
       event.preventDefault();
       if (url.hash !== location.hash) {

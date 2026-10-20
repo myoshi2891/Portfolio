@@ -15,7 +15,7 @@ Homeの説明・技術タグ・掲載順は既存のTypeScriptデータと証拠
 | `medical-studies` | `project-overview-medical-studies.md` | `data/medical-studies-detail.md` | `DocumentedProjectDetail` |
 | `the-wild-oasis-for-admin` | `technical-documentation-The-Wild-Oasis.md` | `data/wild-oasis-detail.md` | `DocumentedProjectDetail` |
 
-`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーはClient Componentのため、`components/projects/detail-galleries.tsx`で対応付けます（build時の内容検査がReactに依存しないよう、データ側に置かない）。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
+`data/project-documentation.ts`は4詳細すべてのレジストリです。各項目に本文・図の説明・SVG保存先・目次の節・ページクラス・更新日（`updatedAt`）を持ち、`satisfies Record<FeaturedSlug, …>`で登録漏れを型エラーにします。4詳細とも共通の`DocumentedProjectDetail`で描画し、ページはslugで分岐しません。ギャラリーのスライド定義は`data/galleries.ts`に置き（同じく`satisfies Record<FeaturedSlug, …>`）、ページは共通の`ProjectSlideshow`へ渡します。Homeの詳細リンク検査は、レジストリでそのslugに登録された節だけを許可します。旧「主張＋証拠」の詳細データ（`project-details.ts`・`limitations.ts`・`feature-guides.ts`）は2026-10-19に廃止しました。Homeカードの証拠検査は維持します。
 
 | 対象 | 目次・節ID（表示順） |
 |---|---|
@@ -73,12 +73,14 @@ Homeのプレビューは`data/screens.ts`・`ScreenPreview`で全13リポジト
 
 4詳細は共通`ProjectSlideshow`を使用し、概要の後・目次と本文の前に配置します。
 
-| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | ギャラリーコンポーネント |
+| 詳細 | 枚数 | WebPディレクトリ（`public/images/`、原本PNGは`assets/screens/`） | `data/galleries.ts`のキー |
 |---|---|---|---|
-| Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-slideshow.tsx` |
-| LLM | 9 | `llm-studies` | `llm-studies-slideshow.tsx` |
-| Medical | 11 | `Medical-Studies` | `medical-studies-slideshow.tsx` |
-| Wild Oasis管理 | 4 | `The Wild Oasis Admin` | `wild-oasis-slideshow.tsx` |
+| Multi Vendor | 10 | `multi-vendor-e-commerce` | `multi-vendor-e-commerce` |
+| LLM | 9 | `llm-studies` | `comparison-of-llms` |
+| Medical | 11 | `Medical-Studies` | `medical-studies` |
+| Wild Oasis管理 | 4 | `The Wild Oasis Admin` | `the-wild-oasis-for-admin` |
+
+ディレクトリ名には空白や大文字が残っています。画像のURLは`publicImagePath`でパスの区切りごとにエンコードするため、そのままでも配信できます。
 
 Medicalのブラウザ風バーの「N views」表記はスライド配列の件数（現在11枚）から算出します。ギャラリーの枚数を確認するときはスライド配列と操作カウンターを基準にします。
 
@@ -146,6 +148,26 @@ Medicalのブラウザ風バーの「N views」表記はスライド配列の件
 立体図はラベルを平面へ置き、中央の青いパネルとシルバーの軌道に奥行きを持たせます。軌道は24秒、中心の上下3pxの動きは12秒周期。停止／再生ボタンを設け、画面外・非表示タブでは停止。768px未満は中央シンボルと2列のラベルによる静止表示にします。reduced-motionとJavaScript無効時も静止します。
 
 ヒーローは480ms・最大120msの時間差、下部の見出しとカードは初回に400msの登場演出を行います。本文を初期状態で隠さず、reduced-motionでは動きを無効にします。リンクの矢印と展開記号は180msで変化し、学習本文の高さは即時切り替えます。
+
+## 強制カラー
+
+`@media (forced-colors: active)`（Windows のコントラストテーマなど）では、作者が指定した背景と `box-shadow` が無効になり、背景の透明度だけが残ります。そのため、次のように補います。
+
+- 現在地（ナビゲーションの`aria-current="page"`、目次の現在の節）には下線を付けます。
+- 塗りつぶしボタン（`.action-primary`）は、文字と枠を`LinkText`にします（白系の文字が強制後の`Canvas`の上に残るため）。
+- 学習カードの開閉マークは、線を`CanvasText`で描きます。
+- 固定ヘッダーは、不透明な`Canvas`にします。
+
+`e2e/forced-colors.spec.ts`は、色を実際に強制する Chromium と Firefox で検証します。WebKit はメディアクエリだけが一致して色を強制しないため、描画の検査は skip します。
+
+## 印刷
+
+`@media print`（`app/globals.css`の末尾）は、選択中のテーマにかかわらずライトの配色で本文だけを出力します。
+
+- 隠すもの: スキップリンク、ヘッダー、フッターのナビゲーション、Heroの操作と装飾（`.hero-actions`・`.hero-foot`・`.hero-showcase`）、ギャラリーの前後・一時停止ボタンと位置ドット、詳細の目次。
+- 閉じた`details`は`details::details-content`で中身を表示します。`open`は変更しないため、NavigationControllerが保存する開閉状態は印刷の前後で変わりません。
+- `http`で始まるリンクは、後ろにURLを併記します。内部リンクには付けません。
+- ブラウザは既定で背景を印刷しないため、塗りつぶしボタンは枠線と文字色だけで表示します。カード・図・表の行は途中で改ページしません。
 
 ## 編集と検証
 

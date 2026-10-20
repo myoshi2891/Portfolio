@@ -34,7 +34,7 @@ bun run preview
 | `bun run test` | Vitestの単体・描画・データ境界テスト |
 | `bun run build` | データ・参照整合性検査、フォント定義生成、静的生成 |
 | `bun run preview` | 静的出力をローカル配信 |
-| `bun run test:e2e` | 静的出力を3ブラウザで検証。必要に応じてプレビューを自動起動 |
+| `bun run test:e2e` | 静的出力をデスクトップの3ブラウザで検証し、タッチ端末（Pixel 7相当）でメニュー・ギャラリー・目次のスモークテスト（`e2e/mobile-device.spec.ts`）を実行。必要に応じてプレビューを自動起動 |
 | `bun run lighthouse` | build後の静的出力をプレビューで配信し、Lighthouseを5回ずつ実行して`lighthouserc.json`の予算を検査（Playwright Chromiumが必要。レポートは`.lighthouseci/`） |
 | `bun scripts/check-external-links.ts` | build後の静的出力に含まれる外部リンクの生存を確認 |
 | `bun run fonts:generate` | 現在の本文の使用文字から日本語フォントのサブセットと定義を再生成 |
@@ -88,13 +88,15 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 - `data/`: 掲載順・文案・証拠。Featured 4件、Studies 6件、Secondary 3件。4詳細本文は`*-detail.md`、本文・節・ページクラス・更新日のレジストリは`project-documentation.ts`（Featuredの登録漏れは型エラー）。
 - `docs/PROJECT-DETAILS/`: 詳細説明の基準資料。資料と表示用Markdownの対応は[現行仕様](docs/current-specification.md#ページと情報源)。
 - `app/`: Home、Featured詳細、404、Metadata、sitemap、robots。
-- `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。
-- `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。
+- `components/home/navigation-controller.tsx`: 全ページのスムーズなアンカー移動・開閉・履歴・フォーカス復元を担当するClient Component。状態遷移と不変条件は[設計メモ](docs/navigation-controller.md)、純粋な処理は`lib/navigation-state.ts`と`lib/navigation-ids.ts`。
+- `components/layout/mobile-menu.tsx`・`components/projects/detail-contents.tsx`: モバイルメニューと詳細目次のClient Component。モバイルメニューは、リンクの選択・Esc・メニュー外のタップ・メニュー外へのフォーカス移動で閉じる。
+- `components/layout/primary-nav-links.tsx`: ヘッダーとモバイルメニューで共有するナビゲーション（項目は`data/site.ts`の`navigation`）。表示中のページへのリンク（現在は`/profile/`）に`aria-current="page"`を付ける。Homeの節へのリンクには付けない。フッターの項目は`data/site.ts`の`footerNavigation`。
+- `components/home/home-sections.tsx`: Homeの各節（Hero・Selected Work・Domains・Studies・More Work・About・Philosophy・Contact）。`app/page.tsx`は節を並べるだけにする。
 - `components/ui/site-link.tsx`: 内部リンクをNext.js LinkでSPA遷移、外部リンクを新しいタブで開くアンカーとして表示し、そのことを支援技術へ伝える。
 - `components/home/hero-scene.tsx`: 学習・制作・設計・改善の循環を表すCSS 3Dアニメーション。画像を使わず、一時停止／再生ボタンを備え、画面外停止・reduced-motionに対応。
 - `components/projects/screen-preview.tsx`・`data/screens.ts`・`data/presentation.ts`: 全13件のHomeプレビュー・代替文と7件の公開サイトの導線。
-- `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。ギャラリーとの対応は`detail-galleries.tsx`。
-- `components/projects/project-slideshow.tsx`・各`*-slideshow.tsx`: 全4詳細の共通画像ギャラリー。
+- `components/projects/documented-project-detail.tsx`: 全4詳細のMarkdown本文・表・生成済みMermaid SVGをサーバー描画。
+- `components/projects/project-slideshow.tsx`・`data/galleries.ts`: 全4詳細の共通画像ギャラリーと、slugごとのスライド定義（画像・タイトル・alt・保存先）。画像のURLは`lib/image-path.ts`の`publicImagePath`がパスの区切りごとにエンコードする（Homeの`ScreenPreview`と共通）。
 - `lib/theme.ts`・`components/layout/theme-toggle.tsx`: OS追従・保存・タブ同期を持つ全画面共通テーマ切り替え。
 - `components/layout/header-github-link.tsx`: `/projects/`配下で共通ヘッダーのGitHubリンクを非表示。hydration中は事前生成HTMLと同じ判定（実在する詳細のみ）を使い、未知projectの404は hydration 後に隠す。Homeの導線は維持。
 - `app/globals.css`: 配色トークン、保存選択／OS連動テーマ、3Dの反射演出、全コンポーネントのスタイル。
@@ -118,7 +120,7 @@ HSTSは`includeSubDomains`・`preload`を付けていません。独自ドメイ
 
 ## CIと検証範囲
 
-[CI設定](.github/workflows/ci.yml)は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→Lighthouseの予算検査→静的出力E2Eを実行します。Lighthouseは`@lhci/cli`ではなく`lighthouse`本体を使います（`@lhci/cli`の依存は修正版のない高リスクの勧告を含むため）。外部リンクは[週次ワークフロー](.github/workflows/external-links.yml)で確認し、切れていればIssueを作成（既存のIssueがあればコメント）します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
+[CI設定](.github/workflows/ci.yml)は、PRと`main`・`dev`へのpushで起動します（PRのブランチで同じ検証を2回実行しないため）。Bunのパッケージは`bun.lock`、Playwrightのブラウザはそのバージョンをキーにキャッシュし、ブラウザのキャッシュがあるときはOSの依存だけを入れます。手順は依存導入→脆弱性検査（`bun audit`）→型・Lint・単体→build→生成物の同期確認→Lighthouseの予算検査→静的出力E2Eを実行します。Lighthouseは`@lhci/cli`ではなく`lighthouse`本体を使います（`@lhci/cli`の依存は修正版のない高リスクの勧告を含むため）。外部リンクは[週次ワークフロー](.github/workflows/external-links.yml)で確認し、切れていればIssueを作成（既存のIssueがあればコメント）します。buildが追跡対象の生成物（`app/fonts.css`など）を書き換えた場合は、再生成のコミット漏れとしてCIが失敗します。`bun audit`の除外は修正版のない開発依存の勧告に限り、理由をCI設定に記載します。依存とGitHub Actionsは[Dependabot](.github/dependabot.yml)で週次更新を提案します（Next.js・React系は1つにまとめ、Node.js型・TypeScript・ESLintのメジャー更新は計画的に別途実施）。ローカルの検証結果は[検証記録](docs/verification-log.md)、CIの実行結果はGitHub Actionsを参照してください。
 
 検証はこのポートフォリオに対するものです。紹介対象13リポジトリのテスト成功・性能・外部連携の成功を意味しません。実機・支援技術・実ユーザー性能は未測定です。Lighthouseはローカルのラボ計測（モバイルのシミュレーション）です。
 

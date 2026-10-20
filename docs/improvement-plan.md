@@ -435,6 +435,33 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 - 予算は転送量を 2.0MB に引き締めました（旧スライス方式の 2.24MB に戻ると失敗します）。Performance と LCP は、Home が予算に近くばらつきも大きいため据え置きます。
 - 据え置いた LCP 予算（8秒）は、GitHub Actions で Multi Vendor の中央値が 8.05秒となり超過しました。シミュレーションの LCP は同じページでも6.5〜7.9秒とぶれるため、LCP 予算を9秒に変更し、5回の中央値で判定します。テキストの LCP を待たせるフォント（2件で約320KB）を小さくする対策は、別タスクで検討します。
 
+### 進捗（2026-10-19、フェーズ4）
+
+| ID | 結果 |
+| --- | --- |
+| A7 | `StudySummary` と `DocumentedProjectDetail` が読み込んだ結果を `MarkdownDocumentContent` に `loaded` として渡す。`comparison-of-llms` の読み込みは24回から4回（Markdown 1件＋SVG 3件）になった。React の `cache()` は単体テストの描画（`renderToStaticMarkup`）では効かないため使わない。生成 HTML は Build ID を除いて変更前と同一 |
+| F3 | `push` を `main`・`dev` に限定（PR のブランチは `pull_request` で1回だけ検証）。`actions/cache` v6.1.0 で、Bun のパッケージキャッシュ（ランナーのホームの `.bun/install/cache`、キーは `bun.lock` のハッシュ）と Playwright のブラウザ（同じく `.cache/ms-playwright`、キーは Playwright のバージョン）を保存する。ブラウザのキャッシュがあるときは `install-deps` で OS のライブラリだけを入れる。効果は GitHub Actions 上の2回目以降の実行で確認する |
+| H2 | ヘッダーとモバイルメニューの項目を `data/site.ts` の `navigation` にまとめ、`PrimaryNavLinks` で描画する（A6 のナビゲーション項目の集約のうち、フッター以外）。表示中のページへのリンクに `aria-current="page"` と現在地のスタイルを付ける。モバイルメニューは、メニュー外の `pointerdown` と `focusin` でも閉じる。WebKit はクリックしたリンクにフォーカスしないため、`blur` では判定しない。E2E は3ブラウザで247件が通過 |
+| F5 | Playwright に `mobile-chromium`（`Pixel 7`: タッチ・DPR 2.625）を追加。`e2e/mobile-device.spec.ts` のスモークテスト3件（メニュー、ギャラリーの一時停止と送り、目次への移動）だけを `tap()` で実行し、デスクトップの3ブラウザからは除外する。5回の繰り返しで15件とも通過 |
+| A5 | スライド定義を `data/galleries.ts`（`satisfies Record<FeaturedSlug, ProjectGallery>`）に移し、slug を渡すだけのラッパー4件と `detail-galleries.tsx` を削除。URL は `lib/image-path.ts` の `publicImagePath` で区切りごとにエンコードし、`ScreenPreview` と共通にした。Wild Oasis 管理の画像 URL は `The%20Wild%20Oasis%20Admin` になる。全スライドのファイルの存在を単体テストで確認する。ディレクトリ名の kebab-case 化は任意のため行わない |
+| A6 | Home の8節を `components/home/home-sections.tsx` に分け、`app/page.tsx` は節を並べるだけにした。ヘッダーとフッターの JSX を要素ごとに改行し、フッターの項目を `data/site.ts` の `footerNavigation` にまとめた（ヘッダーは H2 で対応済み）。全ページの DOM は、`<script>` とアセットのハッシュを除いて変更前と同一 |
+| H3 | `@media print` を追加。ライトの配色にそろえ、ナビゲーション・操作部品・Hero の装飾・目次を隠し、外部リンクの URL を併記する。閉じた `details` は `::details-content` で表示し、`open` は変えない（`toggle` で開閉状態を保存する NavigationController に影響させないため）。3ブラウザの E2E（`e2e/print.spec.ts`）と、Chromium で出力した PDF を目視で確認した。PDF で見つかった、カードの枠だけが前ページに残る問題と、塗りつぶしボタンの文字が背景なしで読めない問題も直した |
+| A8 | 要検証としていた ID のずれは実際に起きていた。初回の読み込み時にはテーマ切替が `<span>` で連番の対象外だったが、SPA で移動して戻ると `<button>` として数えられ、後ろの ID が1つずつずれていた（例: `return-22` → `return-23`）。そのため履歴で別の要素にフォーカスが戻っていた。ID を要素の種類・`href`・名前のハッシュから作る `returnIds` に変え、ハッシュの解決と同一ページ判定とともに `lib/navigation-ids.ts` へ切り出して単体テストを付けた。再現の E2E は `e2e/navigation-return-ids.spec.ts`。状態遷移と不変条件は [設計メモ](navigation-controller.md) にまとめた。全面的な書き換えはしていない |
+| C6 | 強制カラーは Playwright のエミュレーションで自動化した（`e2e/forced-colors.spec.ts`）。Chromium では、塗りつぶしボタンの文字が見えない（axe の color-contrast 違反）、開閉マークが消える、ヘッダーが透ける、現在地が太字だけになる、の4点が見つかり、すべて直した。WebKit はメディアクエリだけが一致して色を強制しないため、描画の検査は skip する。**スクリーンリーダー（VoiceOver・NVDA）と実機の Windows コントラストテーマでの確認は手動で残っている** |
+| G5 | 評価のみ（2026-10-20、一時的な作業ツリーで実施し、dev には入れていない）。下の表のとおり、TypeScript 7 は lint が動かないため移行できない。ESLint 10 は動くが、3プラグインが peer の範囲外。移行するかは要判断事項に追加した |
+
+G5 の評価結果:
+
+| 対象 | 結果 |
+| --- | --- |
+| TypeScript 7.0.2 | 型チェック・単体テスト（123件）・build は通過。`tsc --noEmit` は約2.1秒から約0.3秒になった。ESLint は `typescript-eslint does not support TS 7.0` で停止する。`typescript-eslint` 8.71.2 の peer は `typescript >=4.8.4 <6.1.0` で、対応は typescript-eslint#10940 で追跡されている |
+| ESLint 10.13.0（TypeScript 5.9.3） | lint は通過。違反を含む確認用ファイルでは、ESLint 9 と同じルール（`@next/next/no-img-element`・`jsx-a11y/alt-text`・`react-hooks/exhaustive-deps`・`react/jsx-key`）が検出された。ただし `eslint-config-next` 16.4.2 が依存する `eslint-plugin-react`・`eslint-plugin-import`・`eslint-plugin-jsx-a11y` の peer は ESLint `^9` までで、範囲外での利用になる |
+
+対応中に見つかった事項:
+
+- `e2e/navigation.spec.ts` の「actual Chromium BFCache restores …」は、全体を並列で実行すると時々失敗する（A6 の前のコミットでも再現し、単独では6回とも通過）。BFCache からの復元が負荷によって行われないためと考えられる。CI では retries 1回で吸収されているが、継続して失敗するならテストを直列にする。
+- `scripts/prepare-fonts.ts` は `app`・`components`・`data` のソースをコメントも含めて走査し、フォントに入れる文字を決める。これらのディレクトリのコメントに新しい日本語を書くとフォントが再生成され、F1 の同期チェックの対象になる。既存のコメントにならい英語で書く。
+
 ## 6. 要判断事項
 
 | ID | 判断すること | 推奨 |
@@ -446,6 +473,7 @@ B1 の前後比較（同じマシン・同じ条件で再計測、3回の中央�
 | F4 | テスト用の DOM 実装を追加するか（外部依存） | 補助関数で済むなら追加しない |
 | F6 | 外部リンク監視のアクションを追加するか（外部依存） | **決定（2026-10-19）**: 依存を追加せず、自前のスクリプトを週次で実行 |
 | H1 | テーマを3状態にする仕様変更を行うか | 要望があれば行う |
+| G5 | TypeScript 7・ESLint 10 へ移行するか | TypeScript 7 は `typescript-eslint` の対応を待つ（TS 6 の API を並行して入れる回避策はあるが、依存が増える）。ESLint 10 は `eslint-config-next` の依存プラグインが peer で対応するまで待つことを推奨 |
 
 ## 7. 共通の検証手順
 

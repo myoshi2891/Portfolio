@@ -2,6 +2,18 @@ export const site = {
   name: "myoshi2891",
   title: "myoshi2891 — Engineering Portfolio",
   githubUrl: "https://github.com/myoshi2891",
+  navigation: [
+    { label: "制作", href: "/#selected-work" },
+    { label: "学習", href: "/#studies" },
+    { label: "考え方", href: "/#philosophy" },
+    { label: "プロフィール", href: "/profile/" },
+  ],
+  footerNavigation: [
+    { label: "制作", href: "/#selected-work" },
+    { label: "学習", href: "/#studies" },
+    { label: "プロフィール", href: "/profile/" },
+    { label: "ページ先頭へ ↑", href: "/#top" },
+  ],
   hero: "学びを、仕組みにする。",
   description: "EC・宿泊管理のWebアプリから、LLM料金の比較、医療の質問票の計算・記録まで。制作したコードと、設計・品質・セキュリティの学習を紹介します。",
   heroEvidenceIds: ["R01-F01", "R01-F02", "R02-F01", "R06-F01", "R12-F01", "R08-F01", "R07-F01", "R11-F01"],

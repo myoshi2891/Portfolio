@@ -51,6 +51,7 @@ a:hover { color: var(--color-accent-hover); }
 .masthead a, .footer a { min-height: 44px; align-content: center; }
 .desktop-nav a { padding: .4rem 1rem; text-decoration: none; border-radius: 99px; color: var(--color-ink); font-size: .9rem; }
 .desktop-nav a:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
+.desktop-nav a[aria-current="page"] { background: var(--color-surface-subtle); color: var(--color-accent); font-weight: 600; }
 .github-nav { margin-left: auto; font-size: .875rem; text-decoration: none; }
 .theme-toggle { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: .4rem; width: 6rem; min-height: 44px; padding: .4rem .65rem; border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: .85rem; cursor: pointer; }
 .theme-toggle:hover { background: var(--color-surface-subtle); color: var(--color-accent); }
@@ -197,6 +198,7 @@ summary { cursor: pointer; min-height: 44px; padding-block: .75rem; font-weight:
   .mobile-menu nav { position: absolute; z-index: 10; top: calc(100% + .5rem); inset-inline: 0; display: grid; padding: .75rem; border: 1px solid var(--color-line); border-radius: 12px; background: var(--color-surface); box-shadow: 0 12px 30px #0002; }
   .mobile-menu nav a { padding: .75rem; text-decoration: none; border-radius: 6px; }
   .mobile-menu nav a:hover { background: var(--color-surface-subtle); }
+  .mobile-menu nav a[aria-current="page"] { background: var(--color-surface-subtle); color: var(--color-accent); font-weight: 600; }
   .action { padding: 12px; gap: .5rem; }
   .detail-contents ul { display: flex; gap: .5rem; overflow-x: auto; max-width: 100%; }
   .detail-contents li { flex: 0 0 auto; max-width: 80%; }
@@ -235,3 +237,26 @@ body { background-image: none; }
 .detail-mermaid { background: var(--color-surface); }
 
 .brand-logo { display: block; flex-shrink: 0; border-radius: 50%; }
+
+/* Forced colors drop author backgrounds and box shadows: show state with text decoration and
+   system colors instead. Filled buttons would otherwise keep light text on the forced Canvas. */
+@media (forced-colors: active) {
+  .desktop-nav a[aria-current="page"], .mobile-menu nav a[aria-current="page"], .detail-contents a[aria-current] { text-decoration: underline; text-underline-offset: .2em; }
+  .action-primary { color: LinkText !important; border-color: LinkText !important; }
+  .disclosure-mark::before, .disclosure-mark::after { background: CanvasText !important; }
+  .masthead { background: Canvas; }
+}
+
+/* Print: light palette, content only. Closed disclosures are shown via ::details-content so their
+   open state (saved by NavigationController on toggle) is never changed. */
+@media print {
+  :root:not([data-theme]), :root[data-theme] { color-scheme: light; --color-canvas: #fff; --color-surface: #fff; --color-surface-subtle: #eef0f3; --color-ink: #20242c; --color-muted: #606873; --color-line: #dce0e6; --color-accent: #234bdb; --color-accent-hover: #1638b0; --on-accent: #fff; --focus: #234bdb; --hero-tint: #fff; }
+  .skip-link, .masthead, .page-entry-line, .footer nav, .hero-actions, .hero-foot, .hero-showcase, .scene-toggle, .slideshow-toggle, .slideshow-dots, .detail-contents { display: none !important; }
+  .detail-grid { display: block; }
+  /* Browsers drop backgrounds when printing, so filled buttons switch to outlined text. */
+  .action-primary { background: none !important; color: var(--color-ink) !important; box-shadow: none !important; }
+  details::details-content { content-visibility: visible; display: contents; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75rem; font-weight: 400; overflow-wrap: anywhere; }
+  /* Keep each card whole so its frame is not left behind on the previous page. */
+  figure, img, .reading-table tr, .project-row, .secondary-row, .domain-card, .study-card { break-inside: avoid; }
+}

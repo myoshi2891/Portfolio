@@ -10,8 +10,12 @@ import { pageMetadata } from "../../../lib/metadata";
 import { BreadcrumbJsonLd } from "../../../components/seo/json-ld";
 import { site } from "../../../data/site";
 import { formatJapaneseDate } from "../../../lib/dates";
-import { detailGalleries } from "../../../components/projects/detail-galleries";
+import { ProjectSlideshow } from "../../../components/projects/project-slideshow";
+import { projectGalleries } from "../../../data/galleries";
+import type { ProjectGallery } from "../../../types/portfolio";
 import { DocumentedProjectDetail } from "../../../components/projects/documented-project-detail";
+
+const galleries: Readonly<Record<string, ProjectGallery>> = projectGalleries;
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -27,8 +31,8 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
   const { slug } = await params;
   const project = getFeatured(slug);
   const documentation = portfolio.documentation[slug];
-  const Gallery = detailGalleries[slug];
-  if (!project || !documentation || !Gallery) notFound();
+  const gallery = galleries[slug];
+  if (!project || !documentation || !gallery) notFound();
   const next = featuredProjects[(featuredProjects.indexOf(project) + 1) % featuredProjects.length]!;
   const demoUrl = demoUrls[project.id];
   return <main id="main" tabIndex={-1} className={`container detail-page ${documentation.pageClassName}`}>
@@ -41,7 +45,7 @@ export default async function Detail({ params }: { params: Promise<{ slug: strin
       <ul className="badges" aria-label="実装技術">{project.technologies.map(t => <li key={t.text}>{t.text}</li>)}</ul>
       {demoUrl && <ActionLink primary href={demoUrl}>公開サイトを試す</ActionLink>}
     </header>
-    <Gallery />
+    <ProjectSlideshow {...gallery} />
     <div className="detail-grid">
       <DetailContents sections={documentation.sections} />
       <div className="detail-body">
