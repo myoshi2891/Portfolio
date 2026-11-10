@@ -44,7 +44,7 @@
     "eslint": "9",
     "eslint-config-next": "16.4.2",
     "lighthouse": "13.5.0",
-    "mermaid": "^12.2.0",
+    "mermaid": "^12.3.0",
     "sharp": "0.35.5",
     "subset-font": "2.9.0",
     "tailwindcss": "4.3.3",
